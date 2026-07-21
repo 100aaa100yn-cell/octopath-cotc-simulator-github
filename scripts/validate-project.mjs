@@ -13,7 +13,8 @@ const requiredFiles = [
   "data/system/enemies.json",
   "data/equipment/equipment.json",
   "src/engine/EquipmentManager.js",
-  "src/engine/StrategyAdvisor.js"
+  "src/engine/StrategyAdvisor.js",
+  "src/engine/BattleComparisonManager.js"
 ];
 
 const errors = [];

@@ -262,6 +262,20 @@
       <div id="strategyAdviceSummary" class="strategy-advice-summary"></div>
       <div id="strategyAdviceList" class="strategy-advice-list"></div>
     </div>
+    <div class="battle-comparison-section">
+      <div class="section-title-row"><div><h3>複数プラン比較</h3><p>戦闘結果をスナップショット保存し、最大4件の効率と改善スコアを比較します。</p></div></div>
+      <div class="comparison-toolbar">
+        <label>結果名<input id="comparisonName" type="text" placeholder="例：プランA・装備変更後"></label>
+        <button id="comparisonSaveBtn" type="button">現在結果を保存</button>
+        <button id="comparisonClearBtn" type="button" class="secondary">すべて削除</button>
+        <button id="comparisonExportJsonBtn" type="button" class="secondary">比較JSON出力</button>
+        <button id="comparisonExportCsvBtn" type="button" class="secondary">比較CSV出力</button>
+        <label class="file-button">比較JSON読込<input id="comparisonImportInput" type="file" accept="application/json,.json"></label>
+      </div>
+      <div id="comparisonSnapshotList" class="comparison-snapshot-list"></div>
+      <div id="comparisonSummary" class="battle-result-summary comparison-summary"></div>
+      <div id="comparisonTable" class="comparison-table"></div>
+    </div>
   </section>
 
   <section class="panel battle-panel">
@@ -482,7 +496,7 @@
   </section>
 </main>
 
-<footer>Version 2.7.0｜戦闘結果から改善ターン、BP・SP、ブレイク戦略を提案します。</footer>
+<footer>Version 2.8.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

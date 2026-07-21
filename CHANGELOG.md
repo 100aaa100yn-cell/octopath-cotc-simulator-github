@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.0
+
+- Added saved battle-result snapshots for strategy experiments.
+- Added side-by-side comparison for up to four plans.
+- Added winner highlighting, baseline deltas, SP efficiency, and advisor-score comparison.
+- Added comparison JSON import/export and CSV export.
+
+
 ## [2.7.0] - 2026-07-21
 
 - 戦略改善アシストを追加

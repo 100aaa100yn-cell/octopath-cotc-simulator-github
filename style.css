@@ -300,3 +300,11 @@ footer{text-align:center;padding:20px;color:var(--muted)}
 .strategy-priority{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);font-weight:700}
 .strategy-advice-card p{margin:8px 0 0;line-height:1.65}
 @media(max-width:600px){.strategy-advice-summary{align-items:flex-start}.strategy-advice-head small{width:100%;margin-left:35px}}
+
+
+/* v2.8 multi-plan battle comparison */
+.battle-comparison-section{margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.comparison-toolbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:end;margin:.75rem 0}.comparison-toolbar label{min-width:220px}
+.comparison-snapshot-list{display:grid;gap:.55rem;margin:.8rem 0}.comparison-snapshot{display:flex;justify-content:space-between;gap:.7rem;align-items:center;padding:.65rem .75rem;border:1px solid var(--border);border-radius:11px;background:var(--panel)}.comparison-snapshot.selected{border-color:var(--accent);box-shadow:inset 4px 0 var(--accent)}.comparison-snapshot label{display:flex;align-items:center;gap:.65rem;min-width:0}.comparison-snapshot span{display:flex;flex-direction:column;min-width:0}.comparison-snapshot small{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comparison-table{overflow-x:auto;margin-top:.8rem}.comparison-grid{display:grid;grid-template-columns:minmax(120px,.7fr) repeat(var(--comparison-count),minmax(155px,1fr));min-width:max-content;border:1px solid var(--border);border-radius:12px;overflow:hidden}.comparison-grid>span,.comparison-grid>b{padding:.7rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.comparison-grid>b{background:var(--panel-2)}.comparison-grid>span{display:flex;flex-direction:column}.comparison-grid .winner{background:var(--accent-soft)}.comparison-grid small{color:var(--muted);margin-top:.2rem}.comparison-summary b{font-size:1rem}
+@media(max-width:650px){.comparison-snapshot{align-items:flex-start}.comparison-toolbar>*{width:100%}.comparison-toolbar label{min-width:0}}

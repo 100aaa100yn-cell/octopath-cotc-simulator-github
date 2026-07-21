@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -19,6 +19,7 @@ export class AppUI {
     this.battlePlanManager = battlePlanManager;
     this.battleResultManager = battleResultManager;
     this.strategyAdvisor = strategyAdvisor;
+    this.battleComparisonManager = battleComparisonManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -50,6 +51,7 @@ export class AppUI {
     this.renderTurnBattle();
     this.renderBattlePlanner();
     this.renderTurnBattleResults();
+    this.renderBattleComparison();
     this.restoreInitialState();
   }
 
@@ -142,6 +144,11 @@ export class AppUI {
     this.$("battleResultExportCsvBtn").onclick = () => this.exportTurnBattleResultCsv();
     this.$("strategyAdviceRefreshBtn").onclick = () => this.renderStrategyAdvice();
     this.$("strategyAdviceExportBtn").onclick = () => this.exportStrategyAdvice();
+    this.$("comparisonSaveBtn").onclick = () => this.saveComparisonSnapshot();
+    this.$("comparisonClearBtn").onclick = () => { this.battleComparisonManager.clear(); this.renderBattleComparison(); };
+    this.$("comparisonExportJsonBtn").onclick = () => this.exportBattleComparisons();
+    this.$("comparisonExportCsvBtn").onclick = () => this.exportBattleComparisonCsv();
+    this.$("comparisonImportInput").onchange = event => this.importBattleComparisons(event);
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1640,7 +1647,7 @@ export class AppUI {
     this.$("battleResultExportCsvBtn").disabled=disabled;
     if(!report||!report.turns){
       this.$("battleResultSummary").innerHTML='<p class="empty">ターン戦闘を実行すると結果が集計されます。</p>';
-      this.$("battleResultHpChart").innerHTML='';this.$("battleResultDamageChart").innerHTML='';this.$("battleResultRanking").innerHTML='';this.renderStrategyAdvice();return;
+      this.$("battleResultHpChart").innerHTML='';this.$("battleResultDamageChart").innerHTML='';this.$("battleResultRanking").innerHTML='';this.renderStrategyAdvice();this.renderBattleComparison();return;
     }
     this.$("battleResultSummary").innerHTML=`
       <span><b>${report.victory?report.turns+'T 撃破':report.turns+'T 経過'}</b><small>戦闘結果</small></span>
@@ -1654,6 +1661,7 @@ export class AppUI {
     this.$("battleResultHpChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.hpPercent,break:t.broken})),{label:'敵HP割合の推移'});
     this.$("battleResultDamageChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.damage,break:t.broken})),{label:'ターンダメージの推移'});
     this.renderStrategyAdvice();
+    this.renderBattleComparison();
     this.$("battleResultRanking").innerHTML=report.ranking.map((r,index)=>`<div class="result-rank-row"><b>${index+1}. ${r.name}</b><span>${r.damage.toLocaleString()} damage</span><div><i style="width:${Math.max(2,r.share*100)}%"></i></div><small>${(r.share*100).toFixed(1)}%｜${r.actions}行動</small></div>`).join('')||'<p class="empty">ダメージ記録はありません。</p>';
   }
 
@@ -1673,8 +1681,66 @@ export class AppUI {
     </article>`).join('');
   }
 
+  formatComparisonValue(row, value) {
+    if (row.key === "spEfficiency") return `${value.toLocaleString(undefined,{maximumFractionDigits:1})}${row.unit}`;
+    if (row.key === "spRemaining") return `${value.toFixed(1)}${row.unit}`;
+    return `${Math.round(value).toLocaleString()}${row.unit}`;
+  }
+
+  saveComparisonSnapshot() {
+    try {
+      const snapshot=this.battleComparisonManager.capture(this.$("comparisonName").value);
+      this.$("comparisonName").value="";
+      this.renderBattleComparison();
+      this.setPresetStatus(`「${snapshot.name}」を比較結果へ保存しました。`,"success");
+    } catch(error) { this.setPresetStatus(error.message,"error"); }
+  }
+
+  renderBattleComparison() {
+    const manager=this.battleComparisonManager;
+    if(!manager)return;
+    const report=this.battleResultManager.analyze();
+    this.$("comparisonSaveBtn").disabled=!report?.turns;
+    this.$("comparisonExportJsonBtn").disabled=!manager.snapshots.length;
+    const list=this.$("comparisonSnapshotList");
+    list.innerHTML=manager.snapshots.map(item=>{
+      const selected=manager.selectedIds.includes(item.id);
+      return `<article class="comparison-snapshot ${selected?'selected':''}">
+        <label><input type="checkbox" data-comparison-toggle="${item.id}" ${selected?'checked':''}><span><b>${item.name}</b><small>${item.planName}｜${item.enemyName}｜${item.report.turns}T｜${item.advice.score??0}点</small></span></label>
+        <button type="button" class="secondary" data-comparison-remove="${item.id}">削除</button>
+      </article>`;
+    }).join('')||'<p class="empty">現在の戦闘結果を保存すると、ここで最大4件まで比較できます。</p>';
+    list.querySelectorAll('[data-comparison-toggle]').forEach(input=>input.onchange=()=>{try{manager.toggle(input.dataset.comparisonToggle);this.renderBattleComparison();}catch(error){input.checked=false;this.setPresetStatus(error.message,'error');}});
+    list.querySelectorAll('[data-comparison-remove]').forEach(btn=>btn.onclick=()=>{manager.remove(btn.dataset.comparisonRemove);this.renderBattleComparison();});
+    const comparison=manager.compare();
+    this.$("comparisonExportCsvBtn").disabled=!comparison;
+    const summary=this.$("comparisonSummary"), table=this.$("comparisonTable");
+    if(!comparison){summary.innerHTML='<p class="empty">比較する保存結果を選択してください。</p>';table.innerHTML='';return;}
+    const fastest=comparison.items.filter(item=>comparison.fastest.includes(item.id)).map(item=>item.name).join('・');
+    const best=comparison.items.filter(item=>comparison.highestScore.includes(item.id)).map(item=>item.name).join('・');
+    summary.innerHTML=`<span><b>${comparison.items.length}</b><small>比較プラン</small></span><span><b>${fastest}</b><small>最短ターン</small></span><span><b>${best}</b><small>最高スコア</small></span><span><b>${comparison.sameEnemy?'同一':'注意'}</b><small>${comparison.sameEnemy?'同じ敵で比較':'異なる敵を含みます'}</small></span>`;
+    table.innerHTML=`<div class="comparison-grid" style="--comparison-count:${comparison.items.length}"><b>指標</b>${comparison.items.map((item,index)=>`<b>${index===0?'基準｜':''}${item.name}</b>`).join('')}${comparison.rows.map(row=>`<span>${row.label}</span>${row.values.map(cell=>{const base=row.values[0].value;const delta=cell.value-base;const winner=row.winnerIds.includes(cell.id);return `<span class="${winner?'winner':''}"><strong>${this.formatComparisonValue(row,cell.value)}</strong>${cell.id===comparison.baseId?'<small>基準</small>':`<small>${delta===0?'±0':`${delta>0?'+':''}${delta.toLocaleString(undefined,{maximumFractionDigits:1})}`}</small>`}</span>`;}).join('')}`).join('')}</div>`;
+  }
+
+  exportBattleComparisons() {
+    try{this.downloadTextFile(JSON.stringify(this.battleComparisonManager.exportData(),null,2),'octopath-battle-comparisons-v2.8.json','application/json');}
+    catch(error){this.setPresetStatus(error.message,'error');}
+  }
+
+  exportBattleComparisonCsv() {
+    try{this.downloadTextFile(this.battleComparisonManager.toCsv(),'octopath-battle-comparison-v2.8.csv','text/csv;charset=utf-8');}
+    catch(error){this.setPresetStatus(error.message,'error');}
+  }
+
+  async importBattleComparisons(event) {
+    const file=event.target.files?.[0];if(!file)return;
+    try{this.battleComparisonManager.importData(JSON.parse(await file.text()));this.renderBattleComparison();this.setPresetStatus('比較結果を読み込みました。','success');}
+    catch(error){this.setPresetStatus(error.message,'error');}
+    event.target.value='';
+  }
+
   exportStrategyAdvice() {
-    try{this.downloadTextFile(JSON.stringify(this.strategyAdvisor.exportData(),null,2),'octopath-strategy-advice-v2.7.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.strategyAdvisor.exportData(),null,2),'octopath-strategy-advice-v2.8.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
@@ -1683,12 +1749,12 @@ export class AppUI {
   }
 
   exportTurnBattleResultJson() {
-    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.7.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.8.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
   exportTurnBattleResultCsv() {
-    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.7.csv','text/csv;charset=utf-8');}
+    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.8.csv','text/csv;charset=utf-8');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
