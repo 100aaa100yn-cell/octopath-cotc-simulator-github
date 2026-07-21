@@ -6,16 +6,16 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Octopath CotC Strategy Simulator v2.0.0</title>
+<title>Octopath CotC Strategy Simulator v2.3.0</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="buildVersion" class="build-version" aria-label="build version">v2.0.0</div>
+  <div id="buildVersion" class="build-version" aria-label="build version">v2.3.0</div>
 <header>
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
     <h1>Octopath CotC Strategy Simulator</h1>
-    <p>Version 2.1｜装備・ソウル・テンプレート</p>
+    <p>Version 2.3｜8人隊列・前後衛・交代計画</p>
   </div>
   <button id="themeBtn">テーマ切替</button>
 </header>
@@ -50,6 +50,30 @@
     </div>
     <div id="rosterSummary" class="roster-summary"></div>
     <div id="rosterGrid" class="roster-grid"></div>
+  </section>
+
+  <section class="panel formation-panel">
+    <div class="section-title-row"><div><h2>8人隊列・前衛／後衛</h2><p>4組のペアを編成し、交代予定と後衛SP回復を管理します。</p></div></div>
+    <div class="formation-toolbar">
+      <button id="formationAutoFillBtn" type="button">選択8人で自動配置</button>
+      <button id="formationClearBtn" type="button" class="secondary">隊列をクリア</button>
+      <button id="formationAdvanceBtn" type="button">1ターン進める</button>
+      <button id="formationResetBtn" type="button" class="secondary">戦闘状態をリセット</button>
+      <label>後衛SP回復率<input id="reserveSpRecoveryRate" type="number" min="0" max="100" value="10">%</label>
+      <button id="exportFormationBtn" type="button">隊列JSON出力</button>
+      <label class="file-button">隊列JSON読込<input id="importFormationInput" type="file" accept=".json,application/json"></label>
+    </div>
+    <div id="formationSummary" class="formation-summary"></div>
+    <div id="formationPairs" class="formation-pairs"></div>
+    <div class="swap-planner">
+      <h3>ターン別交代計画</h3>
+      <div class="swap-planner-controls">
+        <label>ターン<input id="swapPlanTurn" type="number" min="1" max="99" value="1"></label>
+        <label>ペア<select id="swapPlanPair"><option value="0">ペア1</option><option value="1">ペア2</option><option value="2">ペア3</option><option value="3">ペア4</option></select></label>
+        <button id="addSwapPlanBtn" type="button">交代予定を追加</button>
+      </div>
+      <div id="swapPlanList" class="swap-plan-list"></div>
+    </div>
   </section>
 
   <section class="panel character-selector-panel">

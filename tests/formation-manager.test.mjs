@@ -1,0 +1,17 @@
+import assert from "node:assert/strict";
+import { FormationManager } from "../src/engine/FormationManager.js";
+const chars=Array.from({length:8},(_,i)=>({id:`c${i+1}`,name:`C${i+1}`,maxSp:100}));
+const repo={getCharacter:id=>chars.find(x=>x.id===id),getCharacters:()=>chars};
+const roster={isAvailable:()=>true,getAvailableIds:()=>chars.map(x=>x.id)};
+const storage={getItem:()=>null,setItem:()=>{}};
+const manager=new FormationManager(repo,roster,storage);
+manager.autoFill();
+assert.equal(manager.getFrontIds().length,4);
+assert.equal(manager.getBackIds().length,4);
+manager.sp.c5=50;
+manager.addSwap(1,0);
+const result=manager.advanceTurn();
+assert.equal(result.swaps.length,1);
+assert.equal(manager.pairs[0].front,"c5");
+assert.equal(manager.sp.c1,100);
+console.log("FormationManager tests passed");

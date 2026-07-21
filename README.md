@@ -198,3 +198,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v2.2 バフ・デバフ管理
 
 効果量、重複上限、残りターン、発生源を管理し、ダメージ計算へ反映します。効果セットはブラウザへ自動保存され、JSONでバックアップできます。
+
+
+## v2.3 8人隊列
+
+前衛4人・後衛4人をペア編成し、即時交代、ターン別交代計画、後衛SP回復、隊列JSON保存を利用できます。

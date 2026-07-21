@@ -10,16 +10,18 @@ import { BattleAnalytics } from "./engine/BattleAnalytics.js";
 import { EquipmentManager } from "./engine/EquipmentManager.js";
 import { RosterManager } from "./engine/RosterManager.js";
 import { EffectManager } from "./engine/EffectManager.js";
+import { FormationManager } from "./engine/FormationManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "2.2.0";
+  document.documentElement.dataset.appVersion = "2.3.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();
   const repo = new Repository(dataManager.getDatabase());
   const rosterManager = new RosterManager(repo);
   const effectManager = new EffectManager();
+  const formationManager = new FormationManager(repo, rosterManager);
   const partyOptimizer = new PartyOptimizer(repo, rosterManager);
   const damageEngine = new DamageEngine(repo);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
@@ -42,7 +44,8 @@ async function main() {
     BattleAnalytics,
     equipmentManager,
     rosterManager,
-    effectManager
+    effectManager,
+    formationManager
   ).init();
 }
 

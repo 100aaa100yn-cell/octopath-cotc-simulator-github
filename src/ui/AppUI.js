@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -14,6 +14,7 @@ export class AppUI {
     this.equipmentManager = equipmentManager;
     this.rosterManager = rosterManager;
     this.effectManager = effectManager;
+    this.formationManager = formationManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -40,6 +41,7 @@ export class AppUI {
     this.renderCatalogSummary();
     this.renderRoster();
     this.renderEffectManager();
+    this.renderFormation();
     this.restoreInitialState();
   }
 
@@ -106,6 +108,14 @@ export class AppUI {
     this.$("clearEffectsBtn").onclick = () => { this.effectManager.clear(); this.renderEffectManager(); this.calculateManualDamage(); };
     this.$("exportEffectsBtn").onclick = () => this.exportEffects();
     this.$("importEffectsInput").onchange = event => this.importEffects(event);
+    this.$("formationAutoFillBtn").onclick = () => { this.formationManager.autoFill(this.selectedPartyIds); this.renderFormation(); };
+    this.$("formationClearBtn").onclick = () => { this.formationManager.clear(); this.renderFormation(); };
+    this.$("formationAdvanceBtn").onclick = () => { const result=this.formationManager.advanceTurn(); this.effectManager.tick(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus(`${result.turn}ターン目を進行しました。`, "success"); };
+    this.$("formationResetBtn").onclick = () => { this.formationManager.resetBattle(); this.renderFormation(); };
+    this.$("addSwapPlanBtn").onclick = () => { this.formationManager.addSwap(this.$("swapPlanTurn").value, this.$("swapPlanPair").value); this.renderFormation(); };
+    this.$("reserveSpRecoveryRate").onchange = () => { this.formationManager.reserveSpRecoveryRate=Math.max(0,Math.min(100,Number(this.$("reserveSpRecoveryRate").value)||0)); this.formationManager.save(); this.renderFormation(); };
+    this.$("exportFormationBtn").onclick = () => this.exportFormation();
+    this.$("importFormationInput").onchange = event => this.importFormation(event);
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1423,7 +1433,7 @@ export class AppUI {
         if (field === "owned" && value) patch.enabled = true;
         this.rosterManager.set(card.dataset.rosterId, patch);
         this.selectedPartyIds = this.selectedPartyIds.filter(id => this.rosterManager.isAvailable(id));
-        this.renderRoster(); this.refreshSelectors(); this.renderCharacterSelector(); this.scheduleAutoSave();
+        this.renderRoster(); this.refreshSelectors(); this.renderCharacterSelector(); this.renderFormation(); this.scheduleAutoSave();
       });
     });
   }
@@ -1443,6 +1453,58 @@ export class AppUI {
       this.setPresetStatus("マイ旅団を読み込みました。", "success");
     } catch (error) { this.setPresetStatus(error.message, "error"); }
     event.target.value = "";
+  }
+
+
+  formationCharacterOptions(selectedId = "") {
+    const available = this.repo.getCharacters().filter(c => this.rosterManager.isAvailable(c.id));
+    return `<option value="">未設定</option>` + available.map(character => `<option value="${character.id}" ${character.id===selectedId?"selected":""}>${character.name}｜${character.weapon}・${character.element}</option>`).join("");
+  }
+
+  renderFormation() {
+    const summary = this.formationManager.summary();
+    this.$("formationSummary").innerHTML = `
+      <span><b>${summary.members}</b><small>編成人数</small></span>
+      <span><b>${summary.front}</b><small>前衛</small></span>
+      <span><b>${summary.back}</b><small>後衛</small></span>
+      <span><b>${summary.currentTurn}T</b><small>次に進めるターン</small></span>`;
+    this.$("reserveSpRecoveryRate").value = this.formationManager.reserveSpRecoveryRate;
+    this.$("formationPairs").innerHTML = this.formationManager.pairs.map((pair,index) => {
+      const front=this.repo.getCharacter(pair.front), back=this.repo.getCharacter(pair.back);
+      const spLine = character => character ? `SP ${this.formationManager.sp[character.id] ?? character.maxSp ?? 0} / ${character.maxSp ?? character.sp ?? 0}` : "空き";
+      return `<article class="formation-pair">
+        <header><strong>ペア ${index+1}</strong><button type="button" data-swap-now="${index}" ${!pair.front&&!pair.back?'disabled':''}>今すぐ交代</button></header>
+        <label class="formation-slot front"><span>前衛</span><select data-formation-pair="${index}" data-formation-position="front">${this.formationCharacterOptions(pair.front)}</select><small>${spLine(front)}</small></label>
+        <div class="formation-arrow">⇅</div>
+        <label class="formation-slot back"><span>後衛</span><select data-formation-pair="${index}" data-formation-position="back">${this.formationCharacterOptions(pair.back)}</select><small>${spLine(back)}｜ターン終了時SP回復</small></label>
+      </article>`;
+    }).join("");
+    this.$("formationPairs").querySelectorAll("[data-formation-pair]").forEach(select => select.onchange = () => {
+      this.formationManager.setSlot(Number(select.dataset.formationPair), select.dataset.formationPosition, select.value);
+      this.renderFormation();
+    });
+    this.$("formationPairs").querySelectorAll("[data-swap-now]").forEach(button => button.onclick = () => {
+      this.formationManager.swap(Number(button.dataset.swapNow)); this.renderFormation();
+    });
+    this.$("swapPlanList").innerHTML = this.formationManager.swapPlan.map(item => {
+      const pair=this.formationManager.pairs[item.pairIndex];
+      const front=this.repo.getCharacter(pair?.front)?.name ?? "空き";
+      const back=this.repo.getCharacter(pair?.back)?.name ?? "空き";
+      return `<div class="swap-plan-item"><span><b>${item.turn}T</b>｜ペア${item.pairIndex+1}：${front} ⇄ ${back}</span><button type="button" data-remove-swap="${item.id}" class="secondary">削除</button></div>`;
+    }).join("") || '<p class="empty">交代予定はありません。</p>';
+    this.$("swapPlanList").querySelectorAll("[data-remove-swap]").forEach(button => button.onclick = () => { this.formationManager.removeSwap(button.dataset.removeSwap); this.renderFormation(); });
+  }
+
+  exportFormation() {
+    const blob=new Blob([JSON.stringify(this.formationManager.exportData(),null,2)],{type:"application/json"});
+    const anchor=document.createElement("a"); anchor.href=URL.createObjectURL(blob); anchor.download="octopath-formation-v2.3.json"; anchor.click(); URL.revokeObjectURL(anchor.href);
+  }
+
+  async importFormation(event) {
+    const file=event.target.files?.[0]; if(!file)return;
+    try { this.formationManager.importData(JSON.parse(await file.text())); this.renderFormation(); this.setPresetStatus("8人隊列を読み込みました。","success"); }
+    catch(error) { this.setPresetStatus(error.message,"error"); }
+    event.target.value="";
   }
 
 }
