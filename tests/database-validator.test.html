@@ -1,0 +1,29 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Database Validator Tests</title>
+<pre id="out"></pre>
+<script type="module">
+import { DatabaseValidator } from "../src/database/Validator.js";
+
+const db = {
+  characters: [
+    {
+      id: "a", name: "A", weapon: "sword", element: "fire", role: "attacker",
+      supportIds: ["missing"], battleIds: [], ultimateId: null, exId: null
+    },
+    {
+      id: "a", name: "Duplicate", weapon: "invalid", element: "fire", role: "support",
+      supportIds: [], battleIds: [], ultimateId: null, exId: null
+    }
+  ],
+  abilities: [],
+  enemies: [{ id: "e", name: "Enemy", shield: 10, weakWeapons: [], weakElements: [] }],
+  effectRules: {}
+};
+
+const result = new DatabaseValidator(db).run();
+const pass =
+  result.errors.some(x => x.code === "DUPLICATE_ID") &&
+  result.errors.some(x => x.code === "BROKEN_REFERENCE") &&
+  result.errors.some(x => x.code === "UNKNOWN_WEAPON");
+
+document.getElementById("out").textContent = pass ? "PASS" : JSON.stringify(result, null, 2);
+</script>

@@ -1,0 +1,22 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>State Manager Test</title>
+<pre id="out"></pre>
+<script type="module">
+import { StateManager } from "../src/database/StateManager.js";
+
+const manager = new StateManager("octopath-test");
+const state = { fields: { attackerSelect: "test", damageCritical: true }, theme: "dark" };
+const encoded = manager.encodeShareState(state);
+const decoded = manager.decodeShareState(encoded);
+
+manager.save(state);
+const loaded = manager.load();
+manager.clear();
+
+const pass =
+  decoded.fields.attackerSelect === "test" &&
+  decoded.fields.damageCritical === true &&
+  loaded.theme === "dark" &&
+  manager.load() === null;
+
+document.getElementById("out").textContent = pass ? "PASS" : JSON.stringify({decoded, loaded}, null, 2);
+</script>

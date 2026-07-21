@@ -1,0 +1,2 @@
+﻿id,name,weapon,element,role,series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
+sample_traveler,サンプル旅人,sword,fire,attacker,大陸の覇者,5,100,450,400,300,400,80,⚔️,provisional,入力例

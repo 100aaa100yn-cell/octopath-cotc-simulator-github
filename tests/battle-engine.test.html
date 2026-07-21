@@ -1,0 +1,41 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Battle Engine Test</title>
+<pre id="out"></pre>
+<script type="module">
+import { Repository } from "../src/database/Repository.js";
+import { PartyOptimizer } from "../src/engine/PartyOptimizer.js";
+import { TurnOptimizer } from "../src/engine/TurnOptimizer.js";
+import { DamageEngine } from "../src/engine/DamageEngine.js";
+import { BattleEngine } from "../src/engine/BattleEngine.js";
+
+const db = {
+  characters: [
+    {id:"a",name:"A",weapon:"sword",element:"fire",role:"attacker",baseScore:90,maxSp:500,speed:300,patk:600,eatk:400},
+    {id:"b",name:"B",weapon:"fan",element:"light",role:"support",baseScore:80,maxSp:500,speed:350,patk:300,eatk:400}
+  ],
+  abilities: [
+    {id:"atk",ownerId:"a",name:"Attack",category:"battle",power:500,hits:2,sp:20,shield:5,timing:"attack",duration:1,bpPowerStep:.25,effects:[]},
+    {id:"buff",ownerId:"b",name:"Buff",category:"battle",power:0,hits:0,sp:20,shield:0,timing:"setup",duration:3,effects:[{type:"damage_up",value:20,target:"front"}]}
+  ],
+  enemies: [{
+    id:"e",name:"Enemy",maxHp:10000,hp:10000,shield:4,shieldRecovery:4,breakDuration:1,
+    pdef:300,edef:300,weakWeapons:["sword"],weakElements:["fire"],weaknessMultiplier:1.5,
+    breakMultiplier:2,criticalAllowed:true,actions:[{name:"Attack",type:"damage",priority:1}]
+  }],
+  effectRules:{damage_up:{label:"Damage",cap:30,weight:1.2}},
+  damageRules:{
+    constants:{minimumDefenseRatio:.2,maximumDefenseRatio:2.5,criticalMultiplier:1.25,randomMin:.98,randomMax:1.02,defaultBreakMultiplier:2,defaultWeaknessMultiplier:1.5},
+    stacking:{physical_attack_up:{cap:.5},element_attack_up:{cap:.5},weapon_damage_up:{cap:.3},damage_up:{cap:.3},weapon_resistance_down:{cap:.3},element_resistance_down:{cap:.3},damage_cap_up:{cap:9.99},ultimate_power:{cap:1}},
+    damageCap:{base:99999,ultimate:199999,ex:299999}
+  }
+};
+
+const repo=new Repository(db);
+const party=new PartyOptimizer(repo);
+const damage=new DamageEngine(repo);
+const turns=new TurnOptimizer(repo,damage);
+const battle=new BattleEngine(repo,party,turns,damage);
+const result=battle.simulate({attackerId:"a",enemyId:"e",maxBattleTurns:10,planHorizon:3});
+
+const pass=result.log.length>0&&result.summary.totalDamage>0&&typeof result.summary.dpt==="number";
+document.getElementById("out").textContent=pass?"PASS":JSON.stringify(result.summary,null,2);
+</script>

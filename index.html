@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Octopath CotC Strategy Simulator v0.7</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div>
+    <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
+    <h1>Octopath CotC Strategy Simulator</h1>
+    <p>Version 1.2｜ロスター拡充・CSV一括取込・データ品質表示</p>
+  </div>
+  <button id="themeBtn">テーマ切替</button>
+</header>
+
+<main>
+
+  <section class="panel preset-panel">
+    <h2>設定の保存・共有</h2>
+    <div class="preset-toolbar">
+      <button id="savePresetBtn">現在の設定を保存</button>
+      <button id="loadPresetBtn">保存設定を読込</button>
+      <button id="copyShareUrlBtn">共有URLをコピー</button>
+      <button id="exportPresetBtn">設定ファイル出力</button>
+      <label class="file-button">設定ファイル読込<input id="importPresetInput" type="file" accept=".json"></label>
+      <button id="clearPresetBtn" class="secondary">保存設定を削除</button>
+    </div>
+    <input id="shareUrlOutput" class="share-url" readonly placeholder="共有URL">
+    <p id="presetStatus" class="preset-status">設定は変更時に自動保存されます。</p>
+  </section>
+
+
+  <section class="panel character-selector-panel">
+    <div class="section-title-row">
+      <div>
+        <h2>キャラクター選択</h2>
+        <p>データベース内の全キャラクターから最大8人を固定できます。未選択枠は自動補完されます。</p>
+      </div>
+      <strong id="selectedPartyCount" class="selection-count">0 / 8</strong>
+    </div>
+
+    <div class="character-filter-bar">
+      <label class="search-field">検索
+        <input id="characterSearch" type="search" placeholder="名前・ID・武器・属性・役割">
+      </label>
+      <label>武器<select id="characterWeaponFilter"></select></label>
+      <label>属性<select id="characterElementFilter"></select></label>
+      <label>役割<select id="characterRoleFilter"></select></label>
+      <label>シリーズ<select id="seriesFilter"></select></label>
+      <label>データ品質<select id="dataStatusFilter"></select></label>
+      <button id="selectAllVisibleBtn" type="button">表示中を選択</button>
+      <button id="clearPartySelectionBtn" type="button" class="secondary">選択解除</button>
+      <button id="downloadCharacterTemplateBtn" type="button">CSV雛形</button>
+      <label class="file-button">キャラCSV取込<input id="characterCsvInput" type="file" accept=".csv,text/csv"></label>
+    </div>
+
+    <div id="selectedPartyStrip" class="selected-party-strip"></div>
+    <div id="characterSelectorGrid" class="character-selector-grid"></div>
+  </section>
+
+  <section class="panel controls">
+    <h2>シミュレーション条件</h2>
+    <div class="control-grid">
+      <label>リーダー／攻撃基準<select id="attackerSelect"></select></label>
+      <label>敵<select id="enemySelect"></select></label>
+      <label>重視項目<select id="prioritySelect">
+        <option value="balanced">総合</option>
+        <option value="damage">最大ダメージ</option>
+        <option value="break">ブレイク</option>
+      </select></label>
+      <label>最大ターン<select id="turnSelect">
+        <option value="3">3ターン</option>
+        <option value="4">4ターン</option>
+        <option value="5" selected>5ターン</option>
+        <option value="6">6ターン</option>
+      </select></label>
+      <button id="optimizeBtn">編成と行動順を生成</button>
+    </div>
+  </section>
+
+  <section class="summary-grid">
+    <article class="metric"><span>編成スコア</span><strong id="totalScore">-</strong></article>
+    <article class="metric"><span>攻撃ターン</span><strong id="attackTurn">-</strong></article>
+    <article class="metric"><span>推定ダメージ</span><strong id="estimatedDamage">-</strong></article>
+    <article class="metric"><span>敵シールド</span><strong id="enemyShield">-</strong></article>
+  </section>
+
+  <section class="panel">
+    <h2>おすすめ8人編成</h2>
+    <div id="partyGrid" class="party-grid"></div>
+  </section>
+
+  <section class="panel">
+    <h2>自動生成ターン表</h2>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section class="panel two-column">
+    <div>
+      <h2>攻撃ターンの有効効果</h2>
+      <div id="activeEffects"></div>
+    </div>
+    <div>
+      <h2>計画サマリー</h2>
+      <div id="planSummary"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>候補ランキング</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>順位</th><th>キャラ</th><th>役割</th><th>相性スコア</th><th>主な貢献</th></tr></thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+
+
+  <section class="panel battle-panel">
+    <h2>フルバトルシミュレーション</h2>
+
+    <div class="battle-controls">
+      <label>リーダー／攻撃基準<select id="battleAttackerSelect"></select></label>
+      <label>敵<select id="battleEnemySelect"></select></label>
+      <label>戦略<select id="battlePrioritySelect">
+        <option value="balanced">総合</option>
+        <option value="damage">最大ダメージ</option>
+        <option value="break">ブレイク優先</option>
+      </select></label>
+      <label>最大戦闘ターン<input id="battleMaxTurns" type="number" value="20" min="1" max="99"></label>
+      <label>計画周期<select id="battlePlanHorizon">
+        <option value="3">3ターン</option>
+        <option value="4">4ターン</option>
+        <option value="5" selected>5ターン</option>
+        <option value="6">6ターン</option>
+      </select></label>
+    </div>
+
+    <div class="battle-buttons">
+      <button id="runBattleBtn">討伐シミュレーション開始</button>
+      <button id="exportBattleLogBtn" class="secondary">リプレイログ出力</button>
+    </div>
+
+    <div id="battleSummary" class="battle-summary"></div>
+    <div id="battleHpBar" class="battle-hp"></div>
+
+    <div class="analytics-panel">
+      <h3>戦闘分析</h3>
+      <div id="analyticsSummary" class="analytics-summary"></div>
+      <div id="damageChart" class="damage-chart"></div>
+    </div>
+
+    <div id="battleLog" class="battle-log">
+      <p class="empty">条件を設定して戦闘を開始してください。</p>
+    </div>
+  </section>
+
+  <section class="panel damage-panel">
+    <h2>本格ダメージ計算</h2>
+
+    <div class="damage-controls">
+      <label>攻撃者<select id="damageAttackerSelect"></select></label>
+      <label>攻撃技<select id="damageAbilitySelect"></select></label>
+      <label>敵<select id="damageEnemySelect"></select></label>
+      <label>BP<select id="damageBoost">
+        <option value="0">0</option><option value="1">1</option>
+        <option value="2">2</option><option value="3">3</option>
+      </select></label>
+    </div>
+
+    <div class="damage-flags">
+      <label><input id="damageWeakness" type="checkbox" checked> 弱点</label>
+      <label><input id="damageBroken" type="checkbox"> ブレイク中</label>
+      <label><input id="damageCritical" type="checkbox"> クリティカル</label>
+    </div>
+
+    <div class="buff-input-grid">
+      <label>物攻UP<input id="damagePatkBuff" type="number" value="0" min="0"></label>
+      <label>属攻UP<input id="damageEatkBuff" type="number" value="0" min="0"></label>
+      <label>武器ダメUP<input id="damageWeaponBuff" type="number" value="0" min="0"></label>
+      <label>ダメージUP<input id="damageGeneralBuff" type="number" value="0" min="0"></label>
+      <label>武器耐性DOWN<input id="damageWeaponResDown" type="number" value="0" min="0"></label>
+      <label>属性耐性DOWN<input id="damageElementResDown" type="number" value="0" min="0"></label>
+      <label>上限UP<input id="damageCapBuff" type="number" value="0" min="0"></label>
+      <label>必殺威力UP<input id="damageUltimateBuff" type="number" value="0" min="0"></label>
+    </div>
+
+    <div class="damage-action">
+      <button id="calculateDamageBtn">ダメージを計算</button>
+    </div>
+
+    <div id="damageResult" class="damage-result">
+      <p class="empty">条件を設定して計算してください。</p>
+    </div>
+  </section>
+
+  <section class="panel data-panel">
+    <h2>データ管理・検証</h2>
+
+    <div class="data-toolbar">
+      <button id="validateBtn">全データ検証</button>
+      <button id="exportDataBtn">DB出力</button>
+      <label class="file-button">DB読込<input id="importDataInput" type="file" accept=".json"></label>
+      <button id="resetDataBtn" class="secondary">初期データ</button>
+    </div>
+
+    <div id="validationSummary" class="validation-summary"></div>
+    <div id="validationList" class="validation-list"></div>
+
+    <div class="data-tabs">
+      <button class="active" data-collection="characters">characters</button>
+      <button data-collection="abilities">abilities</button>
+      <button data-collection="enemies">enemies</button>
+      <button data-collection="effectRules">effectRules</button>
+      <button data-collection="damageRules">damageRules</button>
+    </div>
+
+    <div class="database-editor">
+      <div class="editor-head">
+        <strong id="collectionTitle">characters</strong>
+        <button id="saveCollectionBtn">現在のJSONを保存</button>
+      </div>
+      <textarea id="databaseEditor" spellcheck="false"></textarea>
+    </div>
+
+    <div class="quick-add-grid">
+      <article class="quick-add">
+        <h3>キャラクター追加</h3>
+        <input id="newCharacterId" placeholder="ID">
+        <input id="newCharacterName" placeholder="名前">
+        <div class="mini-grid">
+          <select id="newCharacterWeapon">
+            <option>sword</option><option>spear</option><option>dagger</option><option>axe</option>
+            <option>bow</option><option>staff</option><option>tome</option><option>fan</option>
+          </select>
+          <select id="newCharacterElement">
+            <option>fire</option><option>ice</option><option>lightning</option><option>wind</option>
+            <option>light</option><option>dark</option><option>none</option>
+          </select>
+        </div>
+        <div class="mini-grid">
+          <select id="newCharacterRole">
+            <option>attacker</option><option>support</option><option>debuffer</option>
+            <option>breaker</option><option>healer</option><option>tank</option>
+          </select>
+          <input id="newCharacterIcon" placeholder="アイコン">
+        </div>
+        <div class="mini-grid">
+          <input id="newCharacterScore" type="number" placeholder="基礎スコア">
+          <input id="newCharacterSp" type="number" placeholder="最大SP">
+          <input id="newCharacterSpeed" type="number" placeholder="速度">
+        </div>
+        <button id="addCharacterBtn">キャラ追加</button>
+      </article>
+
+      <article class="quick-add">
+        <h3>アビリティ追加</h3>
+        <input id="newAbilityId" placeholder="ID">
+        <input id="newAbilityOwner" placeholder="ownerId">
+        <input id="newAbilityName" placeholder="技名">
+        <div class="mini-grid">
+          <select id="newAbilityCategory">
+            <option>support</option><option>battle</option><option>ultimate</option><option>ex</option>
+          </select>
+          <select id="newAbilityTiming">
+            <option>passive</option><option>setup</option><option>debuff</option>
+            <option>break</option><option>attack</option><option>finisher</option>
+          </select>
+        </div>
+        <div class="mini-grid">
+          <input id="newAbilitySp" type="number" placeholder="SP">
+          <input id="newAbilityDuration" type="number" placeholder="継続">
+          <input id="newAbilityShield" type="number" placeholder="シールド">
+          <input id="newAbilityPower" type="number" placeholder="威力">
+        </div>
+        <input id="newAbilityEffectType" placeholder="効果タイプ">
+        <div class="mini-grid">
+          <input id="newAbilityEffectValue" type="number" placeholder="効果値">
+          <select id="newAbilityTarget">
+            <option>self</option><option>front</option><option>party</option><option>enemy</option>
+          </select>
+        </div>
+        <button id="addAbilityBtn">アビリティ追加</button>
+      </article>
+
+      <article class="quick-add">
+        <h3>敵追加</h3>
+        <input id="newEnemyId" placeholder="ID">
+        <input id="newEnemyName" placeholder="名前">
+        <input id="newEnemyShield" type="number" placeholder="シールド">
+        <input id="newEnemyWeapons" placeholder="弱点武器 sword,dagger">
+        <input id="newEnemyElements" placeholder="弱点属性 fire,wind">
+        <input id="newEnemyBreak" type="number" step="0.1" placeholder="ブレイク倍率">
+        <button id="addEnemyBtn">敵追加</button>
+      </article>
+    </div>
+
+    <p id="dataStatus" class="data-status"></p>
+  </section>
+</main>
+
+<footer>Version 1.2｜88人を収録。暫定データは画面上で明示されます。</footer>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

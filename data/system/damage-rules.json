@@ -1,0 +1,51 @@
+{
+  "constants": {
+    "levelFactorBase": 1.0,
+    "minimumDefenseRatio": 0.2,
+    "maximumDefenseRatio": 2.5,
+    "criticalMultiplier": 1.25,
+    "randomMin": 0.98,
+    "randomMax": 1.02,
+    "defaultBreakMultiplier": 2.0,
+    "defaultWeaknessMultiplier": 1.5
+  },
+  "stacking": {
+    "physical_attack_up": {
+      "cap": 0.5,
+      "group": "stat"
+    },
+    "element_attack_up": {
+      "cap": 0.5,
+      "group": "stat"
+    },
+    "weapon_damage_up": {
+      "cap": 0.3,
+      "group": "damage"
+    },
+    "damage_up": {
+      "cap": 0.3,
+      "group": "damage"
+    },
+    "weapon_resistance_down": {
+      "cap": 0.3,
+      "group": "resistance"
+    },
+    "element_resistance_down": {
+      "cap": 0.3,
+      "group": "resistance"
+    },
+    "damage_cap_up": {
+      "cap": 9.99,
+      "group": "cap"
+    },
+    "ultimate_power": {
+      "cap": 1.0,
+      "group": "special"
+    }
+  },
+  "damageCap": {
+    "base": 99999,
+    "ultimate": 199999,
+    "ex": 299999
+  }
+}

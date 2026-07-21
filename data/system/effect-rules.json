@@ -1,0 +1,47 @@
+{
+  "physical_attack_up": {
+    "label": "物理攻撃力UP",
+    "cap": 50,
+    "weight": 1.0
+  },
+  "element_attack_up": {
+    "label": "属性攻撃力UP",
+    "cap": 50,
+    "weight": 0.9
+  },
+  "weapon_damage_up": {
+    "label": "武器ダメージUP",
+    "cap": 30,
+    "weight": 1.2
+  },
+  "damage_up": {
+    "label": "ダメージUP",
+    "cap": 30,
+    "weight": 1.2
+  },
+  "weapon_resistance_down": {
+    "label": "武器耐性DOWN",
+    "cap": 30,
+    "weight": 1.3
+  },
+  "element_resistance_down": {
+    "label": "属性耐性DOWN",
+    "cap": 30,
+    "weight": 1.1
+  },
+  "ultimate_power": {
+    "label": "必殺技補正",
+    "cap": 100,
+    "weight": 0.5
+  },
+  "damage_cap_up": {
+    "label": "ダメージ上限UP",
+    "cap": 100,
+    "weight": 0.8
+  },
+  "break_support": {
+    "label": "ブレイク補助",
+    "cap": 100,
+    "weight": 0.7
+  }
+}

@@ -1,0 +1,5 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Optimizer Tests</title><pre id="out"></pre><script type="module">
+import{Repository}from"../src/database/Repository.js";import{PartyOptimizer}from"../src/engine/PartyOptimizer.js";
+const db={characters:[{id:"a",name:"A",weapon:"sword",element:"fire",role:"attacker",baseScore:90},{id:"b",name:"B",weapon:"sword",element:"light",role:"support",baseScore:80}],abilities:[{id:"x",ownerId:"b",name:"Buff",effects:[{type:"weapon_damage_up",value:20,weapon:"sword"}]}],effectRules:{weapon_damage_up:{label:"武器ダメージUP",cap:30,weight:1.2}}};
+const result=new PartyOptimizer(new Repository(db)).optimize("a");document.getElementById("out").textContent=result.selected[0].candidate.id==="b"?"PASS":"FAIL";
+</script>

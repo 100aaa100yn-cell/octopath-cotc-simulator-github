@@ -1,0 +1,5 @@
+# Security Policy
+
+セキュリティ上の問題を発見した場合は、公開IssueではなくGitHubのPrivate vulnerability reportingを利用してください。
+
+このプロジェクトはブラウザ上で動作する静的アプリです。インポートするJSON・CSVは信頼できるファイルのみ使用してください。

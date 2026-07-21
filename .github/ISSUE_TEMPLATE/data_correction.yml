@@ -1,0 +1,37 @@
+name: Data correction
+description: キャラクター・アビリティ・敵データの修正
+title: "[Data] "
+labels: ["data"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: 対象
+      options:
+        - キャラクター
+        - アビリティ
+        - 必殺技
+        - EXアビリティ
+        - 敵
+        - 計算ルール
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: 対象名またはID
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: 修正内容
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 出典・確認方法
+      description: URL、ゲーム内表示、確認日など。
+    validations:
+      required: true

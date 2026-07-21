@@ -1,0 +1,23 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Battle Analytics Test</title>
+<pre id="out"></pre>
+<script type="module">
+import { BattleAnalytics } from "../src/engine/BattleAnalytics.js";
+
+const result = {
+  log: [
+    { turn: 1, turnDamage: 100, broken: false, partyActions: [{}, {}] },
+    { turn: 2, turnDamage: 500, broken: true, partyActions: [{}, {}, {}] },
+    { turn: 3, turnDamage: 0, broken: false, partyActions: [{}] }
+  ]
+};
+
+const analytics = BattleAnalytics.analyze(result);
+const pass =
+  analytics.peakDamage === 500 &&
+  analytics.peakTurn === 2 &&
+  analytics.cumulativeDamage[2] === 600 &&
+  analytics.actionCount === 6;
+
+document.getElementById("out").textContent =
+  pass ? "PASS" : JSON.stringify(analytics, null, 2);
+</script>

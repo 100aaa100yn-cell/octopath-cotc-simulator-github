@@ -1,0 +1,25 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Character Importer Test</title>
+<pre id="out"></pre>
+<script type="module">
+import { CharacterImporter } from "../src/database/CharacterImporter.js";
+
+const csv = `id,name,weapon,element,role,series,patk
+alpha,アルファ,sword,fire,attacker,Test,500
+beta,"ベータ, EX",fan,light,support,Test,350`;
+
+const parsed = CharacterImporter.parseCsv(csv);
+const merged = CharacterImporter.merge(
+  [{ id: "alpha", name: "Old", weapon: "sword", element: "fire", role: "attacker" }],
+  parsed
+);
+
+const pass =
+  parsed.length === 2 &&
+  parsed[1].name === "ベータ, EX" &&
+  merged.report.added === 1 &&
+  merged.report.updated === 1 &&
+  merged.characters.find(x => x.id === "alpha").name === "アルファ";
+
+document.getElementById("out").textContent =
+  pass ? "PASS" : JSON.stringify({ parsed, merged }, null, 2);
+</script>

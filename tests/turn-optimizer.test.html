@@ -1,0 +1,22 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Turn Optimizer Test</title><pre id="out"></pre>
+<script type="module">
+import{Repository}from"../src/database/Repository.js";
+import{PartyOptimizer}from"../src/engine/PartyOptimizer.js";
+import{TurnOptimizer}from"../src/engine/TurnOptimizer.js";
+const db={
+ characters:[
+  {id:"a",name:"A",weapon:"sword",element:"fire",role:"attacker",baseScore:90,maxSp:300,speed:200},
+  {id:"b",name:"B",weapon:"fan",element:"light",role:"support",baseScore:80,maxSp:300,speed:300}
+ ],
+ abilities:[
+  {id:"atk",ownerId:"a",name:"Attack",category:"battle",power:200,sp:20,shield:3,timing:"attack",duration:1,effects:[]},
+  {id:"buff",ownerId:"b",name:"Buff",category:"battle",sp:20,shield:0,timing:"setup",duration:3,effects:[{type:"damage_up",value:20}]}
+ ],
+ effectRules:{damage_up:{label:"ダメージUP",cap:30,weight:1.2}},
+ enemies:[{id:"e",name:"Enemy",shield:8,weakWeapons:["sword"],weakElements:["fire"],breakMultiplier:2}]
+};
+const repo=new Repository(db);
+const party=new PartyOptimizer(repo).optimize("a");
+const plan=new TurnOptimizer(repo).createPlan(party,{enemyId:"e",maxTurns:4});
+document.getElementById("out").textContent=plan.turns.length===4&&plan.attackTurn>=2?"PASS":"FAIL";
+</script>

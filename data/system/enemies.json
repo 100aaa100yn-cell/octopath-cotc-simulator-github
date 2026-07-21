@@ -1,0 +1,129 @@
+[
+  {
+    "id": "training_dummy",
+    "name": "訓練用シンボル",
+    "shield": 18,
+    "weakWeapons": [
+      "sword",
+      "dagger"
+    ],
+    "weakElements": [
+      "fire",
+      "wind"
+    ],
+    "breakMultiplier": 2.0,
+    "pdef": 420,
+    "edef": 420,
+    "level": 100,
+    "weaknessMultiplier": 1.5,
+    "criticalAllowed": true,
+    "maxHp": 8000000,
+    "breakDuration": 1,
+    "shieldRecovery": 18,
+    "actions": [
+      {
+        "id": "training_dummy_attack",
+        "name": "通常攻撃",
+        "type": "damage",
+        "power": 100,
+        "priority": 1
+      },
+      {
+        "id": "training_dummy_pressure",
+        "name": "威圧",
+        "type": "debuff",
+        "effect": {
+          "type": "physical_attack_down",
+          "value": 10,
+          "duration": 2
+        },
+        "priority": 2,
+        "useEvery": 3
+      }
+    ]
+  },
+  {
+    "id": "high_shield_dummy",
+    "name": "高シールド訓練敵",
+    "shield": 30,
+    "weakWeapons": [
+      "sword"
+    ],
+    "weakElements": [
+      "lightning"
+    ],
+    "breakMultiplier": 2.0,
+    "pdef": 420,
+    "edef": 420,
+    "level": 100,
+    "weaknessMultiplier": 1.5,
+    "criticalAllowed": true,
+    "maxHp": 15000000,
+    "breakDuration": 1,
+    "shieldRecovery": 30,
+    "actions": [
+      {
+        "id": "high_shield_dummy_attack",
+        "name": "通常攻撃",
+        "type": "damage",
+        "power": 100,
+        "priority": 1
+      },
+      {
+        "id": "high_shield_dummy_pressure",
+        "name": "威圧",
+        "type": "debuff",
+        "effect": {
+          "type": "physical_attack_down",
+          "value": 10,
+          "duration": 2
+        },
+        "priority": 2,
+        "useEvery": 3
+      }
+    ]
+  },
+  {
+    "id": "low_shield_dummy",
+    "name": "低シールド訓練敵",
+    "shield": 10,
+    "weakWeapons": [
+      "dagger",
+      "axe"
+    ],
+    "weakElements": [
+      "wind",
+      "light"
+    ],
+    "breakMultiplier": 2.0,
+    "pdef": 420,
+    "edef": 420,
+    "level": 100,
+    "weaknessMultiplier": 1.5,
+    "criticalAllowed": true,
+    "maxHp": 4500000,
+    "breakDuration": 1,
+    "shieldRecovery": 10,
+    "actions": [
+      {
+        "id": "low_shield_dummy_attack",
+        "name": "通常攻撃",
+        "type": "damage",
+        "power": 100,
+        "priority": 1
+      },
+      {
+        "id": "low_shield_dummy_pressure",
+        "name": "威圧",
+        "type": "debuff",
+        "effect": {
+          "type": "physical_attack_down",
+          "value": 10,
+          "duration": 2
+        },
+        "priority": 2,
+        "useEvery": 3
+      }
+    ]
+  }
+]

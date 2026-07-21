@@ -1,0 +1,45 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Manual Party Selection Test</title>
+<pre id="out"></pre>
+<script type="module">
+import { Repository } from "../src/database/Repository.js";
+import { PartyOptimizer } from "../src/engine/PartyOptimizer.js";
+
+const characters = Array.from({ length: 10 }, (_, index) => ({
+  id: `c${index}`,
+  name: `C${index}`,
+  weapon: index % 2 ? "sword" : "fan",
+  element: "fire",
+  role: index === 0 ? "support" : "attacker",
+  baseScore: 100 - index
+}));
+
+const db = {
+  characters,
+  abilities: characters.map(character => ({
+    id: `a_${character.id}`,
+    ownerId: character.id,
+    name: "Skill",
+    effects: []
+  })),
+  enemies: [],
+  effectRules: {},
+  damageRules: {}
+};
+
+const repo = new Repository(db);
+const optimizer = new PartyOptimizer(repo);
+const result = optimizer.optimize("c0", {
+  lockedIds: ["c3", "c5", "c7"],
+  priority: "balanced"
+});
+
+const selectedIds = result.selected.map(item => item.candidate.id);
+const pass =
+  result.attacker.id === "c0" &&
+  result.lockedIds.length === 3 &&
+  ["c3", "c5", "c7"].every(id => selectedIds.includes(id)) &&
+  result.selected.length === 7;
+
+document.getElementById("out").textContent =
+  pass ? "PASS" : JSON.stringify(result, null, 2);
+</script>

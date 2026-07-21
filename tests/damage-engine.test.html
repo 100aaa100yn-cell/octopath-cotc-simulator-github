@@ -1,0 +1,67 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Damage Engine Tests</title>
+<pre id="out"></pre>
+<script type="module">
+import { Repository } from "../src/database/Repository.js";
+import { DamageEngine } from "../src/engine/DamageEngine.js";
+
+const db = {
+  characters: [{
+    id: "a", name: "A", weapon: "sword", element: "fire",
+    role: "attacker", patk: 500, eatk: 400
+  }],
+  abilities: [{
+    id: "skill", ownerId: "a", name: "Skill", category: "battle",
+    power: 200, hits: 2, bpPowerStep: 0.25, effects: []
+  }],
+  enemies: [{
+    id: "e", name: "Enemy", pdef: 400, edef: 400,
+    weakWeapons: ["sword"], weakElements: [],
+    weaknessMultiplier: 1.5, breakMultiplier: 2,
+    criticalAllowed: true
+  }],
+  effectRules: {},
+  damageRules: {
+    constants: {
+      minimumDefenseRatio: 0.2,
+      maximumDefenseRatio: 2.5,
+      criticalMultiplier: 1.25,
+      randomMin: 0.98,
+      randomMax: 1.02,
+      defaultBreakMultiplier: 2,
+      defaultWeaknessMultiplier: 1.5
+    },
+    stacking: {
+      physical_attack_up: { cap: 0.5 },
+      weapon_damage_up: { cap: 0.3 },
+      damage_up: { cap: 0.3 },
+      weapon_resistance_down: { cap: 0.3 },
+      damage_cap_up: { cap: 9.99 },
+      ultimate_power: { cap: 1 }
+    },
+    damageCap: { base: 99999, ultimate: 199999, ex: 299999 }
+  }
+};
+
+const repo = new Repository(db);
+const engine = new DamageEngine(repo);
+const result = engine.calculate({
+  attacker: db.characters[0],
+  ability: db.abilities[0],
+  enemy: db.enemies[0],
+  effects: [{ type: "physical_attack_up", value: 50 }],
+  boost: 3,
+  critical: true,
+  broken: true,
+  weakness: true
+});
+
+const pass =
+  result.totalDamage > 0 &&
+  result.hits === 2 &&
+  result.weaknessMultiplier === 1.5 &&
+  result.breakMultiplier === 2 &&
+  result.criticalMultiplier === 1.25;
+
+document.getElementById("out").textContent =
+  pass ? "PASS" : JSON.stringify(result, null, 2);
+</script>
