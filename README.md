@@ -213,3 +213,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v2.5 攻略戦闘プランナー
 
 ターン戦闘コマンドで選んだ技・Boostと、ターン終了時の交代を複数ターン分保存できます。プランは並べ替え、複製、JSONバックアップ、順次実行、連続実行に対応します。
+
+
+## v2.6 シミュレーション結果
+
+ターン戦闘の結果を集計し、敵HP・ダメージ推移、ブレイク、キャラクター別貢献、SP消費を確認できます。結果はJSONまたはCSVで出力できます。

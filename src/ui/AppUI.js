@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -17,6 +17,7 @@ export class AppUI {
     this.formationManager = formationManager;
     this.turnBattleManager = turnBattleManager;
     this.battlePlanManager = battlePlanManager;
+    this.battleResultManager = battleResultManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -47,6 +48,7 @@ export class AppUI {
     this.refreshTurnBattleEnemy();
     this.renderTurnBattle();
     this.renderBattlePlanner();
+    this.renderTurnBattleResults();
     this.restoreInitialState();
   }
 
@@ -135,6 +137,8 @@ export class AppUI {
     this.$("battlePlanResetBtn").onclick = () => { this.battlePlanManager.resetProgress(); this.renderBattlePlanner(); };
     this.$("battlePlanExportBtn").onclick = () => this.exportBattlePlans();
     this.$("battlePlanImportInput").onchange = event => this.importBattlePlans(event);
+    this.$("battleResultExportJsonBtn").onclick = () => this.exportTurnBattleResultJson();
+    this.$("battleResultExportCsvBtn").onclick = () => this.exportTurnBattleResultCsv();
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1546,12 +1550,12 @@ export class AppUI {
   }
 
   executeNextPlannedTurn() {
-    try { const result=this.battlePlanManager.executeNext(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.setPresetStatus(`${result.log.turn}ターン目の計画を実行しました。`,"success"); }
+    try { const result=this.battlePlanManager.executeNext(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.renderTurnBattleResults();this.setPresetStatus(`${result.log.turn}ターン目の計画を実行しました。`,"success"); }
     catch(error){this.setPresetStatus(error.message,"error");}
   }
 
   executeAllPlannedTurns() {
-    try { const results=this.battlePlanManager.executeAll(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.setPresetStatus(`${results.length}ターン分の計画を実行しました。`,"success"); }
+    try { const results=this.battlePlanManager.executeAll(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.renderTurnBattleResults();this.setPresetStatus(`${results.length}ターン分の計画を実行しました。`,"success"); }
     catch(error){this.setPresetStatus(error.message,"error");}
   }
 
@@ -1583,7 +1587,7 @@ export class AppUI {
   }
 
   startTurnBattle() {
-    try { this.turnBattleManager.create(this.$("turnBattleEnemySelect").value); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus("ターン戦闘を開始しました。","success"); }
+    try { this.turnBattleManager.create(this.$("turnBattleEnemySelect").value); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.renderTurnBattleResults(); this.setPresetStatus("ターン戦闘を開始しました。","success"); }
     catch(error){ this.setPresetStatus(error.message,"error"); }
   }
 
@@ -1593,7 +1597,7 @@ export class AppUI {
 
   executeTurnBattle() {
     const actions=this.collectTurnBattleActions();
-    try { const log=this.turnBattleManager.execute(actions); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus(`${log.turn}ターン目を実行しました。`,"success"); }
+    try { const log=this.turnBattleManager.execute(actions); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.renderTurnBattleResults(); this.setPresetStatus(`${log.turn}ターン目を実行しました。`,"success"); }
     catch(error){this.setPresetStatus(error.message,"error");}
   }
 
@@ -1604,6 +1608,63 @@ export class AppUI {
     this.$("turnBattleExecuteBtn").disabled=!state||state.finished||!frontIds.length;
     this.$("turnBattleStatus").innerHTML=summary?`<span><b>${summary.victory?"VICTORY":summary.turn+"T"}</b><small>進行状態</small></span><span><b>${Number(summary.enemyHp).toLocaleString()} / ${Number(summary.maxHp).toLocaleString()}</b><small>敵HP</small></span><span><b>${summary.shield}</b><small>シールド</small></span><span><b>${summary.phase}</b><small>フェーズ</small></span>`:'<span><b>未開始</b><small>「戦闘開始」を押してください</small></span>';
     this.$("turnBattleLog").innerHTML=state?.log?.slice().reverse().map(turn=>`<article class="turn-result"><header><b>TURN ${turn.turn}</b><span>${turn.turnDamage.toLocaleString()} damage｜HP ${turn.enemyHp.toLocaleString()}｜盾 ${turn.enemyShield}</span></header>${turn.phaseEvents.map(e=>`<div class="phase-transition">${e.to}へ移行</div>`).join("")}<div>${turn.entries.map(e=>`<p><b>${e.actor}</b>：${e.action}${e.boost?` BP${e.boost}`:""} <small>${e.damage?`${e.damage.toLocaleString()} damage`:""}${e.shieldDamage?` / shield -${e.shieldDamage}`:""}${e.spCost?` / SP -${e.spCost}`:""}</small></p>`).join("")}<p class="enemy-command"><b>敵</b>：${turn.enemyAction.action}</p></div></article>`).join("")||'<p class="empty">戦闘ログはまだありません。</p>';
+  }
+
+
+  resultSvg(values, options={}) {
+    const width=720,height=190,pad=28;
+    if(!values.length)return '<p class="empty">データはまだありません。</p>';
+    const max=Math.max(1,...values.map(x=>Number(x.value||0)));
+    const points=values.map((item,index)=>{
+      const x=pad+(width-pad*2)*(values.length===1?0:index/(values.length-1));
+      const y=height-pad-(height-pad*2)*Number(item.value||0)/max;
+      return {x,y,...item};
+    });
+    const path=points.map((p,i)=>`${i?'L':'M'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+    return `<svg class="result-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${options.label??'戦闘推移'}">
+      <line x1="${pad}" y1="${height-pad}" x2="${width-pad}" y2="${height-pad}" class="chart-axis"/>
+      <path d="${path}" class="chart-line"/>
+      ${points.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" class="chart-point"><title>${p.label}: ${Number(p.value).toLocaleString()}</title></circle>`).join('')}
+      ${points.map((p,i)=>i===0||i===points.length-1||p.break?`<text x="${p.x}" y="${height-8}" text-anchor="middle" class="chart-label">${p.label}</text>`:'').join('')}
+      ${points.filter(p=>p.break).map(p=>`<line x1="${p.x}" y1="${pad}" x2="${p.x}" y2="${height-pad}" class="chart-break"/><text x="${p.x+4}" y="${pad+10}" class="chart-label">BREAK</text>`).join('')}
+    </svg>`;
+  }
+
+  renderTurnBattleResults() {
+    const report=this.battleResultManager.analyze();
+    const disabled=!report||!report.turns;
+    this.$("battleResultExportJsonBtn").disabled=disabled;
+    this.$("battleResultExportCsvBtn").disabled=disabled;
+    if(!report||!report.turns){
+      this.$("battleResultSummary").innerHTML='<p class="empty">ターン戦闘を実行すると結果が集計されます。</p>';
+      this.$("battleResultHpChart").innerHTML='';this.$("battleResultDamageChart").innerHTML='';this.$("battleResultRanking").innerHTML='';return;
+    }
+    this.$("battleResultSummary").innerHTML=`
+      <span><b>${report.victory?report.turns+'T 撃破':report.turns+'T 経過'}</b><small>戦闘結果</small></span>
+      <span><b>${report.totalDamage.toLocaleString()}</b><small>総ダメージ</small></span>
+      <span><b>${report.peakDamage.toLocaleString()}</b><small>最大ダメージ（T${report.peakTurn??'-'}）</small></span>
+      <span><b>${report.averageDamage.toLocaleString()}</b><small>平均／ターン</small></span>
+      <span><b>${report.breakCount}</b><small>ブレイク回数</small></span>
+      <span><b>${report.totalShieldDamage}</b><small>総シールド削り</small></span>
+      <span><b>${report.totalSpSpent}</b><small>SP消費</small></span>
+      <span><b>${report.spRemainingPercent.toFixed(1)}%</b><small>SP残量率</small></span>`;
+    this.$("battleResultHpChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.hpPercent,break:t.broken})),{label:'敵HP割合の推移'});
+    this.$("battleResultDamageChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.damage,break:t.broken})),{label:'ターンダメージの推移'});
+    this.$("battleResultRanking").innerHTML=report.ranking.map((r,index)=>`<div class="result-rank-row"><b>${index+1}. ${r.name}</b><span>${r.damage.toLocaleString()} damage</span><div><i style="width:${Math.max(2,r.share*100)}%"></i></div><small>${(r.share*100).toFixed(1)}%｜${r.actions}行動</small></div>`).join('')||'<p class="empty">ダメージ記録はありません。</p>';
+  }
+
+  downloadTextFile(text, filename, type) {
+    const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+  }
+
+  exportTurnBattleResultJson() {
+    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.6.json','application/json');}
+    catch(error){this.setPresetStatus(error.message,'error');}
+  }
+
+  exportTurnBattleResultCsv() {
+    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.6.csv','text/csv;charset=utf-8');}
+    catch(error){this.setPresetStatus(error.message,'error');}
   }
 
 }

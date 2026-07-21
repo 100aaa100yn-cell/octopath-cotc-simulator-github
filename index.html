@@ -248,6 +248,17 @@
     <div id="turnBattleLog" class="turn-battle-log"></div>
   </section>
 
+  <section class="panel battle-result-panel">
+    <div class="section-title-row"><div><h2>シミュレーション結果</h2><p>ターン戦闘の成果、資源消費、ブレイク地点、キャラ別貢献を分析します。</p></div><div class="result-export-actions"><button id="battleResultExportJsonBtn" type="button" class="secondary">結果JSON出力</button><button id="battleResultExportCsvBtn" type="button" class="secondary">結果CSV出力</button></div></div>
+    <div id="battleResultSummary" class="battle-result-summary"></div>
+    <div class="battle-result-charts">
+      <article><h3>敵HP推移（%）</h3><div id="battleResultHpChart"></div></article>
+      <article><h3>ターンダメージ</h3><div id="battleResultDamageChart"></div></article>
+    </div>
+    <h3>キャラクター別ダメージ</h3>
+    <div id="battleResultRanking" class="battle-result-ranking"></div>
+  </section>
+
   <section class="panel battle-panel">
     <h2>フルバトルシミュレーション</h2>
 
@@ -466,7 +477,7 @@
   </section>
 </main>
 
-<footer>Version 2.4.0｜技・Boostを選び、1ターンずつ戦闘を実行できます。</footer>
+<footer>Version 2.6.0｜戦闘結果、推移グラフ、キャラ別貢献を分析できます。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

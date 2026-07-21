@@ -79,7 +79,7 @@ export class TurnBattleManager {
     this.effectManager?.tick?.();
     s.turn++;
     s.finished=s.enemy.hp<=0;s.victory=s.finished;
-    const log={turn:completedTurn,entries,enemyAction,turnDamage,enemyHp:s.enemy.hp,enemyShield:s.enemy.shieldCurrent,broken:s.enemy.brokenTurns>0,phase:s.enemy.currentPhase?.name??"第1フェーズ",phaseEvents,swaps:formationResult.swaps};
+    const log={turn:completedTurn,entries,enemyAction,turnDamage,enemyHp:s.enemy.hp,enemyShield:s.enemy.shieldCurrent,broken:s.enemy.brokenTurns>0,phase:s.enemy.currentPhase?.name??"第1フェーズ",phaseEvents,swaps:formationResult.swaps,bpSnapshot:structuredClone(s.bp),spSnapshot:structuredClone(this.formationManager.sp)};
     s.log.push(log); return log;
   }
 
