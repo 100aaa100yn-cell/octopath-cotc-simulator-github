@@ -1,2 +1,2 @@
-﻿id,name,series,acquisition,job,baseRank,rarity,weapon,element,role,hp,sp,patk,eatk,pdef,edef,speed,dataStatus,dataNote,tags
-sample_traveler,サンプル旅人,OCTOPATH TRAVELER 大陸の覇者,恒常,剣士,5,5,sword,fire,attacker,0,0,0,0,0,0,0,incomplete,能力値と技は未入力,"剣士;★5"
+﻿id,name,alias,series,acquisition,job,baseRank,rarity,weapon,element,role,level,hp,maxSp,patk,eatk,pdef,edef,crit,speed,baseScore,icon,supportIds,battleIds,ultimateId,exId,dataStatus,dataNote,tags,sourceUrl,sourceCheckedAt
+sample_traveler,サンプル旅人,,OCTOPATH TRAVELER 大陸の覇者,恒常,剣士,5,5,sword,fire,attacker,100,4500,400,450,400,350,340,300,320,80,⚔️,sample_support_01,sample_battle_01;sample_battle_02,sample_ultimate_01,,provisional,入力例,剣士;★5,https://example.com,2026-07-21

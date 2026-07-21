@@ -82,6 +82,12 @@ export class DatabaseValidator {
       if (character.speed !== undefined) {
         this.validateNumber(character.speed, `${path}.speed`, { min: 0, max: 9999 });
       }
+      for (const field of ["hp", "patk", "eatk", "pdef", "edef", "crit"]) {
+        if (character[field] !== undefined) this.validateNumber(character[field], `${path}.${field}`, { min: 0, max: 99999 });
+      }
+      if ((character.dataStatus === "verified" || character.dataStatus === "provisional") && !character.sourceUrl) {
+        this.add("warning", "MISSING_SOURCE", "検証済み・暫定データにはsourceUrlの記録を推奨します。", `${path}.sourceUrl`);
+      }
 
       const references = [
         ...(character.supportIds ?? []),

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="buildVersion" class="build-version" aria-label="build version">v1.5.2</div>
+  <div id="buildVersion" class="build-version" aria-label="build version">v1.6.0</div>
 <header>
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
@@ -60,7 +60,8 @@
       <label class="check-filter"><input id="hasAbilitiesFilter" type="checkbox"> 技登録済みのみ</label>
       <button id="selectAllVisibleBtn" type="button">表示中を選択</button>
       <button id="clearPartySelectionBtn" type="button" class="secondary">選択解除</button>
-      <button id="downloadCharacterTemplateBtn" type="button">CSV雛形</button>
+      <button id="downloadCharacterTemplateBtn" type="button">詳細CSV雛形</button>
+      <button id="exportIncompleteCharactersBtn" type="button" class="secondary">未入力CSV出力</button>
       <label class="file-button">キャラCSV取込<input id="characterCsvInput" type="file" accept=".csv,text/csv"></label>
       <button id="downloadAbilityTemplateBtn" type="button">技CSV雛形</button>
       <label class="file-button">技CSV取込<input id="abilityCsvInput" type="file" accept=".csv,text/csv"></label>
@@ -345,6 +346,6 @@
 </main>
 
 <footer>Version 1.2｜88人を収録。暫定データは画面上で明示されます。</footer>
-<script type="module" src="src/main.js?v=1.5.2"></script>
+<script type="module" src="src/main.js?v=1.6.0"></script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+import { CharacterImporter } from "./CharacterImporter.js";
+
 export class DataCatalog {
   constructor(repo) {
     this.repo = repo;
@@ -25,6 +27,15 @@ export class DataCatalog {
       }
     }
 
+    const completeness = characters.map(character => ({
+      character,
+      ...CharacterImporter.completeness(character, this.repo.getAbilities(character.id))
+    }));
+    const missingFieldCounts = {};
+    completeness.forEach(item => item.missingCore.forEach(field => {
+      missingFieldCounts[field] = (missingFieldCounts[field] ?? 0) + 1;
+    }));
+
     return {
       characters: characters.length,
       abilities: abilities.length,
@@ -34,6 +45,9 @@ export class DataCatalog {
       orphanAbilities: abilities.filter(ability => !this.repo.getCharacter(ability.ownerId)).length,
       unreferencedAbilities: abilities.filter(ability => !referencedAbilityIds.has(ability.id)).length,
       charactersWithoutAbilities: characters.filter(character => this.repo.getAbilities(character.id).length === 0).length,
+      readyCharacters: completeness.filter(item => item.ready).length,
+      averageCompleteness: characters.length ? Math.round(completeness.reduce((sum, item) => sum + item.score, 0) / characters.length) : 0,
+      missingFieldCounts,
       byStatus,
       byBaseRank,
       bySeries,

@@ -1,3 +1,4 @@
+import { CharacterImporter } from "../database/CharacterImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
   constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager) {
@@ -63,6 +64,7 @@ export class AppUI {
     this.$("clearPartySelectionBtn").onclick = () => this.clearPartySelection();
     this.$("characterCsvInput").onchange = event => this.importCharacterCsv(event);
     this.$("downloadCharacterTemplateBtn").onclick = () => this.downloadCharacterTemplate();
+    this.$("exportIncompleteCharactersBtn").onclick = () => this.exportIncompleteCharacters();
     this.$("baseRankFilter").onchange = () => this.renderCharacterSelector();
     this.$("dataStatusFilter").onchange = () => this.renderCharacterSelector();
     this.$("abilityCategoryFilter").onchange = () => this.renderCharacterSelector();
@@ -895,7 +897,6 @@ export class AppUI {
     if (!file) return;
 
     try {
-      const { CharacterImporter } = await import("../database/CharacterImporter.js");
       const incoming = CharacterImporter.parseCsv(await file.text());
       const currentDb = this.dataManager.getDatabase();
       const merged = CharacterImporter.merge(currentDb.characters, incoming, "upsert");
@@ -912,7 +913,7 @@ export class AppUI {
 
       const report = merged.report;
       this.setPresetStatus(
-        `CSV取込完了：追加 ${report.added} / 更新 ${report.updated} / スキップ ${report.skipped}`,
+        `CSV取込完了：追加 ${report.added} / 更新 ${report.updated} / 変更なし ${report.unchanged} / スキップ ${report.skipped}`,
         report.errors.length ? "warning" : "success"
       );
     } catch (error) {
@@ -924,23 +925,50 @@ export class AppUI {
 
   downloadCharacterTemplate() {
     const headers = [
-      "id","name","weapon","element","role","series","rarity","level",
-      "patk","eatk","speed","maxSp","baseScore","icon","dataStatus","dataNote"
+      "id","name","alias","series","acquisition","job","baseRank","rarity",
+      "weapon","element","role","level","hp","maxSp","patk","eatk","pdef","edef",
+      "crit","speed","baseScore","icon","supportIds","battleIds","ultimateId","exId",
+      "dataStatus","dataNote","tags","sourceUrl","sourceCheckedAt"
     ];
     const sample = [
-      "sample_traveler","サンプル旅人","sword","fire","attacker",
-      "大陸の覇者","5","100","450","400","300","400","80","⚔️",
-      "provisional","入力例"
+      "sample_traveler","サンプル旅人","","OCTOPATH TRAVELER 大陸の覇者","恒常","剣士","5","5",
+      "sword","fire","attacker","100","4500","400","450","400","350","340",
+      "300","320","80","⚔️","sample_support_01","sample_battle_01;sample_battle_02",
+      "sample_ultimate_01","","provisional","入力例","剣士;★5","https://example.com","2026-07-21"
     ];
-    const escape = value => `"${String(value).replaceAll('"', '""')}"`;
-    const csv = "\uFEFF" + [headers, sample]
-      .map(row => row.map(escape).join(","))
-      .join("\r\n");
+    this.downloadCsv("characters-detailed-import-template.csv", headers, [sample]);
+  }
 
+  exportIncompleteCharacters() {
+    const headers = [
+      "id","name","series","baseRank","weapon","element","role","hp","maxSp","patk","eatk",
+      "pdef","edef","crit","speed","dataStatus","completeness","missingCore","missingAbilities",
+      "dataNote","sourceUrl","sourceCheckedAt"
+    ];
+    const rows = this.repo.getCharacters()
+      .map(character => {
+        const result = CharacterImporter.completeness(character, this.repo.getAbilities(character.id));
+        return { character, result };
+      })
+      .filter(({ result }) => !result.ready)
+      .sort((a, b) => a.result.score - b.result.score || a.character.name.localeCompare(b.character.name, "ja"))
+      .map(({ character, result }) => headers.map(header => {
+        if (header === "completeness") return `${result.score}%`;
+        if (header === "missingCore") return result.missingCore.join(";");
+        if (header === "missingAbilities") return result.missingAbilities.join(";");
+        return character[header] ?? "";
+      }));
+    this.downloadCsv("characters-incomplete-report.csv", headers, rows);
+    this.setPresetStatus(`未入力レポートを出力しました：${rows.length}キャラ`, "success");
+  }
+
+  downloadCsv(filename, headers, rows) {
+    const escape = value => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const csv = "\uFEFF" + [headers, ...rows].map(row => row.map(escape).join(",")).join("\r\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(blob);
-    anchor.download = "characters-import-template.csv";
+    anchor.download = filename;
     anchor.click();
     URL.revokeObjectURL(anchor.href);
   }
@@ -959,6 +987,8 @@ export class AppUI {
       <div><span>暫定</span><strong>${summary.provisionalCharacters}</strong></div>
       <div><span>技なし</span><strong>${summary.charactersWithoutAbilities}</strong></div>
       <div><span>未参照技</span><strong>${summary.unreferencedAbilities}</strong></div>
+      <div><span>詳細入力済み</span><strong>${summary.readyCharacters}</strong></div>
+      <div><span>平均完成度</span><strong>${summary.averageCompleteness}%</strong></div>
     `;
 
     const formatGroup = (title, values) => `
@@ -976,7 +1006,8 @@ export class AppUI {
       formatGroup("シリーズ", summary.bySeries),
       formatGroup("武器", summary.byWeapon),
       formatGroup("役割", summary.byRole),
-      formatGroup("技分類", summary.byCategory)
+      formatGroup("技分類", summary.byCategory),
+      formatGroup("不足項目", summary.missingFieldCounts)
     ].join("");
   }
 
