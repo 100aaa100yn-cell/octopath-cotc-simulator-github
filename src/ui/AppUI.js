@@ -1,6 +1,7 @@
 import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
+import { Game8AbilityImporter } from "../database/Game8AbilityImporter.js";
 export class AppUI {
   constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer, dataQualityManager, minimumTurnEstimator) {
     this.repo = repo;
@@ -29,6 +30,7 @@ export class AppUI {
     this.activeCollection = "characters";
     this.selectedPartyIds = [];
     this.equipmentCharacterId = "";
+    this.game8Parsed = null;
   }
 
   $(id) {
@@ -58,6 +60,7 @@ export class AppUI {
     this.renderStrategyOptimizer();
     this.renderDataQuality();
     this.refreshMinimumTurnEnemy();
+    this.refreshGame8Importer();
     this.restoreInitialState();
   }
 
@@ -98,6 +101,10 @@ export class AppUI {
     this.$("selectAllVisibleBtn").onclick = () => this.selectAllVisibleCharacters();
     this.$("abilityCsvInput").onchange = event => this.importAbilityCsv(event);
     this.$("downloadAbilityTemplateBtn").onclick = () => this.downloadAbilityTemplate();
+    this.$("game8ParseBtn").onclick = () => this.parseGame8Page();
+    this.$("game8ApplyBtn").onclick = () => this.applyGame8Import();
+    this.$("game8ExportBtn").onclick = () => this.exportGame8Parsed();
+    this.$("game8ClearBtn").onclick = () => this.clearGame8Importer();
     this.$("enemyCsvInput").onchange = event => this.importEnemyCsv(event);
     this.$("downloadEnemyTemplateBtn").onclick = () => this.downloadEnemyTemplate();
     this.$("exportIncompleteEnemiesBtn").onclick = () => this.exportIncompleteEnemies();
@@ -188,6 +195,7 @@ export class AppUI {
     this.refreshCharacterFilters();
     this.renderCharacterSelector();
     this.renderCatalogSummary();
+    this.refreshGame8Importer();
   }
 
   refreshSelectors() {
@@ -960,6 +968,7 @@ export class AppUI {
   clearPartySelection() {
     this.selectedPartyIds = [];
     this.equipmentCharacterId = "";
+    this.game8Parsed = null;
     this.renderCharacterSelector();
     this.scheduleAutoSave();
     this.runSimulation();
@@ -1202,6 +1211,100 @@ export class AppUI {
     ].join("");
   }
 
+  refreshGame8Importer() {
+    const select = this.$("game8OwnerSelect");
+    if (!select) return;
+    const previous = select.value;
+    select.innerHTML = `<option value="">本文から自動判定</option>` + this.repo.getCharacters()
+      .map(character => `<option value="${character.id}">${character.name}｜${character.weapon ?? "-"}</option>`).join("");
+    if ([...select.options].some(option => option.value === previous)) select.value = previous;
+  }
+
+  parseGame8Page() {
+    try {
+      this.game8Parsed = Game8AbilityImporter.parse({
+        text: this.$("game8PageText").value,
+        sourceUrl: this.$("game8SourceUrl").value.trim(),
+        ownerId: this.$("game8OwnerSelect").value,
+        repo: this.repo
+      });
+      const existing = this.repo.getSourceAbilities().filter(a => a.ownerId === this.game8Parsed.character.id && a.category === "battle");
+      const existingIds = new Set(existing.map(a => a.id));
+      const preview = this.game8Parsed.abilities.map(ability => `
+        <article class="game8-ability-row">
+          <b>${ability.name}</b><small>SP ${ability.sp}</small><small>威力 ${ability.power || "-"}</small><small>${ability.hits}Hit</small><small>${existingIds.has(ability.id) ? "更新" : "追加"}</small>
+          <p>${ability.description || "説明なし"}</p>
+        </article>`).join("");
+      this.$("game8ImportPreview").innerHTML = preview;
+      this.$("game8ImportStatus").textContent = `${this.game8Parsed.character.name}：バトルアビリティ ${this.game8Parsed.abilities.length}件を解析しました。既存登録 ${existing.length}件。`;
+      this.$("game8ImportStatus").className = "preset-status success";
+      this.$("game8ImportBadge").textContent = `${this.game8Parsed.abilities.length}件`;
+      this.$("game8ImportBadge").className = "quality-badge verified";
+      this.$("game8ApplyBtn").disabled = false;
+      this.$("game8ExportBtn").disabled = false;
+    } catch (error) {
+      this.game8Parsed = null;
+      this.$("game8ImportStatus").textContent = `解析エラー：${error.message}`;
+      this.$("game8ImportStatus").className = "preset-status error";
+      this.$("game8ImportBadge").textContent = "解析失敗";
+      this.$("game8ImportBadge").className = "quality-badge incomplete";
+      this.$("game8ApplyBtn").disabled = true;
+      this.$("game8ExportBtn").disabled = true;
+    }
+  }
+
+  applyGame8Import() {
+    if (!this.game8Parsed) return;
+    const currentDb = this.dataManager.getDatabase();
+    const merged = Game8AbilityImporter.merge(currentDb.abilities, this.game8Parsed.abilities, {
+      replaceOwnerBattle: this.$("game8ReplaceBattle").checked,
+      ownerId: this.game8Parsed.character.id
+    });
+    const character = currentDb.characters.find(item => item.id === this.game8Parsed.character.id);
+    if (character) {
+      character.battleIds = this.game8Parsed.abilities.map(item => item.id);
+      character.dataStatus = character.dataStatus === "incomplete" ? "provisional" : character.dataStatus;
+      character.dataSources = [...(character.dataSources ?? []).filter(source => source.provider !== "Game8"), {
+        provider: "Game8", url: this.game8Parsed.sourceUrl, checkedAt: new Date().toISOString().slice(0, 10), scope: "battleAbilities"
+      }];
+    }
+    const result = this.dataManager.replaceDatabase({ ...currentDb, abilities: merged.abilities });
+    this.refreshRepository();
+    this.renderDatabaseEditor();
+    this.renderValidation(result);
+    this.renderCatalogSummary();
+    this.renderDataQuality();
+    this.renderRoster();
+    this.renderTurnBattle();
+    this.$("game8ImportStatus").textContent = `登録完了：追加 ${merged.report.added} / 更新 ${merged.report.updated} / 置換削除 ${merged.report.removed}`;
+    this.$("game8ImportStatus").className = result.valid ? "preset-status success" : "preset-status warning";
+    this.scheduleAutoSave();
+  }
+
+  exportGame8Parsed() {
+    if (!this.game8Parsed) return;
+    const blob = new Blob([JSON.stringify(this.game8Parsed, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `game8-${this.game8Parsed.character.id}-battle-abilities.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  clearGame8Importer() {
+    this.game8Parsed = null;
+    this.$("game8PageText").value = "";
+    this.$("game8SourceUrl").value = "";
+    this.$("game8ImportPreview").innerHTML = '<p class="empty">解析結果がここに表示されます。</p>';
+    this.$("game8ImportStatus").textContent = "未解析です。";
+    this.$("game8ImportStatus").className = "preset-status";
+    this.$("game8ImportBadge").textContent = "未解析";
+    this.$("game8ImportBadge").className = "quality-badge provisional";
+    this.$("game8ApplyBtn").disabled = true;
+    this.$("game8ExportBtn").disabled = true;
+  }
+
   async importAbilityCsv(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -1365,6 +1468,7 @@ export class AppUI {
       this.activeCollection = "characters";
     this.selectedPartyIds = [];
     this.equipmentCharacterId = "";
+    this.game8Parsed = null;
       this.renderDatabaseEditor();
       this.setStatus(`${character.name || character.id}を追加しました。`, result.valid ? "success" : "warning");
     } catch (error) {

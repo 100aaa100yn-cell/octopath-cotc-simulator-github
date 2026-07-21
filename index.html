@@ -113,6 +113,30 @@
       <label class="file-button">技CSV取込<input id="abilityCsvInput" type="file" accept=".csv,text/csv"></label>
     </div>
 
+
+    <div class="game8-importer">
+      <div class="section-title-row">
+        <div><h3>Game8 バトルアビリティ取込</h3><p>Game8のキャラ個別ページを開き、ページ全文をコピーして貼り付けます。内容を確認してから登録できます。</p></div>
+        <span id="game8ImportBadge" class="quality-badge provisional">未解析</span>
+      </div>
+      <div class="game8-import-grid">
+        <label>対象キャラクター<select id="game8OwnerSelect"><option value="">本文から自動判定</option></select></label>
+        <label>出典URL<input id="game8SourceUrl" type="url" placeholder="https://game8.jp/octopathtraveler-sp/..."></label>
+        <label class="check-filter"><input id="game8ReplaceBattle" type="checkbox"> このキャラの既存バトル技を置換</label>
+      </div>
+      <label>Game8ページ本文またはHTML
+        <textarea id="game8PageText" rows="10" placeholder="Game8の個別キャラクターページで Ctrl+A → Ctrl+C し、ここへ貼り付けてください。"></textarea>
+      </label>
+      <div class="game8-import-actions">
+        <button id="game8ParseBtn" type="button">解析して差分確認</button>
+        <button id="game8ApplyBtn" type="button" disabled>解析結果を登録</button>
+        <button id="game8ExportBtn" type="button" class="secondary" disabled>解析JSON出力</button>
+        <button id="game8ClearBtn" type="button" class="secondary">クリア</button>
+      </div>
+      <div id="game8ImportStatus" class="preset-status">未解析です。</div>
+      <div id="game8ImportPreview" class="game8-import-preview"><p class="empty">解析結果がここに表示されます。</p></div>
+    </div>
+
     <div id="selectedPartyStrip" class="selected-party-strip"></div>
     <div class="catalog-dashboard">
   <div class="catalog-head">
@@ -529,7 +553,7 @@
   </section>
 </main>
 
-<footer>Version 3.1.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
+<footer>Version 3.2.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>
