@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Octopath CotC Strategy Simulator v0.7</title>
+<title>Octopath CotC Strategy Simulator v1.3</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
     <h1>Octopath CotC Strategy Simulator</h1>
-    <p>Version 1.2｜ロスター拡充・CSV一括取込・データ品質表示</p>
+    <p>Version 1.3｜武器・防具・アクセサリー装備システム</p>
   </div>
   <button id="themeBtn">テーマ切替</button>
 </header>
@@ -59,6 +59,25 @@
 
     <div id="selectedPartyStrip" class="selected-party-strip"></div>
     <div id="characterSelectorGrid" class="character-selector-grid"></div>
+  </section>
+
+
+  <section class="panel equipment-panel">
+    <div class="section-title-row">
+      <div>
+        <h2>装備編成</h2>
+        <p>キャラクターごとに武器・防具・アクセサリー2枠を設定します。装備補正はダメージ計算へ反映されます。</p>
+      </div>
+      <button id="clearEquipmentBtn" class="secondary" type="button">このキャラの装備を外す</button>
+    </div>
+    <div class="equipment-grid">
+      <label>キャラクター<select id="equipmentCharacterSelect"></select></label>
+      <label>武器<select id="equipmentWeaponSelect"></select></label>
+      <label>防具<select id="equipmentArmorSelect"></select></label>
+      <label>アクセサリー1<select id="equipmentAccessory1Select"></select></label>
+      <label>アクセサリー2<select id="equipmentAccessory2Select"></select></label>
+    </div>
+    <div id="equipmentStatSummary" class="equipment-stat-summary"></div>
   </section>
 
   <section class="panel controls">
@@ -218,6 +237,7 @@
       <button data-collection="enemies">enemies</button>
       <button data-collection="effectRules">effectRules</button>
       <button data-collection="damageRules">damageRules</button>
+      <button data-collection="equipment">equipment</button>
     </div>
 
     <div class="database-editor">

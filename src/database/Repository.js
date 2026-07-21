@@ -8,6 +8,7 @@ export class Repository {
     this.characterById = Object.fromEntries(db.characters.map(x => [x.id, x]));
     this.abilityById = Object.fromEntries(db.abilities.map(x => [x.id, x]));
     this.enemyById = Object.fromEntries(db.enemies.map(x => [x.id, x]));
+    this.equipmentById = Object.fromEntries((db.equipment ?? []).map(x => [x.id, x]));
     this.abilitiesByOwner = {};
 
     for (const ability of db.abilities) {
@@ -23,4 +24,6 @@ export class Repository {
   getEnemies() { return this.db.enemies; }
   getEnemy(id) { return this.enemyById[id]; }
   getDamageRules() { return this.db.damageRules; }
+  getEquipmentList() { return this.db.equipment ?? []; }
+  getEquipment(id) { return this.equipmentById[id]; }
 }

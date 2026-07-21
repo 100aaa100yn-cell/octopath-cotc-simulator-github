@@ -152,6 +152,28 @@ export class DatabaseValidator {
     });
   }
 
+
+  validateEquipment() {
+    const equipment = this.db.equipment ?? [];
+    const allowedSlots = new Set(["weapon", "armor", "accessory"]);
+    const allowedWeapons = new Set(["sword", "spear", "dagger", "axe", "bow", "staff", "tome", "fan"]);
+    this.validateUniqueIds(equipment, "equipment");
+
+    equipment.forEach((item, index) => {
+      const path = `equipment[${index}]`;
+      this.validateRequired(item, ["id", "name", "slot", "stats"], path);
+      if (!allowedSlots.has(item.slot)) this.add("error", "UNKNOWN_SLOT", `未登録の装備枠「${item.slot}」です。`, `${path}.slot`);
+      if (item.weapon && !allowedWeapons.has(item.weapon)) this.add("error", "UNKNOWN_WEAPON", `未登録の武器「${item.weapon}」です。`, `${path}.weapon`);
+      if (!item.stats || Array.isArray(item.stats) || typeof item.stats !== "object") {
+        this.add("error", "INVALID_STATS", "statsはオブジェクトである必要があります。", `${path}.stats`);
+        return;
+      }
+      for (const [stat, value] of Object.entries(item.stats)) {
+        this.validateNumber(value, `${path}.stats.${stat}`, { min: -9999, max: 99999 });
+      }
+    });
+  }
+
   run() {
     this.errors = [];
     this.warnings = [];
@@ -161,6 +183,7 @@ export class DatabaseValidator {
     this.validateCharacters();
     this.validateAbilities();
     this.validateEnemies();
+    this.validateEquipment();
 
     if (!this.db.damageRules || typeof this.db.damageRules !== "object") {
       this.add("error", "MISSING_DAMAGE_RULES", "damage-rules.jsonがありません。", "damageRules");

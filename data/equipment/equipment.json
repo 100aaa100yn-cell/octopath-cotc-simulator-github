@@ -1,0 +1,168 @@
+[
+  {
+    "id": "weapon_sword_01",
+    "name": "歴戦の剣",
+    "slot": "weapon",
+    "weapon": "sword",
+    "stats": {
+      "patk": 80,
+      "speed": 10
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_spear_01",
+    "name": "歴戦の槍",
+    "slot": "weapon",
+    "weapon": "spear",
+    "stats": {
+      "patk": 78,
+      "hp": 120
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_dagger_01",
+    "name": "歴戦の短剣",
+    "slot": "weapon",
+    "weapon": "dagger",
+    "stats": {
+      "patk": 68,
+      "speed": 28
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_axe_01",
+    "name": "歴戦の斧",
+    "slot": "weapon",
+    "weapon": "axe",
+    "stats": {
+      "patk": 92,
+      "speed": -8
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_bow_01",
+    "name": "歴戦の弓",
+    "slot": "weapon",
+    "weapon": "bow",
+    "stats": {
+      "patk": 75,
+      "speed": 14
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_staff_01",
+    "name": "歴戦の杖",
+    "slot": "weapon",
+    "weapon": "staff",
+    "stats": {
+      "eatk": 84,
+      "maxSp": 25
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_tome_01",
+    "name": "歴戦の本",
+    "slot": "weapon",
+    "weapon": "tome",
+    "stats": {
+      "eatk": 88,
+      "speed": 8
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_fan_01",
+    "name": "歴戦の扇",
+    "slot": "weapon",
+    "weapon": "fan",
+    "stats": {
+      "eatk": 76,
+      "speed": 22
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "armor_physical_01",
+    "name": "守護騎士の鎧",
+    "slot": "armor",
+    "stats": {
+      "pdef": 70,
+      "edef": 35,
+      "hp": 250
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "armor_elemental_01",
+    "name": "賢者のローブ",
+    "slot": "armor",
+    "stats": {
+      "pdef": 30,
+      "edef": 75,
+      "maxSp": 30
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "armor_balanced_01",
+    "name": "旅団の戦装束",
+    "slot": "armor",
+    "stats": {
+      "pdef": 50,
+      "edef": 50,
+      "speed": 12
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_power_01",
+    "name": "剛力の腕輪",
+    "slot": "accessory",
+    "stats": {
+      "patk": 45
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_magic_01",
+    "name": "叡智の首飾り",
+    "slot": "accessory",
+    "stats": {
+      "eatk": 45
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_speed_01",
+    "name": "俊敏の靴",
+    "slot": "accessory",
+    "stats": {
+      "speed": 35
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_sp_01",
+    "name": "精神のベルト",
+    "slot": "accessory",
+    "stats": {
+      "maxSp": 50
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_hp_01",
+    "name": "生命の指輪",
+    "slot": "accessory",
+    "stats": {
+      "hp": 400
+    },
+    "dataStatus": "simulator"
+  }
+]

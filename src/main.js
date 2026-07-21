@@ -7,6 +7,7 @@ import { TurnOptimizer } from "./engine/TurnOptimizer.js";
 import { DamageEngine } from "./engine/DamageEngine.js";
 import { BattleEngine } from "./engine/BattleEngine.js";
 import { BattleAnalytics } from "./engine/BattleAnalytics.js";
+import { EquipmentManager } from "./engine/EquipmentManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
@@ -17,6 +18,7 @@ async function main() {
   const partyOptimizer = new PartyOptimizer(repo);
   const damageEngine = new DamageEngine(repo);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
+  const equipmentManager = new EquipmentManager(repo);
   const battleEngine = new BattleEngine(
     repo,
     partyOptimizer,
@@ -32,7 +34,8 @@ async function main() {
     damageEngine,
     battleEngine,
     stateManager,
-    BattleAnalytics
+    BattleAnalytics,
+    equipmentManager
   ).init();
 }
 

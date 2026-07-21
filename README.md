@@ -2,7 +2,7 @@
 
 オクトパストラベラー 大陸の覇者の編成・行動順・ダメージ・戦闘全体を検討するためのブラウザベース戦略シミュレーターです。
 
-## Version 1.2
+## Version 1.3
 
 ### ロスター拡充
 
@@ -137,3 +137,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 - DependabotによるGitHub Actions更新確認
 
 セットアップ手順は [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md) を参照してください。
+
+
+## v1.3 装備システム
+
+キャラクターごとに武器、防具、アクセサリー2枠を設定できます。装備データは `data/equipment/equipment.json` で管理し、補正値はダメージ計算へ反映されます。初期装備の数値は検証用の暫定値です。

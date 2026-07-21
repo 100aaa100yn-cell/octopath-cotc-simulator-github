@@ -73,6 +73,12 @@ export class DataManager {
     return this.validate();
   }
 
+  addEquipment(equipment) {
+    this.db.equipment ??= [];
+    this.db.equipment.push(equipment);
+    return this.validate();
+  }
+
   addEnemy(enemy) {
     this.db.enemies.push(enemy);
     return this.validate();

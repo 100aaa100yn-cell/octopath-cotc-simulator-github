@@ -5,13 +5,14 @@ export async function loadJson(path) {
 }
 
 export async function loadDatabase() {
-  const [characters, abilities, effectRules, enemies, damageRules] = await Promise.all([
+  const [characters, abilities, effectRules, enemies, damageRules, equipment] = await Promise.all([
     loadJson("data/characters/characters.json"),
     loadJson("data/abilities/abilities.json"),
     loadJson("data/system/effect-rules.json"),
     loadJson("data/system/enemies.json"),
-    loadJson("data/system/damage-rules.json")
+    loadJson("data/system/damage-rules.json"),
+    loadJson("data/equipment/equipment.json")
   ]);
 
-  return { characters, abilities, effectRules, enemies, damageRules };
+  return { characters, abilities, effectRules, enemies, damageRules, equipment };
 }

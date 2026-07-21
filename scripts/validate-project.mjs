@@ -10,7 +10,9 @@ const requiredFiles = [
   "src/database/Repository.js",
   "data/characters/characters.json",
   "data/abilities/abilities.json",
-  "data/system/enemies.json"
+  "data/system/enemies.json",
+  "data/equipment/equipment.json",
+  "src/engine/EquipmentManager.js"
 ];
 
 const errors = [];

@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><title>EquipmentManager test</title><pre id="out"></pre><script type="module">
+import { EquipmentManager } from "../src/engine/EquipmentManager.js";
+const repo={getCharacter:id=>({id,weapon:"sword",patk:100,eatk:50,speed:30,maxSp:100}),getEquipment:id=>({w:{id:"w",slot:"weapon",weapon:"sword",stats:{patk:80}},a:{id:"a",slot:"accessory",stats:{speed:20}}}[id])};
+const manager=new EquipmentManager(repo); manager.equip("c","weapon","w"); manager.equip("c","accessory1","a"); const result=manager.applyToCharacter(repo.getCharacter("c")); const ok=result.patk===180&&result.speed===50; document.querySelector("#out").textContent=ok?"PASS":"FAIL"; if(!ok) throw new Error("equipment stats failed");
+</script>

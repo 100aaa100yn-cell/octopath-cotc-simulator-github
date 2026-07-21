@@ -1,5 +1,5 @@
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -8,9 +8,11 @@ export class AppUI {
     this.battleEngine = battleEngine;
     this.stateManager = stateManager;
     this.analytics = analytics;
+    this.equipmentManager = equipmentManager;
     this.autoSaveTimer = null;
     this.activeCollection = "characters";
     this.selectedPartyIds = [];
+    this.equipmentCharacterId = "";
   }
 
   $(id) {
@@ -27,6 +29,7 @@ export class AppUI {
     this.refreshBattleSelectors();
     this.refreshCharacterFilters();
     this.renderCharacterSelector();
+    this.refreshEquipmentUi();
     this.restoreInitialState();
   }
 
@@ -60,6 +63,11 @@ export class AppUI {
     this.$("dataStatusFilter").onchange = () => this.renderCharacterSelector();
     this.$("seriesFilter").onchange = () => this.renderCharacterSelector();
     this.$("selectAllVisibleBtn").onclick = () => this.selectAllVisibleCharacters();
+    this.$("equipmentCharacterSelect").onchange = () => this.refreshEquipmentSlots();
+    for (const id of ["equipmentWeaponSelect", "equipmentArmorSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
+      this.$(id).onchange = () => this.updateEquipment();
+    }
+    this.$("clearEquipmentBtn").onclick = () => this.clearEquipment();
 
     document.querySelectorAll("select, input").forEach(element => {
       if (element.type !== "file") {
@@ -272,7 +280,8 @@ export class AppUI {
   }
 
   calculateManualDamage() {
-    const attacker = this.repo.getCharacter(this.$("damageAttackerSelect").value);
+    const baseAttacker = this.repo.getCharacter(this.$("damageAttackerSelect").value);
+    const attacker = this.equipmentManager.applyToCharacter(baseAttacker);
     const ability = this.repo.getAbility(this.$("damageAbilitySelect").value);
     const enemy = this.repo.getEnemy(this.$("damageEnemySelect").value);
 
@@ -308,6 +317,7 @@ export class AppUI {
       </div>
       <div class="formula-grid">
         <div><span>実効攻撃力</span><b>${average.effectiveAttack}</b></div>
+        <div><span>装備補正</span><b>${this.formatStatBonuses(attacker.equipmentBonuses)}</b></div>
         <div><span>敵防御力</span><b>${average.defense}</b></div>
         <div><span>攻防比</span><b>${average.defenseRatio.toFixed(3)}</b></div>
         <div><span>BP倍率</span><b>×${average.boostMultiplier.toFixed(2)}</b></div>
@@ -460,6 +470,8 @@ export class AppUI {
       activeCollection: this.activeCollection,
       theme: document.body.classList.contains("dark") ? "dark" : "light",
       selectedPartyIds: this.selectedPartyIds,
+      equipmentLoadouts: this.equipmentManager.getLoadouts(),
+      equipmentCharacterId: this.$("equipmentCharacterSelect")?.value ?? "",
       characterFilters: {
         search: this.$("characterSearch")?.value ?? "",
         weapon: this.$("characterWeaponFilter")?.value ?? "",
@@ -484,6 +496,9 @@ export class AppUI {
       }
     }
 
+    this.equipmentManager.setLoadouts(state.equipmentLoadouts ?? {});
+    this.equipmentCharacterId = state.equipmentCharacterId ?? "";
+
     this.selectedPartyIds = (state.selectedPartyIds ?? [])
       .filter(id => this.repo.getCharacter(id))
       .slice(0, 8);
@@ -498,6 +513,7 @@ export class AppUI {
     }
 
     this.renderCharacterSelector();
+    this.refreshEquipmentUi();
 
     if (state.theme === "dark") document.body.classList.add("dark");
     else document.body.classList.remove("dark");
@@ -718,7 +734,7 @@ export class AppUI {
             character.dataStatus === "provisional" ? "暫定" :
             character.dataStatus === "simulator" ? "検証用" : "未入力"
           }</span>
-          <span class="character-stats">物攻 ${character.patk ?? "-"} / 属攻 ${character.eatk ?? "-"} / 速 ${character.speed ?? "-"}</span>
+          <span class="character-stats">物攻 ${this.equipmentManager.applyToCharacter(character).patk ?? "-"} / 属攻 ${this.equipmentManager.applyToCharacter(character).eatk ?? "-"} / 速 ${this.equipmentManager.applyToCharacter(character).speed ?? "-"}</span>
         </button>
       `;
     }).join("") || '<p class="empty">条件に一致するキャラクターがいません。</p>';
@@ -773,6 +789,7 @@ export class AppUI {
 
   clearPartySelection() {
     this.selectedPartyIds = [];
+    this.equipmentCharacterId = "";
     this.renderCharacterSelector();
     this.scheduleAutoSave();
     this.runSimulation();
@@ -789,6 +806,75 @@ export class AppUI {
     if (combined.length > 8) {
       this.setPresetStatus("先頭から8人を選択しました。", "warning");
     }
+  }
+
+
+  formatStatBonuses(bonuses = {}) {
+    const labels = { hp: "HP", patk: "物攻", eatk: "属攻", pdef: "物防", edef: "属防", speed: "速度", maxSp: "SP" };
+    const values = Object.entries(bonuses).filter(([, value]) => Number(value) !== 0);
+    return values.length ? values.map(([key, value]) => `${labels[key] ?? key}${value >= 0 ? "+" : ""}${value}`).join(" / ") : "なし";
+  }
+
+  refreshEquipmentUi() {
+    const select = this.$("equipmentCharacterSelect");
+    if (!select) return;
+    const previous = this.equipmentCharacterId || select.value;
+    select.innerHTML = this.repo.getCharacters().map(character => `<option value="${character.id}">${character.icon ?? "◈"} ${character.name}</option>`).join("");
+    if (this.repo.getCharacter(previous)) select.value = previous;
+    this.equipmentCharacterId = select.value;
+    this.refreshEquipmentSlots();
+  }
+
+  equipmentOptions(slot, character, selectedId) {
+    const items = this.repo.getEquipmentList().filter(item => {
+      if (item.slot !== slot) return false;
+      return slot !== "weapon" || !item.weapon || item.weapon === character.weapon;
+    });
+    return [`<option value="">装備なし</option>`, ...items.map(item => `<option value="${item.id}" ${item.id === selectedId ? "selected" : ""}>${item.name}｜${this.formatStatBonuses(item.stats)}</option>`)].join("");
+  }
+
+  refreshEquipmentSlots() {
+    const characterId = this.$("equipmentCharacterSelect")?.value;
+    const character = this.repo.getCharacter(characterId);
+    if (!character) return;
+    this.equipmentCharacterId = characterId;
+    const loadout = this.equipmentManager.getLoadout(characterId);
+    this.$("equipmentWeaponSelect").innerHTML = this.equipmentOptions("weapon", character, loadout.weapon);
+    this.$("equipmentArmorSelect").innerHTML = this.equipmentOptions("armor", character, loadout.armor);
+    this.$("equipmentAccessory1Select").innerHTML = this.equipmentOptions("accessory", character, loadout.accessory1);
+    this.$("equipmentAccessory2Select").innerHTML = this.equipmentOptions("accessory", character, loadout.accessory2);
+    const equipped = this.equipmentManager.applyToCharacter(character);
+    this.$("equipmentStatSummary").innerHTML = `
+      <strong>${character.icon ?? "◈"} ${character.name}</strong>
+      <span>物攻 ${character.patk ?? 0} → <b>${equipped.patk}</b></span>
+      <span>属攻 ${character.eatk ?? 0} → <b>${equipped.eatk}</b></span>
+      <span>速度 ${character.speed ?? 0} → <b>${equipped.speed}</b></span>
+      <span>最大SP ${character.maxSp ?? 0} → <b>${equipped.maxSp}</b></span>
+      <small>${this.formatStatBonuses(equipped.equipmentBonuses)}</small>`;
+  }
+
+  updateEquipment() {
+    const characterId = this.$("equipmentCharacterSelect").value;
+    const values = {
+      weapon: this.$("equipmentWeaponSelect").value,
+      armor: this.$("equipmentArmorSelect").value,
+      accessory1: this.$("equipmentAccessory1Select").value,
+      accessory2: this.$("equipmentAccessory2Select").value
+    };
+    for (const [slot, id] of Object.entries(values)) this.equipmentManager.equip(characterId, slot, id);
+    this.refreshEquipmentSlots();
+    this.renderCharacterSelector();
+    this.calculateManualDamage();
+    this.scheduleAutoSave();
+  }
+
+  clearEquipment() {
+    const characterId = this.$("equipmentCharacterSelect").value;
+    for (const slot of ["weapon", "armor", "accessory1", "accessory2"]) this.equipmentManager.equip(characterId, slot, "");
+    this.refreshEquipmentSlots();
+    this.renderCharacterSelector();
+    this.calculateManualDamage();
+    this.scheduleAutoSave();
   }
 
   async importCharacterCsv(event) {
@@ -955,6 +1041,7 @@ export class AppUI {
       this.renderValidation(result);
       this.activeCollection = "characters";
     this.selectedPartyIds = [];
+    this.equipmentCharacterId = "";
       this.renderDatabaseEditor();
       this.setStatus(`${character.name || character.id}を追加しました。`, result.valid ? "success" : "warning");
     } catch (error) {
