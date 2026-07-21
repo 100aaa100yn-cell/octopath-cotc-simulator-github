@@ -17,10 +17,11 @@ import { BattleResultManager } from "./engine/BattleResultManager.js";
 import { StrategyAdvisor } from "./engine/StrategyAdvisor.js";
 import { BattleComparisonManager } from "./engine/BattleComparisonManager.js";
 import { StrategyOptimizer } from "./engine/StrategyOptimizer.js";
+import { DataQualityManager } from "./engine/DataQualityManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "2.9.0";
+  document.documentElement.dataset.appVersion = "3.0.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();
@@ -36,6 +37,7 @@ async function main() {
   const strategyAdvisor = new StrategyAdvisor(battleResultManager, turnBattleManager);
   const battleComparisonManager = new BattleComparisonManager(battleResultManager, strategyAdvisor, battlePlanManager);
   const strategyOptimizer = new StrategyOptimizer(repo, battlePlanManager, battleResultManager, strategyAdvisor);
+  const dataQualityManager = new DataQualityManager(repo);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
   const equipmentManager = new EquipmentManager(repo);
   const battleEngine = new BattleEngine(
@@ -63,7 +65,8 @@ async function main() {
     battleResultManager,
     strategyAdvisor,
     battleComparisonManager,
-    strategyOptimizer
+    strategyOptimizer,
+    dataQualityManager
   ).init();
 }
 

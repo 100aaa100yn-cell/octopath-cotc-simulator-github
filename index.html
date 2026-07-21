@@ -235,6 +235,19 @@
     <div id="battlePlanTurns" class="battle-plan-turns"></div>
   </section>
 
+  <section class="panel data-quality-panel" id="dataQualityPanel">
+    <div class="section-heading"><div><p class="eyebrow">DATA QUALITY</p><h2>データ品質とアビリティ登録状況</h2><p>未登録項目は選択可能な仮枠として表示し、実データと明確に区別します。</p></div></div>
+    <div class="quality-summary">
+      <span><b id="qualityCharacterTotal">0</b><small>全キャラクター</small></span>
+      <span><b id="qualityCompleteCharacters">0</b><small>能力一式登録済み</small></span>
+      <span><b id="qualityMissingAbilities">0</b><small>未登録能力枠</small></span>
+      <span><b id="qualityAverage">0%</b><small>平均登録率</small></span>
+      <span><b id="qualityEnemyReady">0 / 0</b><small>利用可能な敵</small></span>
+    </div>
+    <div class="quality-toolbar"><label>検索<input id="qualitySearch" type="search" placeholder="キャラクター名"></label><label>表示<select id="qualityFilter"><option value="all">すべて</option><option value="missing">未完成のみ</option><option value="complete">登録済みのみ</option></select></label></div>
+    <div id="qualityCharacterList" class="quality-list"></div>
+  </section>
+
   <section class="panel turn-battle-panel">
     <div class="section-title-row"><div><h2>ターン戦闘コマンド</h2><p>前衛4人の技とBoostを選び、1ターンずつ戦闘を進めます。</p></div></div>
     <div class="turn-battle-toolbar">
@@ -509,7 +522,7 @@
   </section>
 </main>
 
-<footer>Version 2.9.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
+<footer>Version 3.0.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

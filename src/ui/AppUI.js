@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer, dataQualityManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -21,6 +21,7 @@ export class AppUI {
     this.strategyAdvisor = strategyAdvisor;
     this.battleComparisonManager = battleComparisonManager;
     this.strategyOptimizer = strategyOptimizer;
+    this.dataQualityManager = dataQualityManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -54,6 +55,7 @@ export class AppUI {
     this.renderTurnBattleResults();
     this.renderBattleComparison();
     this.renderStrategyOptimizer();
+    this.renderDataQuality();
     this.restoreInitialState();
   }
 
@@ -98,6 +100,8 @@ export class AppUI {
     this.$("downloadEnemyTemplateBtn").onclick = () => this.downloadEnemyTemplate();
     this.$("exportIncompleteEnemiesBtn").onclick = () => this.exportIncompleteEnemies();
     this.$("refreshCatalogBtn").onclick = () => this.renderCatalogSummary();
+    this.$("qualitySearch").oninput = () => this.renderDataQuality();
+    this.$("qualityFilter").onchange = () => this.renderDataQuality();
     this.$("equipmentCharacterSelect").onchange = () => this.refreshEquipmentSlots();
     for (const id of ["equipmentWeaponSelect", "equipmentHeadSelect", "equipmentBodySelect", "equipmentArmSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
       this.$(id).onchange = () => this.updateEquipment();
@@ -1607,7 +1611,36 @@ export class AppUI {
   }
 
   turnBattleAbilityOptions(characterId, selected="") {
-    return `<option value="">待機</option>`+this.turnBattleManager.availableAbilities(characterId).map(a=>`<option value="${a.id}" ${a.id===selected?"selected":""}>${a.name}｜SP ${a.sp??0}｜威力 ${a.power??0}｜${a.hits??1}hit</option>`).join("");
+    const order = { battle: 1, ultimate: 2, ex: 3 };
+    const labels = { battle: "バトル", ultimate: "必殺", ex: "EX" };
+    const abilities = this.turnBattleManager.availableAbilities(characterId).sort((a,b)=>(order[a.category]??9)-(order[b.category]??9));
+    return `<option value="">待機</option>`+abilities.map(a=>{
+      const quality = a.isPlaceholder ? "未登録" : a.dataStatus === "incomplete" ? "暫定" : "登録済";
+      return `<option value="${a.id}" ${a.id===selected?"selected":""}>[${labels[a.category]??a.category}｜${quality}] ${a.name}｜SP ${a.sp??0}｜威力 ${a.power??0}｜${a.hits??1}hit</option>`;
+    }).join("");
+  }
+
+  renderDataQuality() {
+    const host=this.$("dataQualityPanel"); if(!host || !this.dataQualityManager)return;
+    const summary=this.dataQualityManager.summary();
+    this.$("qualityCharacterTotal").textContent=summary.totalCharacters;
+    this.$("qualityCompleteCharacters").textContent=summary.completeCharacters;
+    this.$("qualityMissingAbilities").textContent=summary.missingAbilities;
+    this.$("qualityAverage").textContent=`${summary.averageCompleteness}%`;
+    this.$("qualityEnemyReady").textContent=`${summary.readyEnemies} / ${summary.totalEnemies}`;
+    const query=(this.$("qualitySearch")?.value??"").trim().toLowerCase();
+    const filter=this.$("qualityFilter")?.value??"all";
+    const reports=summary.reports.filter(r=>{
+      if(query && !`${r.character.name} ${r.character.id}`.toLowerCase().includes(query))return false;
+      if(filter==="missing" && r.completeness===100)return false;
+      if(filter==="complete" && r.completeness<100)return false;
+      return true;
+    });
+    this.$("qualityCharacterList").innerHTML=reports.map(r=>{
+      const c=r.categories;
+      const badge=(name,x)=>`<span class="quality-chip ${x.missing?"missing":"ready"}">${name} ${x.real}/${x.minimum}</span>`;
+      return `<article class="quality-row"><div><strong>${r.character.name}</strong><small>${r.character.weapon}・${r.character.element}｜${r.character.dataStatus??"未設定"}</small></div><div class="quality-chips">${badge("バトル",c.battle)}${badge("必殺",c.ultimate)}${badge("EX",c.ex)}</div><div class="quality-percent"><b>${r.completeness}%</b><small>登録率</small></div></article>`;
+    }).join("")||'<p class="empty">該当するキャラクターはありません。</p>';
   }
 
   executeTurnBattle() {

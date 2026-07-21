@@ -1,6 +1,6 @@
 {
   "name": "octopath-cotc-strategy-simulator",
-  "version": "2.9.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Octopath Traveler: Champions of the Continent strategy simulator",
   "scripts": {
