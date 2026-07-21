@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import { TurnBattleManager } from "../src/engine/TurnBattleManager.js";
+const chars={a:{id:"a",name:"A",weapon:"sword",element:"fire",speed:100,patk:500,eatk:300,maxSp:100}};
+const ability={id:"hit",ownerId:"a",category:"battle",name:"3連撃",power:100,hits:3,shield:3,sp:10,maxBoost:3};
+const enemy={id:"e",name:"E",maxHp:10000,shield:3,pdef:300,edef:300,weakWeapons:["sword"],weakElements:[]};
+const repo={getEnemy:id=>enemy,getCharacter:id=>chars[id],getAbilities:id=>[ability],getDamageRules:()=>({constants:{minimumDefenseRatio:.2,maximumDefenseRatio:3,defaultWeaknessMultiplier:1.5,defaultBreakMultiplier:2,criticalMultiplier:1.25},damageCap:{base:99999,ultimate:99999,ex:99999},stacking:{}}),getEffectRule:()=>null};
+const formation={sp:{a:100},getMemberIds:()=>["a"],getFrontIds:()=>["a"],resetBattle(){this.sp.a=100},spendSp(id,n){this.sp[id]-=n},advanceTurn(){return{swaps:[]}}};
+const effects={tick(){},getActiveEffects(){return[]}};
+const damage={calculate:()=>({totalDamage:1200})};
+const m=new TurnBattleManager(repo,damage,formation,effects);m.create("e");const log=m.execute({a:{abilityId:"hit",boost:0}});assert.equal(log.enemyShield,3);assert.equal(m.state.breakCount,1);assert.equal(formation.sp.a,90);assert.equal(m.state.bp.a,1);console.log("TurnBattleManager tests passed");

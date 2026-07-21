@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -15,6 +15,7 @@ export class AppUI {
     this.rosterManager = rosterManager;
     this.effectManager = effectManager;
     this.formationManager = formationManager;
+    this.turnBattleManager = turnBattleManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -42,6 +43,8 @@ export class AppUI {
     this.renderRoster();
     this.renderEffectManager();
     this.renderFormation();
+    this.refreshTurnBattleEnemy();
+    this.renderTurnBattle();
     this.restoreInitialState();
   }
 
@@ -116,6 +119,10 @@ export class AppUI {
     this.$("reserveSpRecoveryRate").onchange = () => { this.formationManager.reserveSpRecoveryRate=Math.max(0,Math.min(100,Number(this.$("reserveSpRecoveryRate").value)||0)); this.formationManager.save(); this.renderFormation(); };
     this.$("exportFormationBtn").onclick = () => this.exportFormation();
     this.$("importFormationInput").onchange = event => this.importFormation(event);
+    this.$("turnBattleStartBtn").onclick = () => this.startTurnBattle();
+    this.$("turnBattleExecuteBtn").onclick = () => this.executeTurnBattle();
+    this.$("turnBattleResetBtn").onclick = () => this.startTurnBattle();
+    this.$("turnBattleEnemySelect").onchange = () => this.renderTurnBattle();
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1505,6 +1512,38 @@ export class AppUI {
     try { this.formationManager.importData(JSON.parse(await file.text())); this.renderFormation(); this.setPresetStatus("8人隊列を読み込みました。","success"); }
     catch(error) { this.setPresetStatus(error.message,"error"); }
     event.target.value="";
+  }
+
+  refreshTurnBattleEnemy() {
+    const select=this.$("turnBattleEnemySelect"); if(!select)return;
+    const previous=select.value;
+    select.innerHTML=this.repo.getEnemies().map(e=>`<option value="${e.id}">${e.name}｜HP ${Number(e.maxHp||0).toLocaleString()}</option>`).join("");
+    if(this.repo.getEnemy(previous))select.value=previous;
+  }
+
+  startTurnBattle() {
+    try { this.turnBattleManager.create(this.$("turnBattleEnemySelect").value); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus("ターン戦闘を開始しました。","success"); }
+    catch(error){ this.setPresetStatus(error.message,"error"); }
+  }
+
+  turnBattleAbilityOptions(characterId, selected="") {
+    return `<option value="">待機</option>`+this.turnBattleManager.availableAbilities(characterId).map(a=>`<option value="${a.id}" ${a.id===selected?"selected":""}>${a.name}｜SP ${a.sp??0}｜威力 ${a.power??0}｜${a.hits??1}hit</option>`).join("");
+  }
+
+  executeTurnBattle() {
+    const actions={};
+    this.$("turnBattleActions").querySelectorAll("[data-turn-character]").forEach(row=>{actions[row.dataset.turnCharacter]={abilityId:row.querySelector("[data-turn-ability]").value,boost:Number(row.querySelector("[data-turn-boost]").value||0)};});
+    try { const log=this.turnBattleManager.execute(actions); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus(`${log.turn}ターン目を実行しました。`,"success"); }
+    catch(error){this.setPresetStatus(error.message,"error");}
+  }
+
+  renderTurnBattle() {
+    const manager=this.turnBattleManager, state=manager.state, summary=manager.summary();
+    const frontIds=this.formationManager.getFrontIds();
+    this.$("turnBattleActions").innerHTML=frontIds.length?frontIds.map(id=>{const c=this.repo.getCharacter(id);const bp=state?.bp?.[id]??0;const sp=this.formationManager.sp[id]??c.maxSp??0;return `<article class="turn-command" data-turn-character="${id}"><div><b>${c.name}</b><small>SP ${sp}/${c.maxSp??0}｜BP ${bp}</small></div><select data-turn-ability>${this.turnBattleAbilityOptions(id)}</select><label>Boost<select data-turn-boost>${[0,1,2,3].map(n=>`<option value="${n}" ${n>bp?"disabled":""}>${n}</option>`).join("")}</select></label></article>`;}).join(""):'<p class="empty">隊列に前衛を設定してください。</p>';
+    this.$("turnBattleExecuteBtn").disabled=!state||state.finished||!frontIds.length;
+    this.$("turnBattleStatus").innerHTML=summary?`<span><b>${summary.victory?"VICTORY":summary.turn+"T"}</b><small>進行状態</small></span><span><b>${Number(summary.enemyHp).toLocaleString()} / ${Number(summary.maxHp).toLocaleString()}</b><small>敵HP</small></span><span><b>${summary.shield}</b><small>シールド</small></span><span><b>${summary.phase}</b><small>フェーズ</small></span>`:'<span><b>未開始</b><small>「戦闘開始」を押してください</small></span>';
+    this.$("turnBattleLog").innerHTML=state?.log?.slice().reverse().map(turn=>`<article class="turn-result"><header><b>TURN ${turn.turn}</b><span>${turn.turnDamage.toLocaleString()} damage｜HP ${turn.enemyHp.toLocaleString()}｜盾 ${turn.enemyShield}</span></header>${turn.phaseEvents.map(e=>`<div class="phase-transition">${e.to}へ移行</div>`).join("")}<div>${turn.entries.map(e=>`<p><b>${e.actor}</b>：${e.action}${e.boost?` BP${e.boost}`:""} <small>${e.damage?`${e.damage.toLocaleString()} damage`:""}${e.shieldDamage?` / shield -${e.shieldDamage}`:""}${e.spCost?` / SP -${e.spCost}`:""}</small></p>`).join("")}<p class="enemy-command"><b>敵</b>：${turn.enemyAction.action}</p></div></article>`).join("")||'<p class="empty">戦闘ログはまだありません。</p>';
   }
 
 }

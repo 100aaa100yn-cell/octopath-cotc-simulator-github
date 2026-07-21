@@ -6,16 +6,16 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Octopath CotC Strategy Simulator v2.3.0</title>
+<title>Octopath CotC Strategy Simulator v2.4.0</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="buildVersion" class="build-version" aria-label="build version">v2.3.0</div>
+  <div id="buildVersion" class="build-version" aria-label="build version">v2.4.0</div>
 <header>
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
     <h1>Octopath CotC Strategy Simulator</h1>
-    <p>Version 2.3｜8人隊列・前後衛・交代計画</p>
+    <p>Version 2.4｜1ターン実行・BP/SP・ブレイク進行</p>
   </div>
   <button id="themeBtn">テーマ切替</button>
 </header>
@@ -211,6 +211,20 @@
   </section>
 
 
+
+
+  <section class="panel turn-battle-panel">
+    <div class="section-title-row"><div><h2>ターン戦闘コマンド</h2><p>前衛4人の技とBoostを選び、1ターンずつ戦闘を進めます。</p></div></div>
+    <div class="turn-battle-toolbar">
+      <label>敵<select id="turnBattleEnemySelect"></select></label>
+      <button id="turnBattleStartBtn" type="button">戦闘開始</button>
+      <button id="turnBattleExecuteBtn" type="button">このターンを実行</button>
+      <button id="turnBattleResetBtn" type="button" class="secondary">最初からやり直す</button>
+    </div>
+    <div id="turnBattleStatus" class="turn-battle-status"></div>
+    <div id="turnBattleActions" class="turn-battle-actions"></div>
+    <div id="turnBattleLog" class="turn-battle-log"></div>
+  </section>
 
   <section class="panel battle-panel">
     <h2>フルバトルシミュレーション</h2>
@@ -430,7 +444,7 @@
   </section>
 </main>
 
-<footer>Version 2.2.0｜バフ・デバフ・残りターンを管理できます。</footer>
-<script type="module" src="src/main.js?v=2.2.0"></script>
+<footer>Version 2.4.0｜技・Boostを選び、1ターンずつ戦闘を実行できます。</footer>
+<script type="module" src="src/main.js?v=2.4.0"></script>
 </body>
 </html>

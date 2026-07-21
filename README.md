@@ -203,3 +203,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v2.3 8人隊列
 
 前衛4人・後衛4人をペア編成し、即時交代、ターン別交代計画、後衛SP回復、隊列JSON保存を利用できます。
+
+
+## v2.4 ターン戦闘
+
+8人隊列の前衛4人について技とBoostを選択し、SP・BP・敵HP・シールド・ブレイク・フェーズ・予定交代を1ターンずつ処理できます。
