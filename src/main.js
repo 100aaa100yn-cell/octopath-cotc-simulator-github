@@ -40,6 +40,11 @@ async function main() {
 }
 
 main().catch(error => {
-  console.error(error);
-  alert("データ読み込みに失敗しました。Live Serverで起動してください。");
+  console.error("アプリの初期化に失敗しました。", error);
+
+  const message = location.protocol === "file:"
+    ? "ローカルファイルからはデータを読み込めません。Live ServerまたはGitHub Pagesで開いてください。"
+    : `アプリの初期化に失敗しました。ページを再読み込みしてください。\n\n詳細: ${error.message}`;
+
+  alert(message);
 });
