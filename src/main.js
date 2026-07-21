@@ -11,6 +11,7 @@ import { EquipmentManager } from "./engine/EquipmentManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
+  document.documentElement.dataset.appVersion = "1.5.2";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();

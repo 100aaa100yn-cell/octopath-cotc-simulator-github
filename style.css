@@ -219,3 +219,16 @@ footer{text-align:center;padding:20px;color:var(--muted)}
 .rank-5{box-shadow:inset 0 0 0 1px rgba(218,165,32,.45)}
 .rank-4{box-shadow:inset 0 0 0 1px rgba(150,110,220,.4)}
 .rank-3{box-shadow:inset 0 0 0 1px rgba(90,140,210,.4)}
+
+.build-version {
+  position: fixed;
+  right: .55rem;
+  bottom: .45rem;
+  z-index: 9999;
+  padding: .2rem .45rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  opacity: .6;
+  background: rgba(127,127,127,.12);
+  pointer-events: none;
+}

@@ -1,17 +1,24 @@
-export async function loadJson(path) {
-  const response = await fetch(path);
-  if (!response.ok) throw new Error(`${path}: ${response.status}`);
-  return response.json();
+const DATA_BASE_URL = new URL("../../data/", import.meta.url);
+
+export async function loadJson(relativePath) {
+  const url = new URL(relativePath, DATA_BASE_URL);
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) throw new Error(`${url.pathname}: HTTP ${response.status}`);
+  try {
+    return await response.json();
+  } catch (error) {
+    throw new Error(`${url.pathname}: JSON解析失敗 (${error.message})`);
+  }
 }
 
 export async function loadDatabase() {
   const [characters, abilities, effectRules, enemies, damageRules, equipment] = await Promise.all([
-    loadJson("data/characters/characters.json"),
-    loadJson("data/abilities/abilities.json"),
-    loadJson("data/system/effect-rules.json"),
-    loadJson("data/system/enemies.json"),
-    loadJson("data/system/damage-rules.json"),
-    loadJson("data/equipment/equipment.json")
+    loadJson("characters/characters.json"),
+    loadJson("abilities/abilities.json"),
+    loadJson("system/effect-rules.json"),
+    loadJson("system/enemies.json"),
+    loadJson("system/damage-rules.json"),
+    loadJson("equipment/equipment.json")
   ]);
 
   return { characters, abilities, effectRules, enemies, damageRules, equipment };
