@@ -276,6 +276,19 @@
       <div id="comparisonSummary" class="battle-result-summary comparison-summary"></div>
       <div id="comparisonTable" class="comparison-table"></div>
     </div>
+
+    <div class="strategy-optimizer-section">
+      <div class="section-title-row"><div><h3>勝ち筋探索</h3><p>現在の攻略プランからBoost配分・火力ターン・交代周期を変えた候補を自動生成します。</p></div></div>
+      <div class="strategy-optimizer-toolbar">
+        <label>最適化目標<select id="strategyOptimizeObjective"><option value="balanced">総合バランス</option><option value="speed">最短撃破</option><option value="damage">最大火力</option><option value="efficiency">SP効率</option></select></label>
+        <label>候補数<input id="strategyOptimizeLimit" type="number" min="1" max="12" value="6"></label>
+        <button id="strategyOptimizeBtn" type="button">候補を生成</button>
+        <button id="strategyOptimizeClearBtn" type="button" class="secondary">候補を消去</button>
+        <button id="strategyOptimizeExportBtn" type="button" class="secondary">候補JSON出力</button>
+      </div>
+      <p class="hint">候補は簡易推定です。適用後に実戦シミュレーションを実行し、v2.8の比較で最終確認してください。</p>
+      <div id="strategyOptimizeCandidates" class="strategy-optimizer-candidates"></div>
+    </div>
   </section>
 
   <section class="panel battle-panel">
@@ -496,7 +509,7 @@
   </section>
 </main>
 
-<footer>Version 2.8.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
+<footer>Version 2.9.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

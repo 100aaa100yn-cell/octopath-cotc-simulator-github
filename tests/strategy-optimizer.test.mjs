@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { StrategyOptimizer } from "../src/engine/StrategyOptimizer.js";
+const abilities={a:{id:"a",power:100,hits:1,spCost:10},multi:{id:"multi",power:60,hits:3,spCost:30}};
+const repo={getAbility:id=>abilities[id]};
+const plan={id:"p",name:"base",enemyId:"e",turns:[{actions:{c1:{abilityId:"multi",boost:0},c2:{abilityId:"a",boost:0}},swaps:[]},{actions:{c1:{abilityId:"a",boost:0}},swaps:[]}]};
+const bpm={activePlan:plan,createPlan(name,enemyId){this.activePlan={id:"new",name,enemyId,turns:[]};return this.activePlan;},save(){}};
+const storage={getItem(){return null},setItem(){}};
+const optimizer=new StrategyOptimizer(repo,bpm,null,null,storage);
+const result=optimizer.generate({objective:"speed",limit:6});
+assert.ok(result.candidates.length>=5);
+assert.equal(result.candidates[0].metrics.turns,2);
+const applied=optimizer.apply(result.candidates[0].id);
+assert.equal(applied.turns.length,2);
+assert.notEqual(applied.turns,plan.turns);
+console.log("StrategyOptimizer tests passed");

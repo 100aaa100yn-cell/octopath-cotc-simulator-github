@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -20,6 +20,7 @@ export class AppUI {
     this.battleResultManager = battleResultManager;
     this.strategyAdvisor = strategyAdvisor;
     this.battleComparisonManager = battleComparisonManager;
+    this.strategyOptimizer = strategyOptimizer;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -52,6 +53,7 @@ export class AppUI {
     this.renderBattlePlanner();
     this.renderTurnBattleResults();
     this.renderBattleComparison();
+    this.renderStrategyOptimizer();
     this.restoreInitialState();
   }
 
@@ -149,6 +151,9 @@ export class AppUI {
     this.$("comparisonExportJsonBtn").onclick = () => this.exportBattleComparisons();
     this.$("comparisonExportCsvBtn").onclick = () => this.exportBattleComparisonCsv();
     this.$("comparisonImportInput").onchange = event => this.importBattleComparisons(event);
+    this.$("strategyOptimizeBtn").onclick = () => this.generateStrategyCandidates();
+    this.$("strategyOptimizeClearBtn").onclick = () => { this.strategyOptimizer.clear(); this.renderStrategyOptimizer(); };
+    this.$("strategyOptimizeExportBtn").onclick = () => this.exportStrategyCandidates();
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1723,12 +1728,12 @@ export class AppUI {
   }
 
   exportBattleComparisons() {
-    try{this.downloadTextFile(JSON.stringify(this.battleComparisonManager.exportData(),null,2),'octopath-battle-comparisons-v2.8.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.battleComparisonManager.exportData(),null,2),'octopath-battle-comparisons-v2.9.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
   exportBattleComparisonCsv() {
-    try{this.downloadTextFile(this.battleComparisonManager.toCsv(),'octopath-battle-comparison-v2.8.csv','text/csv;charset=utf-8');}
+    try{this.downloadTextFile(this.battleComparisonManager.toCsv(),'octopath-battle-comparison-v2.9.csv','text/csv;charset=utf-8');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
@@ -1739,8 +1744,34 @@ export class AppUI {
     event.target.value='';
   }
 
+  generateStrategyCandidates() {
+    try {
+      const result=this.strategyOptimizer.generate({objective:this.$("strategyOptimizeObjective").value,limit:this.$("strategyOptimizeLimit").value});
+      this.renderStrategyOptimizer();
+      this.setPresetStatus(`${result.candidates.length}件の改善候補を生成しました。`,"success");
+    } catch(error) { this.setPresetStatus(error.message,"error"); }
+  }
+
+  renderStrategyOptimizer() {
+    const manager=this.strategyOptimizer;if(!manager)return;
+    this.$("strategyOptimizeObjective").value=manager.objective||"balanced";
+    const list=this.$("strategyOptimizeCandidates");
+    list.innerHTML=manager.candidates.map((item,index)=>`<article class="strategy-candidate ${index===0?'recommended':''}">
+      <header><span><b>${index===0?'おすすめ｜':''}${item.title}</b><small>${item.reason}</small></span><strong>${item.score}点</strong></header>
+      <div class="strategy-candidate-metrics"><span>推定火力 <b>${Math.round(item.metrics.damage).toLocaleString()}</b></span><span>盾削り <b>${Math.round(item.metrics.breakValue)}</b></span><span>SP <b>${Math.round(item.metrics.spCost)}</b></span><span>Boost <b>${Math.round(item.metrics.boosted)}</b></span><span>交代 <b>${Math.round(item.metrics.swaps)}</b></span></div>
+      <footer><button type="button" data-strategy-apply="${item.id}">新しいプランとして適用</button></footer>
+    </article>`).join('')||'<p class="empty">攻略プランを選び、「候補を生成」を押してください。</p>';
+    list.querySelectorAll('[data-strategy-apply]').forEach(button=>button.onclick=()=>{try{const plan=manager.apply(button.dataset.strategyApply);this.renderBattlePlanner();this.setPresetStatus(`「${plan.name}」を作成しました。`,"success");}catch(error){this.setPresetStatus(error.message,"error");}});
+    this.$("strategyOptimizeExportBtn").disabled=!manager.candidates.length;
+  }
+
+  exportStrategyCandidates() {
+    try{this.downloadTextFile(JSON.stringify(this.strategyOptimizer.exportData(),null,2),'octopath-strategy-candidates-v2.9.json','application/json');}
+    catch(error){this.setPresetStatus(error.message,'error');}
+  }
+
   exportStrategyAdvice() {
-    try{this.downloadTextFile(JSON.stringify(this.strategyAdvisor.exportData(),null,2),'octopath-strategy-advice-v2.8.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.strategyAdvisor.exportData(),null,2),'octopath-strategy-advice-v2.9.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
@@ -1749,12 +1780,12 @@ export class AppUI {
   }
 
   exportTurnBattleResultJson() {
-    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.8.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.9.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
   exportTurnBattleResultCsv() {
-    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.8.csv','text/csv;charset=utf-8');}
+    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.9.csv','text/csv;charset=utf-8');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
