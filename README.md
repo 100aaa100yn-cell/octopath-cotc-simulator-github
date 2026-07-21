@@ -170,3 +170,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 - キャラクターカードにベースランクを表示
 - ★5・★4・★3で絞り込み可能
 - 新規登録分は名前・ジョブ・ランクを優先し、未確認の数値や技は `incomplete` としています。
+
+
+## v1.7 敵データベース
+
+敵CSV雛形から、HP・シールド・防御・弱点・複数フェーズ・行動JSON・出典を登録できます。空欄は既存値を保持します。

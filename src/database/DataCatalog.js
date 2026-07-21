@@ -1,4 +1,5 @@
 import { CharacterImporter } from "./CharacterImporter.js";
+import { EnemyImporter } from "./EnemyImporter.js";
 
 export class DataCatalog {
   constructor(repo) {
@@ -8,6 +9,8 @@ export class DataCatalog {
   summarize() {
     const characters = this.repo.getCharacters();
     const abilities = this.repo.getAllAbilities();
+    const enemies = this.repo.getEnemies();
+    const enemyCompleteness = enemies.map(enemy => EnemyImporter.completeness(enemy));
     const byStatus = this.countBy(characters, item => item.dataStatus ?? "incomplete");
     const byBaseRank = this.countBy(characters, item => `★${item.baseRank ?? item.rarity ?? "?"}`);
     const bySeries = this.countBy(characters, item => item.series ?? "未分類");
@@ -38,6 +41,9 @@ export class DataCatalog {
 
     return {
       characters: characters.length,
+      enemies: enemies.length,
+      readyEnemies: enemyCompleteness.filter(item => item.ready).length,
+      averageEnemyCompleteness: enemies.length ? Math.round(enemyCompleteness.reduce((sum,item) => sum + item.score, 0) / enemies.length) : 0,
       abilities: abilities.length,
       verifiedCharacters: byStatus.verified ?? 0,
       provisionalCharacters: byStatus.provisional ?? 0,

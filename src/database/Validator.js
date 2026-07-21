@@ -174,7 +174,19 @@ export class DatabaseValidator {
       const path = `enemies[${index}]`;
       this.validateRequired(enemy, ["id", "name", "shield", "weakWeapons", "weakElements"], path);
       this.validateNumber(enemy.shield, `${path}.shield`, { min: 0, max: 999 });
+      for (const field of ["level", "maxHp", "shieldRecovery", "pdef", "edef", "breakDuration", "weaknessMultiplier"]) {
+        if (enemy[field] !== undefined) this.validateNumber(enemy[field], `${path}.${field}`, { min: 0, max: 999999999 });
+      }
       this.validateNumber(enemy.breakMultiplier ?? 2, `${path}.breakMultiplier`, { min: 1, max: 10 });
+      if (!Array.isArray(enemy.weakWeapons)) this.add("error", "INVALID_WEAKNESSES", "weakWeaponsは配列である必要があります。", `${path}.weakWeapons`);
+      if (!Array.isArray(enemy.weakElements)) this.add("error", "INVALID_WEAKNESSES", "weakElementsは配列である必要があります。", `${path}.weakElements`);
+      if (enemy.actions !== undefined && !Array.isArray(enemy.actions)) this.add("error", "INVALID_ACTIONS", "actionsは配列である必要があります。", `${path}.actions`);
+      if (enemy.phases !== undefined && !Array.isArray(enemy.phases)) this.add("error", "INVALID_PHASES", "phasesは配列である必要があります。", `${path}.phases`);
+      (enemy.phases ?? []).forEach((phase, phaseIndex) => {
+        const phasePath = `${path}.phases[${phaseIndex}]`;
+        this.validateRequired(phase, ["id", "hpThreshold"], phasePath);
+        this.validateNumber(phase.hpThreshold, `${phasePath}.hpThreshold`, { min: 0, max: 100 });
+      });
     });
   }
 

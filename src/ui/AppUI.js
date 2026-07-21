@@ -1,4 +1,5 @@
 import { CharacterImporter } from "../database/CharacterImporter.js";
+import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
   constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager) {
@@ -73,6 +74,9 @@ export class AppUI {
     this.$("selectAllVisibleBtn").onclick = () => this.selectAllVisibleCharacters();
     this.$("abilityCsvInput").onchange = event => this.importAbilityCsv(event);
     this.$("downloadAbilityTemplateBtn").onclick = () => this.downloadAbilityTemplate();
+    this.$("enemyCsvInput").onchange = event => this.importEnemyCsv(event);
+    this.$("downloadEnemyTemplateBtn").onclick = () => this.downloadEnemyTemplate();
+    this.$("exportIncompleteEnemiesBtn").onclick = () => this.exportIncompleteEnemies();
     this.$("refreshCatalogBtn").onclick = () => this.renderCatalogSummary();
     this.$("equipmentCharacterSelect").onchange = () => this.refreshEquipmentSlots();
     for (const id of ["equipmentWeaponSelect", "equipmentArmorSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
@@ -974,6 +978,45 @@ export class AppUI {
   }
 
 
+  async importEnemyCsv(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const incoming = EnemyImporter.parseCsv(await file.text());
+      const currentDb = this.dataManager.getDatabase();
+      const merged = EnemyImporter.merge(currentDb.enemies, incoming, "upsert");
+      const validation = this.dataManager.replace({ ...currentDb, enemies: merged.enemies });
+      this.refreshRepository();
+      this.renderDatabaseEditor();
+      this.renderValidation(validation);
+      const report = merged.report;
+      this.setStatus(`敵CSV取込：追加 ${report.added} / 更新 ${report.updated} / 変更なし ${report.unchanged}`, report.errors.length ? "warning" : "success");
+    } catch (error) {
+      this.setStatus(`敵CSV取込エラー：${error.message}`, "error");
+    } finally { event.target.value = ""; }
+  }
+
+  downloadEnemyTemplate() {
+    const headers = ["id","name","series","category","level","maxHp","shield","shieldRecovery","pdef","edef","weakWeapons","weakElements","breakMultiplier","weaknessMultiplier","breakDuration","criticalAllowed","phaseCount","phasesJson","actionsJson","dataStatus","dataNote","tags","sourceUrl","sourceCheckedAt"];
+    const sample = ["sample_boss","サンプルボス","メインストーリー","boss",100,10000000,20,20,420,420,"sword;dagger","fire;wind",2,1.5,1,true,2,'[{"id":"phase1","hpThreshold":100},{"id":"phase2","hpThreshold":50,"weakWeapons":["axe"]}]','[{"id":"attack","name":"通常攻撃","type":"damage","power":100,"priority":1}]',"provisional","入力例","ボス;ストーリー","https://example.com","2026-07-21"];
+    this.downloadCsv("enemies-detailed-import-template.csv", headers, [sample]);
+  }
+
+  exportIncompleteEnemies() {
+    const headers = ["id","name","series","category","level","maxHp","shield","shieldRecovery","pdef","edef","weakWeapons","weakElements","dataStatus","completeness","missingCore","hasActions","dataNote","sourceUrl","sourceCheckedAt"];
+    const rows = this.repo.getEnemies().map(enemy => ({ enemy, result: EnemyImporter.completeness(enemy) }))
+      .filter(({ result }) => !result.ready)
+      .sort((a,b) => a.result.score-b.result.score || a.enemy.name.localeCompare(b.enemy.name,"ja"))
+      .map(({ enemy, result }) => headers.map(header => {
+        if (header === "completeness") return `${result.score}%`;
+        if (header === "missingCore") return result.missingCore.join(";");
+        if (header === "hasActions") return result.hasActions;
+        const value = enemy[header]; return Array.isArray(value) ? value.join(";") : value ?? "";
+      }));
+    this.downloadCsv("enemies-incomplete-report.csv", headers, rows);
+    this.setStatus(`敵の未入力レポートを出力しました：${rows.length}件`, "success");
+  }
+
   renderCatalogSummary() {
     const summary = this.dataCatalog.summarize();
     const container = this.$("catalogSummary");
@@ -983,6 +1026,9 @@ export class AppUI {
     container.innerHTML = `
       <div><span>キャラクター</span><strong>${summary.characters}</strong></div>
       <div><span>アビリティ</span><strong>${summary.abilities}</strong></div>
+      <div><span>敵データ</span><strong>${summary.enemies}</strong></div>
+      <div><span>敵入力済み</span><strong>${summary.readyEnemies}</strong></div>
+      <div><span>敵平均完成度</span><strong>${summary.averageEnemyCompleteness}%</strong></div>
       <div><span>検証済み</span><strong>${summary.verifiedCharacters}</strong></div>
       <div><span>暫定</span><strong>${summary.provisionalCharacters}</strong></div>
       <div><span>技なし</span><strong>${summary.charactersWithoutAbilities}</strong></div>
@@ -1214,12 +1260,14 @@ export class AppUI {
   addEnemy() {
     try {
       const enemy = {
-        id: this.$("newEnemyId").value.trim(),
-        name: this.$("newEnemyName").value.trim(),
-        shield: Number(this.$("newEnemyShield").value || 1),
-        weakWeapons: this.$("newEnemyWeapons").value.split(",").map(x => x.trim()).filter(Boolean),
-        weakElements: this.$("newEnemyElements").value.split(",").map(x => x.trim()).filter(Boolean),
-        breakMultiplier: Number(this.$("newEnemyBreak").value || 2)
+        id: this.$("newEnemyId").value.trim(), name: this.$("newEnemyName").value.trim(),
+        level: Number(this.$("newEnemyLevel").value || 100), maxHp: Number(this.$("newEnemyHp").value || 1),
+        shield: Number(this.$("newEnemyShield").value || 1), shieldRecovery: Number(this.$("newEnemyRecovery").value || this.$("newEnemyShield").value || 1),
+        pdef: Number(this.$("newEnemyPdef").value || 420), edef: Number(this.$("newEnemyEdef").value || 420),
+        weakWeapons: this.$("newEnemyWeapons").value.split(/[,;；]/).map(x => x.trim()).filter(Boolean),
+        weakElements: this.$("newEnemyElements").value.split(/[,;；]/).map(x => x.trim()).filter(Boolean),
+        breakMultiplier: Number(this.$("newEnemyBreak").value || 2), weaknessMultiplier: 1.5,
+        breakDuration: 1, criticalAllowed: true, actions: [], phases: [], dataStatus: "incomplete"
       };
 
       const result = this.dataManager.addEnemy(enemy);

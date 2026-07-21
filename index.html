@@ -247,6 +247,9 @@
       <button id="exportDataBtn">DB出力</button>
       <label class="file-button">DB読込<input id="importDataInput" type="file" accept=".json"></label>
       <button id="resetDataBtn" class="secondary">初期データ</button>
+      <button id="downloadEnemyTemplateBtn" type="button">敵CSV雛形</button>
+      <button id="exportIncompleteEnemiesBtn" type="button" class="secondary">敵未入力CSV</button>
+      <label class="file-button">敵CSV取込<input id="enemyCsvInput" type="file" accept=".csv,text/csv"></label>
     </div>
 
     <div id="validationSummary" class="validation-summary"></div>
@@ -333,7 +336,18 @@
         <h3>敵追加</h3>
         <input id="newEnemyId" placeholder="ID">
         <input id="newEnemyName" placeholder="名前">
-        <input id="newEnemyShield" type="number" placeholder="シールド">
+        <div class="mini-grid">
+          <input id="newEnemyLevel" type="number" placeholder="レベル">
+          <input id="newEnemyHp" type="number" placeholder="最大HP">
+        </div>
+        <div class="mini-grid">
+          <input id="newEnemyShield" type="number" placeholder="シールド">
+          <input id="newEnemyRecovery" type="number" placeholder="盾回復">
+        </div>
+        <div class="mini-grid">
+          <input id="newEnemyPdef" type="number" placeholder="物防">
+          <input id="newEnemyEdef" type="number" placeholder="属防">
+        </div>
         <input id="newEnemyWeapons" placeholder="弱点武器 sword,dagger">
         <input id="newEnemyElements" placeholder="弱点属性 fire,wind">
         <input id="newEnemyBreak" type="number" step="0.1" placeholder="ブレイク倍率">
@@ -345,7 +359,7 @@
   </section>
 </main>
 
-<footer>Version 1.2｜88人を収録。暫定データは画面上で明示されます。</footer>
-<script type="module" src="src/main.js?v=1.6.0"></script>
+<footer>Version 1.7.0｜キャラクター・技・装備・敵データを段階的に整備できます。</footer>
+<script type="module" src="src/main.js?v=1.7.0"></script>
 </body>
 </html>
