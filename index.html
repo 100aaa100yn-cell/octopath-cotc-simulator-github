@@ -6,16 +6,16 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Octopath CotC Strategy Simulator v1.9.0</title>
+<title>Octopath CotC Strategy Simulator v2.0.0</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="buildVersion" class="build-version" aria-label="build version">v1.9.0</div>
+  <div id="buildVersion" class="build-version" aria-label="build version">v2.0.0</div>
 <header>
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
     <h1>Octopath CotC Strategy Simulator</h1>
-    <p>Version 1.9｜敵弱点対応・自動編成最適化</p>
+    <p>Version 2.0｜マイ旅団・所持キャラ編成</p>
   </div>
   <button id="themeBtn">テーマ切替</button>
 </header>
@@ -36,6 +36,21 @@
     <p id="presetStatus" class="preset-status">設定は変更時に自動保存されます。</p>
   </section>
 
+
+
+  <section class="panel roster-panel">
+    <div class="section-title-row"><div><h2>マイ旅団</h2><p>所持状況と育成状態を登録します。自動編成は「所持＋編成対象」のキャラクターだけを使用します。</p></div></div>
+    <div class="roster-toolbar">
+      <label class="search-field">検索<input id="rosterSearch" type="search" placeholder="名前・武器・属性"></label>
+      <label>表示<select id="rosterFilter"><option value="all">全員</option><option value="owned">所持のみ</option><option value="unowned">未所持のみ</option><option value="enabled">編成対象のみ</option></select></label>
+      <button id="rosterOwnedAllBtn" type="button">全員所持</button>
+      <button id="rosterUnownedAllBtn" type="button" class="secondary">全員未所持</button>
+      <button id="exportRosterBtn" type="button">旅団JSON出力</button>
+      <label class="file-button">旅団JSON読込<input id="importRosterInput" type="file" accept=".json,application/json"></label>
+    </div>
+    <div id="rosterSummary" class="roster-summary"></div>
+    <div id="rosterGrid" class="roster-grid"></div>
+  </section>
 
   <section class="panel character-selector-panel">
     <div class="section-title-row">
@@ -361,7 +376,7 @@
   </section>
 </main>
 
-<footer>Version 1.7.0｜キャラクター・技・装備・敵データを段階的に整備できます。</footer>
-<script type="module" src="src/main.js?v=1.9.0"></script>
+<footer>Version 2.0.0｜マイ旅団を基準に編成・育成状態を管理できます。</footer>
+<script type="module" src="src/main.js?v=2.0.0"></script>
 </body>
 </html>

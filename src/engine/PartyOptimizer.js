@@ -1,8 +1,8 @@
 export class PartyOptimizer {
-  constructor(repository) {
-    this.repo = repository;
+  constructor(repo, rosterManager = null) {
+    this.repo = repo;
+    this.rosterManager = rosterManager;
   }
-
   effectApplies(effect, attacker) {
     if (effect.weapon && effect.weapon !== attacker.weapon) return false;
     if (effect.element && effect.element !== attacker.element) return false;
@@ -140,11 +140,13 @@ export class PartyOptimizer {
 
   optimize(attackerId, { weapon, element, enemyId = "", priority = "balanced", lockedIds = [] } = {}) {
     const attacker = this.repo.getCharacter(attackerId);
+    if (attacker && this.rosterManager && !this.rosterManager.isAvailable(attackerId)) throw new Error("選択したリーダーはマイ旅団で使用不可です。");
     if (!attacker) throw new Error(`Character not found: ${attackerId}`);
     const enemy = enemyId ? this.repo.getEnemy(enemyId) : null;
     const uniqueLockedIds = [...new Set(lockedIds)].filter(id => id !== attackerId).filter(id => this.repo.getCharacter(id)).slice(0, 7);
     const candidates = this.repo.getCharacters()
       .filter(character => character.id !== attackerId)
+      .filter(character => !this.rosterManager || this.rosterManager.isAvailable(character.id))
       .map(character => this.scoreCandidate(character, attacker, priority, enemy))
       .sort((a, b) => b.score - a.score);
     const candidateById = Object.fromEntries(candidates.map(item => [item.candidate.id, item]));

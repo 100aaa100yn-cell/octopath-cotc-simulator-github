@@ -8,15 +8,17 @@ import { DamageEngine } from "./engine/DamageEngine.js";
 import { BattleEngine } from "./engine/BattleEngine.js";
 import { BattleAnalytics } from "./engine/BattleAnalytics.js";
 import { EquipmentManager } from "./engine/EquipmentManager.js";
+import { RosterManager } from "./engine/RosterManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "1.9.0";
+  document.documentElement.dataset.appVersion = "2.0.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();
   const repo = new Repository(dataManager.getDatabase());
-  const partyOptimizer = new PartyOptimizer(repo);
+  const rosterManager = new RosterManager(repo);
+  const partyOptimizer = new PartyOptimizer(repo, rosterManager);
   const damageEngine = new DamageEngine(repo);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
   const equipmentManager = new EquipmentManager(repo);
@@ -36,7 +38,8 @@ async function main() {
     battleEngine,
     stateManager,
     BattleAnalytics,
-    equipmentManager
+    equipmentManager,
+    rosterManager
   ).init();
 }
 

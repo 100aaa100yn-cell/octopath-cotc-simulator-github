@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -12,6 +12,8 @@ export class AppUI {
     this.stateManager = stateManager;
     this.analytics = analytics;
     this.equipmentManager = equipmentManager;
+    this.rosterManager = rosterManager;
+    this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
     this.activeCollection = "characters";
@@ -35,6 +37,7 @@ export class AppUI {
     this.renderCharacterSelector();
     this.refreshEquipmentUi();
     this.renderCatalogSummary();
+    this.renderRoster();
     this.restoreInitialState();
   }
 
@@ -84,6 +87,13 @@ export class AppUI {
       this.$(id).onchange = () => this.updateEquipment();
     }
     this.$("clearEquipmentBtn").onclick = () => this.clearEquipment();
+    this.$("rosterSearch").oninput = () => this.renderRoster();
+    this.$("rosterFilter").onchange = () => { this.rosterFilter = this.$("rosterFilter").value; this.renderRoster(); };
+    this.$("rosterOwnedAllBtn").onclick = () => { this.rosterManager.setAll({ owned: true, enabled: true }); this.renderRoster(); this.refreshSelectors(); };
+    this.$("rosterUnownedAllBtn").onclick = () => { this.rosterManager.setAll({ owned: false }); this.renderRoster(); this.refreshSelectors(); };
+    this.$("exportRosterBtn").onclick = () => this.exportRoster();
+    this.$("importRosterInput").onchange = event => this.importRoster(event);
+
 
     document.querySelectorAll("select, input").forEach(element => {
       if (element.type !== "file") {
@@ -116,7 +126,7 @@ export class AppUI {
     const previousAttacker = this.$("attackerSelect").value;
     const previousEnemy = this.$("enemySelect").value;
 
-    const attackers = this.repo.getCharacters();
+    const attackers = this.repo.getCharacters().filter(c => this.rosterManager.isAvailable(c.id));
     this.$("attackerSelect").innerHTML = attackers
       .map(c => `<option value="${c.id}">${c.name}</option>`)
       .join("");
@@ -380,7 +390,7 @@ export class AppUI {
     const enemySelect = this.$("battleEnemySelect");
     if (!attackerSelect || !enemySelect) return;
 
-    const attackers = this.repo.getCharacters();
+    const attackers = this.repo.getCharacters().filter(c => this.rosterManager.isAvailable(c.id));
     attackerSelect.innerHTML = attackers
       .map(x => `<option value="${x.id}">${x.name}</option>`)
       .join("");
@@ -514,6 +524,7 @@ export class AppUI {
       selectedPartyIds: this.selectedPartyIds,
       equipmentLoadouts: this.equipmentManager.getLoadouts(),
       equipmentCharacterId: this.$("equipmentCharacterSelect")?.value ?? "",
+      rosterFilter: this.$("rosterFilter")?.value ?? "all",
       characterFilters: {
         search: this.$("characterSearch")?.value ?? "",
         weapon: this.$("characterWeaponFilter")?.value ?? "",
@@ -539,6 +550,7 @@ export class AppUI {
     }
 
     this.equipmentManager.setLoadouts(state.equipmentLoadouts ?? {});
+    if (this.$("rosterFilter")) this.$("rosterFilter").value = state.rosterFilter ?? "all";
     this.equipmentCharacterId = state.equipmentCharacterId ?? "";
 
     this.selectedPartyIds = (state.selectedPartyIds ?? [])
@@ -761,14 +773,15 @@ export class AppUI {
 
     container.innerHTML = characters.map(character => {
       const selected = selectedSet.has(character.id);
+      const roster = this.rosterManager.get(character.id);
       return `
         <button
           type="button"
-          class="character-select-card ${selected ? "selected" : ""}"
+          class="character-select-card ${selected ? "selected" : ""} ${roster?.owned && roster?.enabled ? "" : "unavailable"}"
           data-character-id="${character.id}"
           aria-pressed="${selected}"
         >
-          <span class="character-check">${selected ? "✓" : "+"}</span>
+          <span class="character-check">${selected ? "✓" : roster?.owned && roster?.enabled ? "+" : "×"}</span>
           <span class="character-select-icon">${character.icon ?? "◈"}</span>
           <strong>${character.name}</strong><span class="rank-badge rank-${character.baseRank ?? character.rarity ?? 0}">★${character.baseRank ?? character.rarity ?? "?"}</span>
           <small>${character.weapon}・${character.element}・${character.role}</small>
@@ -779,7 +792,7 @@ export class AppUI {
             character.dataStatus === "simulator" ? "検証用" : "未入力"
           }</span>
           <span class="character-stats">物攻 ${this.equipmentManager.applyToCharacter(character).patk ?? "-"} / 属攻 ${this.equipmentManager.applyToCharacter(character).eatk ?? "-"} / 速 ${this.equipmentManager.applyToCharacter(character).speed ?? "-"}</span>
-          <span class="character-ability-count">技 ${this.repo.getAbilities(character.id).length}件${(character.tags ?? []).length ? ` / ${(character.tags ?? []).slice(0, 3).join("・")}` : ""}</span>
+          <span class="character-ability-count">Lv${roster?.level ?? 100} / 覚醒${roster?.awakening ?? 0} / 技 ${this.repo.getAbilities(character.id).length}件${(character.tags ?? []).length ? ` / ${(character.tags ?? []).slice(0, 3).join("・")}` : ""}</span>
         </button>
       `;
     }).join("") || '<p class="empty">条件に一致するキャラクターがいません。</p>';
@@ -817,6 +830,7 @@ export class AppUI {
   }
 
   togglePartyCharacter(characterId) {
+    if (!this.rosterManager.isAvailable(characterId) && !this.selectedPartyIds.includes(characterId)) return;
     if (this.selectedPartyIds.includes(characterId)) {
       this.selectedPartyIds = this.selectedPartyIds.filter(id => id !== characterId);
     } else {
@@ -1312,4 +1326,73 @@ export class AppUI {
     element.textContent = message;
     element.className = `data-status ${type}`;
   }
+
+  getVisibleRosterCharacters() {
+    const query = (this.$("rosterSearch")?.value ?? "").trim().toLowerCase();
+    const filter = this.$("rosterFilter")?.value ?? "all";
+    return this.repo.getCharacters().filter(character => {
+      const entry = this.rosterManager.get(character.id);
+      if (query && ![character.name, character.id, character.weapon, character.element].some(v => String(v ?? "").toLowerCase().includes(query))) return false;
+      if (filter === "owned" && !entry.owned) return false;
+      if (filter === "unowned" && entry.owned) return false;
+      if (filter === "enabled" && !(entry.owned && entry.enabled)) return false;
+      return true;
+    });
+  }
+
+  renderRoster() {
+    const summary = this.rosterManager.getSummary();
+    this.$("rosterSummary").innerHTML = `
+      <span><b>${summary.owned}</b> / ${summary.total}<small>所持</small></span>
+      <span><b>${summary.enabled}</b><small>編成対象</small></span>
+      <span><b>${summary.awakening4}</b><small>覚醒IV</small></span>
+      <span><b>${summary.exUnlocked}</b><small>EX習得</small></span>`;
+    this.$("rosterGrid").innerHTML = this.getVisibleRosterCharacters().map(character => {
+      const entry = this.rosterManager.get(character.id);
+      return `<article class="roster-card ${entry.owned ? "owned" : "unowned"}" data-roster-id="${character.id}">
+        <div class="roster-card-head"><strong>${character.icon ?? "◈"} ${character.name}</strong><span>★${character.baseRank ?? character.rarity ?? "?"}</span></div>
+        <small>${character.weapon}・${character.element}・${character.role}</small>
+        <div class="roster-flags">
+          <label><input type="checkbox" data-roster-field="owned" ${entry.owned ? "checked" : ""}>所持</label>
+          <label><input type="checkbox" data-roster-field="enabled" ${entry.enabled ? "checked" : ""} ${entry.owned ? "" : "disabled"}>編成対象</label>
+          <label><input type="checkbox" data-roster-field="exUnlocked" ${entry.exUnlocked ? "checked" : ""} ${entry.owned ? "" : "disabled"}>EX</label>
+        </div>
+        <div class="roster-values">
+          <label>Lv<input type="number" min="1" max="120" data-roster-field="level" value="${entry.level}" ${entry.owned ? "" : "disabled"}></label>
+          <label>覚醒<select data-roster-field="awakening" ${entry.owned ? "" : "disabled"}>${[0,1,2,3,4].map(v => `<option value="${v}" ${entry.awakening===v?'selected':''}>${v}</option>`).join('')}</select></label>
+          <label>必殺<select data-roster-field="ultimateLevel" ${entry.owned ? "" : "disabled"}>${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}" ${entry.ultimateLevel===v?'selected':''}>Lv${v}</option>`).join('')}</select></label>
+        </div>
+      </article>`;
+    }).join("");
+    this.$("rosterGrid").querySelectorAll("[data-roster-id]").forEach(card => {
+      card.querySelectorAll("[data-roster-field]").forEach(input => input.onchange = () => {
+        const field = input.dataset.rosterField;
+        const value = input.type === "checkbox" ? input.checked : Number(input.value);
+        const patch = { [field]: value };
+        if (field === "owned" && !value) patch.enabled = false;
+        if (field === "owned" && value) patch.enabled = true;
+        this.rosterManager.set(card.dataset.rosterId, patch);
+        this.selectedPartyIds = this.selectedPartyIds.filter(id => this.rosterManager.isAvailable(id));
+        this.renderRoster(); this.refreshSelectors(); this.renderCharacterSelector(); this.scheduleAutoSave();
+      });
+    });
+  }
+
+  exportRoster() {
+    const blob = new Blob([JSON.stringify(this.rosterManager.exportData(), null, 2)], { type: "application/json" });
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(blob); anchor.download = "octopath-my-roster-v2.json"; anchor.click(); URL.revokeObjectURL(anchor.href);
+  }
+
+  async importRoster(event) {
+    const file = event.target.files?.[0]; if (!file) return;
+    try {
+      this.rosterManager.importData(JSON.parse(await file.text()));
+      this.selectedPartyIds = this.selectedPartyIds.filter(id => this.rosterManager.isAvailable(id));
+      this.renderRoster(); this.refreshSelectors(); this.renderCharacterSelector();
+      this.setPresetStatus("マイ旅団を読み込みました。", "success");
+    } catch (error) { this.setPresetStatus(error.message, "error"); }
+    event.target.value = "";
+  }
+
 }

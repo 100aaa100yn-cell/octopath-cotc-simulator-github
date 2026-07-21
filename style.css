@@ -247,3 +247,17 @@ footer{text-align:center;padding:20px;color:var(--muted)}
 .coverage-chip.covered { background:color-mix(in srgb, #42b883 18%, transparent); }
 .coverage-chip.missing { background:color-mix(in srgb, #e76f51 14%, transparent); opacity:.8; }
 .score-breakdown { display:block; margin-top:.3rem; opacity:.72; font-size:.72rem; }
+
+
+/* v2.0 My Roster */
+.roster-toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:.65rem;margin-bottom:.9rem}
+.roster-summary{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:.7rem;margin-bottom:.9rem}
+.roster-summary span{display:flex;flex-direction:column;padding:.75rem;border-radius:12px;background:rgba(127,127,127,.08)}
+.roster-summary b{font-size:1.35rem}.roster-summary small{opacity:.7}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.7rem;max-height:620px;overflow:auto;padding:.15rem}
+.roster-card{padding:.75rem;border:1px solid var(--border,#ccc);border-radius:12px;background:rgba(127,127,127,.035)}
+.roster-card.unowned{opacity:.55}.roster-card-head{display:flex;justify-content:space-between;gap:.5rem;margin-bottom:.2rem}
+.roster-flags,.roster-values{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.55rem}.roster-flags label{display:flex;flex-direction:row;align-items:center;gap:.25rem}
+.roster-values label{flex:1;min-width:65px}.roster-values input,.roster-values select{width:100%;min-width:0}
+.character-select-card.unavailable{opacity:.45;filter:grayscale(.7)}
+@media(max-width:650px){.roster-summary{grid-template-columns:1fr 1fr}}
