@@ -1,0 +1,18 @@
+import assert from "node:assert/strict";
+import { BattlePlanManager } from "../src/engine/BattlePlanManager.js";
+const repo={getCharacter:id=>id?{id}:null};
+const calls=[];
+let battleTurns=0;
+const battle={state:null,create(enemyId){this.state={finished:false,enemyId};},execute(actions){calls.push(actions);battleTurns++;return {turn:battleTurns};}};
+const formation={currentTurn:1,addSwap(turn,pair){calls.push({swap:[turn,pair]});}};
+const storage={getItem(){return null;},setItem(){}};
+const manager=new BattlePlanManager(repo,battle,formation,storage);
+manager.createPlan("test","enemy_1");
+manager.addTurn({c1:{abilityId:"a1",boost:2}},[1]);
+assert.equal(manager.activePlan.turns.length,1);
+const result=manager.executeNext();
+assert.equal(result.log.turn,1);
+assert.equal(manager.cursor,1);
+assert.deepEqual(calls[0],{swap:[1,1]});
+assert.equal(calls[1].c1.boost,2);
+console.log("BattlePlanManager tests passed");

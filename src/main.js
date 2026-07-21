@@ -12,10 +12,11 @@ import { RosterManager } from "./engine/RosterManager.js";
 import { EffectManager } from "./engine/EffectManager.js";
 import { FormationManager } from "./engine/FormationManager.js";
 import { TurnBattleManager } from "./engine/TurnBattleManager.js";
+import { BattlePlanManager } from "./engine/BattlePlanManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "2.4.0";
+  document.documentElement.dataset.appVersion = "2.5.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();
@@ -26,6 +27,7 @@ async function main() {
   const partyOptimizer = new PartyOptimizer(repo, rosterManager);
   const damageEngine = new DamageEngine(repo);
   const turnBattleManager = new TurnBattleManager(repo, damageEngine, formationManager, effectManager);
+  const battlePlanManager = new BattlePlanManager(repo, turnBattleManager, formationManager);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
   const equipmentManager = new EquipmentManager(repo);
   const battleEngine = new BattleEngine(
@@ -48,7 +50,8 @@ async function main() {
     rosterManager,
     effectManager,
     formationManager,
-    turnBattleManager
+    turnBattleManager,
+    battlePlanManager
   ).init();
 }
 

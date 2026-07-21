@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -16,6 +16,7 @@ export class AppUI {
     this.effectManager = effectManager;
     this.formationManager = formationManager;
     this.turnBattleManager = turnBattleManager;
+    this.battlePlanManager = battlePlanManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -45,6 +46,7 @@ export class AppUI {
     this.renderFormation();
     this.refreshTurnBattleEnemy();
     this.renderTurnBattle();
+    this.renderBattlePlanner();
     this.restoreInitialState();
   }
 
@@ -123,6 +125,16 @@ export class AppUI {
     this.$("turnBattleExecuteBtn").onclick = () => this.executeTurnBattle();
     this.$("turnBattleResetBtn").onclick = () => this.startTurnBattle();
     this.$("turnBattleEnemySelect").onchange = () => this.renderTurnBattle();
+    this.$("battlePlanCreateBtn").onclick = () => { this.battlePlanManager.createPlan(this.$("battlePlanName").value, this.$("turnBattleEnemySelect").value); this.renderBattlePlanner(); };
+    this.$("battlePlanSelect").onchange = () => { this.battlePlanManager.selectPlan(this.$("battlePlanSelect").value); this.renderBattlePlanner(); };
+    this.$("battlePlanRenameBtn").onclick = () => { this.battlePlanManager.renameActive(this.$("battlePlanName").value); this.renderBattlePlanner(); };
+    this.$("battlePlanDeleteBtn").onclick = () => { this.battlePlanManager.deleteActive(); this.renderBattlePlanner(); };
+    this.$("battlePlanAddTurnBtn").onclick = () => this.addCurrentCommandsToPlan();
+    this.$("battlePlanExecuteNextBtn").onclick = () => this.executeNextPlannedTurn();
+    this.$("battlePlanExecuteAllBtn").onclick = () => this.executeAllPlannedTurns();
+    this.$("battlePlanResetBtn").onclick = () => { this.battlePlanManager.resetProgress(); this.renderBattlePlanner(); };
+    this.$("battlePlanExportBtn").onclick = () => this.exportBattlePlans();
+    this.$("battlePlanImportInput").onchange = event => this.importBattlePlans(event);
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1514,6 +1526,55 @@ export class AppUI {
     event.target.value="";
   }
 
+  collectTurnBattleActions() {
+    const actions={};
+    this.$("turnBattleActions").querySelectorAll("[data-turn-character]").forEach(row=>{
+      actions[row.dataset.turnCharacter]={
+        abilityId:row.querySelector("[data-turn-ability]").value,
+        boost:Number(row.querySelector("[data-turn-boost]").value||0)
+      };
+    });
+    return actions;
+  }
+
+  addCurrentCommandsToPlan() {
+    const actions=this.collectTurnBattleActions();
+    const swaps=[...this.$("battlePlanSwapChoices").querySelectorAll("input:checked")].map(input=>Number(input.value));
+    this.battlePlanManager.addTurn(actions,swaps);
+    this.renderBattlePlanner();
+    this.setPresetStatus("現在の戦闘コマンドを攻略プランへ追加しました。","success");
+  }
+
+  executeNextPlannedTurn() {
+    try { const result=this.battlePlanManager.executeNext(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.setPresetStatus(`${result.log.turn}ターン目の計画を実行しました。`,"success"); }
+    catch(error){this.setPresetStatus(error.message,"error");}
+  }
+
+  executeAllPlannedTurns() {
+    try { const results=this.battlePlanManager.executeAll(); this.renderTurnBattle();this.renderFormation();this.renderEffectManager();this.renderBattlePlanner();this.setPresetStatus(`${results.length}ターン分の計画を実行しました。`,"success"); }
+    catch(error){this.setPresetStatus(error.message,"error");}
+  }
+
+  renderBattlePlanner() {
+    const manager=this.battlePlanManager, plan=manager.activePlan;
+    this.$("battlePlanSelect").innerHTML=manager.plans.map(p=>`<option value="${p.id}" ${p.id===manager.activePlanId?"selected":""}>${p.name}（${p.turns.length}T）</option>`).join("")||'<option value="">プランなし</option>';
+    this.$("battlePlanName").value=plan?.name??"";
+    this.$("battlePlanSwapChoices").innerHTML=[0,1,2,3].map(i=>`<label><input type="checkbox" value="${i}">ペア${i+1}をターン終了時に交代</label>`).join("");
+    const turns=plan?.turns??[];
+    this.$("battlePlanProgress").textContent=plan?`${Math.min(manager.cursor,turns.length)} / ${turns.length} ターン実行済み`:"プランを作成してください";
+    this.$("battlePlanTurns").innerHTML=turns.map((turn,index)=>{
+      const actionLines=Object.entries(turn.actions).map(([id,a])=>{const c=this.repo.getCharacter(id);const ability=this.turnBattleManager.ability(id,a.abilityId);return `<span><b>${c?.name??id}</b>：${ability?.name??"待機"}${a.boost?`（Boost ${a.boost}）`:""}</span>`;}).join("");
+      return `<article class="battle-plan-turn ${index<manager.cursor?'completed':index===manager.cursor?'current':''}"><header><b>${turn.label}</b><span>${turn.swaps.length?`交代：${turn.swaps.map(i=>`ペア${i+1}`).join("・")}`:"交代なし"}</span></header><div class="battle-plan-actions">${actionLines||"待機"}</div><footer><button type="button" data-plan-move="-1" data-plan-index="${index}" class="secondary">↑</button><button type="button" data-plan-move="1" data-plan-index="${index}" class="secondary">↓</button><button type="button" data-plan-copy="${index}" class="secondary">複製</button><button type="button" data-plan-remove="${index}" class="secondary">削除</button></footer></article>`;
+    }).join("")||'<p class="empty">ターン戦闘コマンドを選び、「現在コマンドを追加」を押してください。</p>';
+    this.$("battlePlanTurns").querySelectorAll("[data-plan-move]").forEach(btn=>btn.onclick=()=>{manager.moveTurn(Number(btn.dataset.planIndex),Number(btn.dataset.planMove));this.renderBattlePlanner();});
+    this.$("battlePlanTurns").querySelectorAll("[data-plan-copy]").forEach(btn=>btn.onclick=()=>{manager.duplicateTurn(Number(btn.dataset.planCopy));this.renderBattlePlanner();});
+    this.$("battlePlanTurns").querySelectorAll("[data-plan-remove]").forEach(btn=>btn.onclick=()=>{manager.removeTurn(Number(btn.dataset.planRemove));this.renderBattlePlanner();});
+    for(const id of ["battlePlanRenameBtn","battlePlanDeleteBtn","battlePlanAddTurnBtn","battlePlanExecuteNextBtn","battlePlanExecuteAllBtn","battlePlanResetBtn","battlePlanExportBtn"]) this.$(id).disabled=!plan;
+  }
+
+  exportBattlePlans() { const blob=new Blob([JSON.stringify(this.battlePlanManager.exportData(),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="octopath-battle-plans-v2.5.json";a.click();URL.revokeObjectURL(a.href); }
+  async importBattlePlans(event) { const file=event.target.files?.[0];if(!file)return;try{this.battlePlanManager.importData(JSON.parse(await file.text()));this.renderBattlePlanner();this.setPresetStatus("攻略プランを読み込みました。","success");}catch(error){this.setPresetStatus(error.message,"error");}event.target.value=""; }
+
   refreshTurnBattleEnemy() {
     const select=this.$("turnBattleEnemySelect"); if(!select)return;
     const previous=select.value;
@@ -1531,8 +1592,7 @@ export class AppUI {
   }
 
   executeTurnBattle() {
-    const actions={};
-    this.$("turnBattleActions").querySelectorAll("[data-turn-character]").forEach(row=>{actions[row.dataset.turnCharacter]={abilityId:row.querySelector("[data-turn-ability]").value,boost:Number(row.querySelector("[data-turn-boost]").value||0)};});
+    const actions=this.collectTurnBattleActions();
     try { const log=this.turnBattleManager.execute(actions); this.renderTurnBattle(); this.renderFormation(); this.renderEffectManager(); this.setPresetStatus(`${log.turn}ターン目を実行しました。`,"success"); }
     catch(error){this.setPresetStatus(error.message,"error");}
   }

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="buildVersion" class="build-version" aria-label="build version">v2.4.0</div>
+  <div id="buildVersion" class="build-version" aria-label="build version">v2.5.0</div>
 <header>
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
@@ -212,6 +212,28 @@
 
 
 
+
+
+  <section class="panel battle-planner-panel">
+    <div class="section-title-row"><div><h2>攻略戦闘プランナー</h2><p>複数ターンの技・Boost・交代を保存し、順番に再生します。</p></div><strong id="battlePlanProgress">プランを作成してください</strong></div>
+    <div class="battle-plan-toolbar">
+      <label>保存プラン<select id="battlePlanSelect"></select></label>
+      <label>プラン名<input id="battlePlanName" type="text" placeholder="例：闘技大会 5ターン撃破"></label>
+      <button id="battlePlanCreateBtn" type="button">新規作成</button>
+      <button id="battlePlanRenameBtn" type="button" class="secondary">名前変更</button>
+      <button id="battlePlanDeleteBtn" type="button" class="secondary">削除</button>
+    </div>
+    <div id="battlePlanSwapChoices" class="battle-plan-swap-choices"></div>
+    <div class="battle-plan-toolbar">
+      <button id="battlePlanAddTurnBtn" type="button">現在コマンドを追加</button>
+      <button id="battlePlanExecuteNextBtn" type="button">次の計画ターンを実行</button>
+      <button id="battlePlanExecuteAllBtn" type="button">残りを連続実行</button>
+      <button id="battlePlanResetBtn" type="button" class="secondary">進捗リセット</button>
+      <button id="battlePlanExportBtn" type="button" class="secondary">プランJSON出力</button>
+      <label class="file-button">プランJSON読込<input id="battlePlanImportInput" type="file" accept="application/json,.json"></label>
+    </div>
+    <div id="battlePlanTurns" class="battle-plan-turns"></div>
+  </section>
 
   <section class="panel turn-battle-panel">
     <div class="section-title-row"><div><h2>ターン戦闘コマンド</h2><p>前衛4人の技とBoostを選び、1ターンずつ戦闘を進めます。</p></div></div>
@@ -445,6 +467,6 @@
 </main>
 
 <footer>Version 2.4.0｜技・Boostを選び、1ターンずつ戦闘を実行できます。</footer>
-<script type="module" src="src/main.js?v=2.4.0"></script>
+<script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

@@ -208,3 +208,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v2.4 ターン戦闘
 
 8人隊列の前衛4人について技とBoostを選択し、SP・BP・敵HP・シールド・ブレイク・フェーズ・予定交代を1ターンずつ処理できます。
+
+
+## v2.5 攻略戦闘プランナー
+
+ターン戦闘コマンドで選んだ技・Boostと、ターン終了時の交代を複数ターン分保存できます。プランは並べ替え、複製、JSONバックアップ、順次実行、連続実行に対応します。
