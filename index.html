@@ -229,6 +229,24 @@
     </div>
   </section>
 
+
+  <section class="panel effect-manager-panel">
+    <div class="section-title-row"><div><h2>バフ・デバフ管理</h2><p>効果量、重複上限、残りターンを管理し、本格ダメージ計算へ反映します。</p></div></div>
+    <div class="effect-toolbar">
+      <label>効果<select id="effectTypeSelect"></select></label>
+      <label>効果量%<input id="effectValueInput" type="number" value="15" min="0"></label>
+      <label>継続ターン<input id="effectDurationInput" type="number" value="3" min="1" max="99"></label>
+      <label>発生源<input id="effectSourceInput" type="text" value="手動" placeholder="技・装備名"></label>
+      <button id="addEffectBtn" type="button">効果を追加</button>
+      <button id="advanceEffectTurnBtn" type="button">1ターン進める</button>
+      <button id="clearEffectsBtn" class="secondary" type="button">全解除</button>
+      <button id="exportEffectsBtn" type="button">効果JSON出力</button>
+      <label class="file-button">効果JSON読込<input id="importEffectsInput" type="file" accept=".json,application/json"></label>
+    </div>
+    <div id="effectCapSummary" class="effect-cap-summary"></div>
+    <div id="effectList" class="effect-list"></div>
+  </section>
+
   <section class="panel damage-panel">
     <h2>本格ダメージ計算</h2>
 
@@ -388,7 +406,7 @@
   </section>
 </main>
 
-<footer>Version 2.1.0｜装備・ソウル・テンプレートを管理できます。</footer>
-<script type="module" src="src/main.js?v=2.1.0"></script>
+<footer>Version 2.2.0｜バフ・デバフ・残りターンを管理できます。</footer>
+<script type="module" src="src/main.js?v=2.2.0"></script>
 </body>
 </html>

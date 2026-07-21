@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -13,6 +13,7 @@ export class AppUI {
     this.analytics = analytics;
     this.equipmentManager = equipmentManager;
     this.rosterManager = rosterManager;
+    this.effectManager = effectManager;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -38,6 +39,7 @@ export class AppUI {
     this.refreshEquipmentUi();
     this.renderCatalogSummary();
     this.renderRoster();
+    this.renderEffectManager();
     this.restoreInitialState();
   }
 
@@ -99,6 +101,11 @@ export class AppUI {
     this.$("rosterUnownedAllBtn").onclick = () => { this.rosterManager.setAll({ owned: false }); this.renderRoster(); this.refreshSelectors(); };
     this.$("exportRosterBtn").onclick = () => this.exportRoster();
     this.$("importRosterInput").onchange = event => this.importRoster(event);
+    this.$("addEffectBtn").onclick = () => this.addManagedEffect();
+    this.$("advanceEffectTurnBtn").onclick = () => { this.effectManager.tick(); this.renderEffectManager(); this.calculateManualDamage(); };
+    this.$("clearEffectsBtn").onclick = () => { this.effectManager.clear(); this.renderEffectManager(); this.calculateManualDamage(); };
+    this.$("exportEffectsBtn").onclick = () => this.exportEffects();
+    this.$("importEffectsInput").onchange = event => this.importEffects(event);
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -332,10 +339,10 @@ export class AppUI {
     const input = {
       attacker,
       ability,
-      enemy,
-      effects: this.parseManualEffects(),
+      enemy: this.effectManager.applyEnemy(enemy),
+      effects: [...this.parseManualEffects(), ...this.effectManager.toDamageEffects()],
       boost: Number(this.$("damageBoost").value || 0),
-      critical: this.$("damageCritical").checked,
+      critical: this.$("damageCritical").checked || this.effectManager.shouldForceCritical(),
       broken: this.$("damageBroken").checked,
       weakness: this.$("damageWeakness").checked
     };
@@ -372,6 +379,49 @@ export class AppUI {
         <div>耐性DOWN：+${(average.effectTotals.resistanceDown * 100).toFixed(0)}%</div>
       </div>
     `;
+  }
+
+
+  addManagedEffect() {
+    const type=this.$("effectTypeSelect").value;
+    const definition=this.effectManager.constructor.DEFINITIONS[type] ?? {};
+    this.effectManager.add({
+      type,
+      value: definition.boolean ? 1 : Number(this.$("effectValueInput").value || 0),
+      remainingTurns: Number(this.$("effectDurationInput").value || 1),
+      source: this.$("effectSourceInput").value || "手動"
+    });
+    this.renderEffectManager();
+    this.calculateManualDamage();
+  }
+
+  renderEffectManager() {
+    const definitions=this.effectManager.constructor.DEFINITIONS;
+    const select=this.$("effectTypeSelect");
+    if(select && !select.options.length) select.innerHTML=Object.entries(definitions).map(([type,d])=>`<option value="${type}">${d.label}</option>`).join("");
+    const totals=this.effectManager.totals();
+    this.$("effectCapSummary").innerHTML=Object.entries(totals).map(([type,value])=>`<span><small>${definitions[type]?.label ?? type}</small><b>${definitions[type]?.boolean ? "有効" : `${value}%`}</b></span>`).join("") || '<span class="empty">有効な効果はありません。</span>';
+    this.$("effectList").innerHTML=this.effectManager.list().map(effect=>`<article class="effect-card">
+      <div><b>${definitions[effect.type]?.label ?? effect.type}</b><small>${effect.source}</small></div>
+      <label>効果量<input data-effect-value="${effect.id}" type="number" value="${effect.value}" ${definitions[effect.type]?.boolean?'disabled':''}></label>
+      <label>残り<input data-effect-turns="${effect.id}" type="number" min="1" value="${effect.remainingTurns}"></label>
+      <button data-effect-remove="${effect.id}" class="secondary" type="button">削除</button>
+    </article>`).join("") || '<p class="empty">バフ・デバフを追加してください。</p>';
+    this.$("effectList").querySelectorAll("[data-effect-value]").forEach(input=>input.onchange=()=>{this.effectManager.update(input.dataset.effectValue,{value:Number(input.value)});this.renderEffectManager();this.calculateManualDamage();});
+    this.$("effectList").querySelectorAll("[data-effect-turns]").forEach(input=>input.onchange=()=>{this.effectManager.update(input.dataset.effectTurns,{remainingTurns:Number(input.value)});this.renderEffectManager();});
+    this.$("effectList").querySelectorAll("[data-effect-remove]").forEach(button=>button.onclick=()=>{this.effectManager.remove(button.dataset.effectRemove);this.renderEffectManager();this.calculateManualDamage();});
+  }
+
+  exportEffects() {
+    const blob=new Blob([this.effectManager.exportJson()],{type:"application/json"});
+    const anchor=document.createElement("a"); anchor.href=URL.createObjectURL(blob); anchor.download="octopath-effects-v2.2.json"; anchor.click(); URL.revokeObjectURL(anchor.href);
+  }
+
+  async importEffects(event) {
+    const file=event.target.files[0]; if(!file)return;
+    try { this.effectManager.importJson(await file.text()); this.renderEffectManager(); this.calculateManualDamage(); this.setStatus("効果セットを読み込みました。","success"); }
+    catch(error){ this.setStatus(`効果読込エラー：${error.message}`,"error"); }
+    finally { event.target.value=""; }
   }
 
 

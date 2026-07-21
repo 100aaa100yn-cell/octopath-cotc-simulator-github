@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import { EffectManager } from "../src/engine/EffectManager.js";
+const storage={data:{},getItem(k){return this.data[k]??null},setItem(k,v){this.data[k]=v}};
+const m=new EffectManager(storage);
+m.clear(); m.add({type:"physical_attack_up",value:30,remainingTurns:2}); m.add({type:"physical_attack_up",value:30,remainingTurns:3});
+assert.equal(m.totals().physical_attack_up,50);
+m.add({type:"physical_defense_down",value:20,remainingTurns:1});
+assert.equal(m.applyEnemy({pdef:100,edef:80}).pdef,80);
+m.tick(); assert.equal(m.list().some(x=>x.type==="physical_defense_down"),false);
+console.log("EffectManager tests passed");
