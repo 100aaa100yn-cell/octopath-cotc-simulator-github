@@ -12,7 +12,7 @@ import { RosterManager } from "./engine/RosterManager.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "2.0.0";
+  document.documentElement.dataset.appVersion = "2.1.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();

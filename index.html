@@ -15,7 +15,7 @@
   <div>
     <p class="eyebrow">OCTOPATH COTC STRATEGY SIMULATOR</p>
     <h1>Octopath CotC Strategy Simulator</h1>
-    <p>Version 2.0｜マイ旅団・所持キャラ編成</p>
+    <p>Version 2.1｜装備・ソウル・テンプレート</p>
   </div>
   <button id="themeBtn">テーマ切替</button>
 </header>
@@ -99,19 +99,31 @@
 
 
   <section class="panel equipment-panel">
-    <div class="section-title-row">
-      <div>
-        <h2>装備編成</h2>
-        <p>キャラクターごとに武器・防具・アクセサリー2枠を設定します。装備補正はダメージ計算へ反映されます。</p>
-      </div>
-      <button id="clearEquipmentBtn" class="secondary" type="button">このキャラの装備を外す</button>
+    <div class="section-title-row"><div><h2>装備編成</h2><p>武器・頭・胴・腕・アクセサリー・ソウルを設定します。補正は計算と自動編成へ反映されます。</p></div><button id="clearEquipmentBtn" class="secondary" type="button">このキャラの装備を外す</button></div>
+    <div class="equipment-template-toolbar">
+      <label>テンプレート<select id="equipmentTemplateSelect"><option value="">選択してください</option></select></label>
+      <input id="equipmentTemplateName" type="text" placeholder="例：物理火力用">
+      <button id="saveEquipmentTemplateBtn" type="button">現在装備を保存</button>
+      <button id="applyEquipmentTemplateBtn" type="button">適用</button>
+      <button id="deleteEquipmentTemplateBtn" class="secondary" type="button">削除</button>
+      <button id="exportEquipmentBtn" type="button">装備JSON出力</button>
+      <label class="file-button">装備JSON読込<input id="importEquipmentInput" type="file" accept=".json,application/json"></label>
     </div>
     <div class="equipment-grid">
       <label>キャラクター<select id="equipmentCharacterSelect"></select></label>
       <label>武器<select id="equipmentWeaponSelect"></select></label>
-      <label>防具<select id="equipmentArmorSelect"></select></label>
+      <label>頭<select id="equipmentHeadSelect"></select></label>
+      <label>胴<select id="equipmentBodySelect"></select></label>
+      <label>腕<select id="equipmentArmSelect"></select></label>
       <label>アクセサリー1<select id="equipmentAccessory1Select"></select></label>
       <label>アクセサリー2<select id="equipmentAccessory2Select"></select></label>
+    </div>
+    <div class="soul-editor"><h3>ソウルスロット</h3><div id="soulSlotGrid" class="soul-slot-grid"></div></div>
+    <div class="equipment-effects-grid">
+      <label>ダメージ上限+<input id="equipmentDamageCap" type="number" value="0" step="1000"></label>
+      <label>物理ダメージ%<input id="equipmentPhysicalDamage" type="number" value="0" min="0" max="100"></label>
+      <label>属性ダメージ%<input id="equipmentElementalDamage" type="number" value="0" min="0" max="100"></label>
+      <label>会心率%<input id="equipmentCritical" type="number" value="0" min="0" max="100"></label>
     </div>
     <div id="equipmentStatSummary" class="equipment-stat-summary"></div>
   </section>
@@ -376,7 +388,7 @@
   </section>
 </main>
 
-<footer>Version 2.0.0｜マイ旅団を基準に編成・育成状態を管理できます。</footer>
-<script type="module" src="src/main.js?v=2.0.0"></script>
+<footer>Version 2.1.0｜装備・ソウル・テンプレートを管理できます。</footer>
+<script type="module" src="src/main.js?v=2.1.0"></script>
 </body>
 </html>

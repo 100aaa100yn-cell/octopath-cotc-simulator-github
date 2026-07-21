@@ -261,3 +261,6 @@ footer{text-align:center;padding:20px;color:var(--muted)}
 .roster-values label{flex:1;min-width:65px}.roster-values input,.roster-values select{width:100%;min-width:0}
 .character-select-card.unavailable{opacity:.45;filter:grayscale(.7)}
 @media(max-width:650px){.roster-summary{grid-template-columns:1fr 1fr}}
+
+/* v2.1 equipment system */
+.equipment-template-toolbar{display:flex;flex-wrap:wrap;gap:.55rem;align-items:end;margin-bottom:.8rem}.equipment-template-toolbar label{min-width:180px}.equipment-effects-grid,.soul-slot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.65rem;margin:.75rem 0}.soul-editor{margin-top:.8rem;padding:.75rem;border-radius:12px;background:rgba(127,127,127,.055)}.soul-slot{display:grid;grid-template-columns:1fr;gap:.35rem;padding:.55rem;border:1px solid var(--border,#ccc);border-radius:10px}.equipment-stat-summary{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center}.equipment-stat-summary small{width:100%}

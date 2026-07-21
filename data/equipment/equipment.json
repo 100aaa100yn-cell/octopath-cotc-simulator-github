@@ -90,7 +90,7 @@
   {
     "id": "armor_physical_01",
     "name": "守護騎士の鎧",
-    "slot": "armor",
+    "slot": "body",
     "stats": {
       "pdef": 70,
       "edef": 35,
@@ -101,7 +101,7 @@
   {
     "id": "armor_elemental_01",
     "name": "賢者のローブ",
-    "slot": "armor",
+    "slot": "body",
     "stats": {
       "pdef": 30,
       "edef": 75,
@@ -112,7 +112,7 @@
   {
     "id": "armor_balanced_01",
     "name": "旅団の戦装束",
-    "slot": "armor",
+    "slot": "body",
     "stats": {
       "pdef": 50,
       "edef": 50,
@@ -162,6 +162,80 @@
     "slot": "accessory",
     "stats": {
       "hp": 400
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "head_guard_01",
+    "name": "守護騎士の兜",
+    "slot": "head",
+    "stats": {
+      "pdef": 42,
+      "hp": 180
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "head_sage_01",
+    "name": "賢者の帽子",
+    "slot": "head",
+    "stats": {
+      "edef": 45,
+      "maxSp": 20
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "arm_power_01",
+    "name": "剛力の篭手",
+    "slot": "arm",
+    "stats": {
+      "patk": 32,
+      "critical": 18
+    },
+    "effects": {
+      "physicalDamage": 5
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "arm_magic_01",
+    "name": "叡智の腕輪",
+    "slot": "arm",
+    "stats": {
+      "eatk": 32,
+      "maxSp": 15
+    },
+    "effects": {
+      "elementalDamage": 5
+    },
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "weapon_sword_soul_01",
+    "name": "試作ソウルソード",
+    "slot": "weapon",
+    "weapon": "sword",
+    "stats": {
+      "patk": 105,
+      "eatk": 40
+    },
+    "effects": {
+      "damageCap": 10000,
+      "physicalDamage": 10
+    },
+    "soulSlots": 5,
+    "dataStatus": "simulator"
+  },
+  {
+    "id": "accessory_cap_01",
+    "name": "限界突破の証",
+    "slot": "accessory",
+    "stats": {
+      "hp": 200
+    },
+    "effects": {
+      "damageCap": 20000
     },
     "dataStatus": "simulator"
   }

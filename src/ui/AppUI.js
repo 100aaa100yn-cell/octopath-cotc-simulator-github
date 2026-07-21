@@ -83,10 +83,16 @@ export class AppUI {
     this.$("exportIncompleteEnemiesBtn").onclick = () => this.exportIncompleteEnemies();
     this.$("refreshCatalogBtn").onclick = () => this.renderCatalogSummary();
     this.$("equipmentCharacterSelect").onchange = () => this.refreshEquipmentSlots();
-    for (const id of ["equipmentWeaponSelect", "equipmentArmorSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
+    for (const id of ["equipmentWeaponSelect", "equipmentHeadSelect", "equipmentBodySelect", "equipmentArmSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
       this.$(id).onchange = () => this.updateEquipment();
     }
     this.$("clearEquipmentBtn").onclick = () => this.clearEquipment();
+    this.$("saveEquipmentTemplateBtn").onclick = () => this.saveEquipmentTemplate();
+    this.$("applyEquipmentTemplateBtn").onclick = () => this.applyEquipmentTemplate();
+    this.$("deleteEquipmentTemplateBtn").onclick = () => this.deleteEquipmentTemplate();
+    this.$("exportEquipmentBtn").onclick = () => this.exportEquipment();
+    this.$("importEquipmentInput").onchange = event => this.importEquipment(event);
+    for (const id of ["equipmentDamageCap", "equipmentPhysicalDamage", "equipmentElementalDamage", "equipmentCritical"]) this.$(id).onchange = () => this.updateEquipmentEffects();
     this.$("rosterSearch").oninput = () => this.renderRoster();
     this.$("rosterFilter").onchange = () => { this.rosterFilter = this.$("rosterFilter").value; this.renderRoster(); };
     this.$("rosterOwnedAllBtn").onclick = () => { this.rosterManager.setAll({ owned: true, enabled: true }); this.renderRoster(); this.refreshSelectors(); };
@@ -869,72 +875,66 @@ export class AppUI {
 
 
   formatStatBonuses(bonuses = {}) {
-    const labels = { hp: "HP", patk: "物攻", eatk: "属攻", pdef: "物防", edef: "属防", speed: "速度", maxSp: "SP" };
+    const labels = { hp: "HP", patk: "物攻", eatk: "属攻", pdef: "物防", edef: "属防", speed: "速度", critical: "会心", maxSp: "SP" };
     const values = Object.entries(bonuses).filter(([, value]) => Number(value) !== 0);
     return values.length ? values.map(([key, value]) => `${labels[key] ?? key}${value >= 0 ? "+" : ""}${value}`).join(" / ") : "なし";
   }
 
   refreshEquipmentUi() {
-    const select = this.$("equipmentCharacterSelect");
-    if (!select) return;
+    const select = this.$("equipmentCharacterSelect"); if (!select) return;
     const previous = this.equipmentCharacterId || select.value;
-    select.innerHTML = this.repo.getCharacters().map(character => `<option value="${character.id}">${character.icon ?? "◈"} ${character.name}</option>`).join("");
+    select.innerHTML = this.repo.getCharacters().filter(c => this.rosterManager.get(c.id)?.owned).map(c => `<option value="${c.id}">${c.icon ?? "◈"} ${c.name}</option>`).join("");
     if (this.repo.getCharacter(previous)) select.value = previous;
     this.equipmentCharacterId = select.value;
-    this.refreshEquipmentSlots();
+    this.refreshEquipmentTemplates(); this.refreshEquipmentSlots();
   }
 
   equipmentOptions(slot, character, selectedId) {
-    const items = this.repo.getEquipmentList().filter(item => {
-      if (item.slot !== slot) return false;
-      return slot !== "weapon" || !item.weapon || item.weapon === character.weapon;
-    });
+    const items = this.repo.getEquipmentList().filter(item => item.slot === slot && (slot !== "weapon" || !item.weapon || item.weapon === character.weapon));
     return [`<option value="">装備なし</option>`, ...items.map(item => `<option value="${item.id}" ${item.id === selectedId ? "selected" : ""}>${item.name}｜${this.formatStatBonuses(item.stats)}</option>`)].join("");
   }
 
+  refreshEquipmentTemplates() {
+    const select=this.$("equipmentTemplateSelect"); if(!select) return;
+    const current=select.value; const names=Object.keys(this.equipmentManager.getTemplates()).sort();
+    select.innerHTML='<option value="">選択してください</option>'+names.map(name=>`<option value="${name}">${name}</option>`).join('');
+    if(names.includes(current)) select.value=current;
+  }
+
+  renderSoulSlots(loadout) {
+    const stats=[['','未設定'],['hp','HP'],['maxSp','SP'],['patk','物攻'],['eatk','属攻'],['pdef','物防'],['edef','属防'],['speed','速度'],['critical','会心']];
+    this.$("soulSlotGrid").innerHTML=loadout.souls.map((soul,index)=>`<div class="soul-slot"><b>ソウル${index+1}</b><select data-soul-stat="${index}">${stats.map(([v,n])=>`<option value="${v}" ${soul.stat===v?'selected':''}>${n}</option>`).join('')}</select><input data-soul-value="${index}" type="number" value="${soul.value}" step="1"></div>`).join('');
+    this.$("soulSlotGrid").querySelectorAll('select,input').forEach(el=>el.onchange=()=>this.updateSouls());
+  }
+
   refreshEquipmentSlots() {
-    const characterId = this.$("equipmentCharacterSelect")?.value;
-    const character = this.repo.getCharacter(characterId);
-    if (!character) return;
-    this.equipmentCharacterId = characterId;
-    const loadout = this.equipmentManager.getLoadout(characterId);
-    this.$("equipmentWeaponSelect").innerHTML = this.equipmentOptions("weapon", character, loadout.weapon);
-    this.$("equipmentArmorSelect").innerHTML = this.equipmentOptions("armor", character, loadout.armor);
-    this.$("equipmentAccessory1Select").innerHTML = this.equipmentOptions("accessory", character, loadout.accessory1);
-    this.$("equipmentAccessory2Select").innerHTML = this.equipmentOptions("accessory", character, loadout.accessory2);
-    const equipped = this.equipmentManager.applyToCharacter(character);
-    this.$("equipmentStatSummary").innerHTML = `
-      <strong>${character.icon ?? "◈"} ${character.name}</strong><span class="rank-badge rank-${character.baseRank ?? character.rarity ?? 0}">★${character.baseRank ?? character.rarity ?? "?"}</span>
-      <span>物攻 ${character.patk ?? 0} → <b>${equipped.patk}</b></span>
-      <span>属攻 ${character.eatk ?? 0} → <b>${equipped.eatk}</b></span>
-      <span>速度 ${character.speed ?? 0} → <b>${equipped.speed}</b></span>
-      <span>最大SP ${character.maxSp ?? 0} → <b>${equipped.maxSp}</b></span>
-      <small>${this.formatStatBonuses(equipped.equipmentBonuses)}</small>`;
+    const characterId=this.$("equipmentCharacterSelect")?.value; const character=this.repo.getCharacter(characterId); if(!character)return;
+    this.equipmentCharacterId=characterId; const loadout=this.equipmentManager.getLoadout(characterId);
+    this.$("equipmentWeaponSelect").innerHTML=this.equipmentOptions("weapon",character,loadout.weapon);
+    this.$("equipmentHeadSelect").innerHTML=this.equipmentOptions("head",character,loadout.head);
+    this.$("equipmentBodySelect").innerHTML=this.equipmentOptions("body",character,loadout.body);
+    this.$("equipmentArmSelect").innerHTML=this.equipmentOptions("arm",character,loadout.arm);
+    this.$("equipmentAccessory1Select").innerHTML=this.equipmentOptions("accessory",character,loadout.accessory1);
+    this.$("equipmentAccessory2Select").innerHTML=this.equipmentOptions("accessory",character,loadout.accessory2);
+    this.renderSoulSlots(loadout);
+    const effects=loadout.customEffects; this.$("equipmentDamageCap").value=effects.damageCap??0; this.$("equipmentPhysicalDamage").value=effects.physicalDamage??0; this.$("equipmentElementalDamage").value=effects.elementalDamage??0; this.$("equipmentCritical").value=effects.critical??0;
+    const equipped=this.equipmentManager.applyToCharacter(character); const totalEffects=equipped.equipmentEffects??{};
+    this.$("equipmentStatSummary").innerHTML=`<strong>${character.icon??"◈"} ${character.name}</strong><span class="rank-badge rank-${character.baseRank??character.rarity??0}">★${character.baseRank??character.rarity??"?"}</span><span>物攻 ${character.patk??0} → <b>${equipped.patk}</b></span><span>属攻 ${character.eatk??0} → <b>${equipped.eatk}</b></span><span>物防 ${character.pdef??0} → <b>${equipped.pdef}</b></span><span>属防 ${character.edef??0} → <b>${equipped.edef}</b></span><span>速度 ${character.speed??0} → <b>${equipped.speed}</b></span><span>最大SP ${character.maxSp??0} → <b>${equipped.maxSp}</b></span><small>${this.formatStatBonuses(equipped.equipmentBonuses)}</small><small>特殊効果：上限+${Number(totalEffects.damageCap??0).toLocaleString()} / 物理+${totalEffects.physicalDamage??0}% / 属性+${totalEffects.elementalDamage??0}% / 会心+${totalEffects.critical??0}%</small>`;
   }
 
   updateEquipment() {
-    const characterId = this.$("equipmentCharacterSelect").value;
-    const values = {
-      weapon: this.$("equipmentWeaponSelect").value,
-      armor: this.$("equipmentArmorSelect").value,
-      accessory1: this.$("equipmentAccessory1Select").value,
-      accessory2: this.$("equipmentAccessory2Select").value
-    };
-    for (const [slot, id] of Object.entries(values)) this.equipmentManager.equip(characterId, slot, id);
-    this.refreshEquipmentSlots();
-    this.renderCharacterSelector();
-    this.calculateManualDamage();
-    this.scheduleAutoSave();
+    const id=this.$("equipmentCharacterSelect").value; const values={weapon:this.$("equipmentWeaponSelect").value,head:this.$("equipmentHeadSelect").value,body:this.$("equipmentBodySelect").value,arm:this.$("equipmentArmSelect").value,accessory1:this.$("equipmentAccessory1Select").value,accessory2:this.$("equipmentAccessory2Select").value};
+    for(const [slot,item] of Object.entries(values))this.equipmentManager.equip(id,slot,item); this.afterEquipmentChange();
   }
-
-  clearEquipment() {
-    const characterId = this.$("equipmentCharacterSelect").value;
-    for (const slot of ["weapon", "armor", "accessory1", "accessory2"]) this.equipmentManager.equip(characterId, slot, "");
-    this.refreshEquipmentSlots();
-    this.renderCharacterSelector();
-    this.calculateManualDamage();
-    this.scheduleAutoSave();
-  }
+  updateSouls(){const id=this.$("equipmentCharacterSelect").value; for(let i=0;i<5;i++)this.equipmentManager.setSoul(id,i,{stat:this.$("soulSlotGrid").querySelector(`[data-soul-stat="${i}"]`).value,value:this.$("soulSlotGrid").querySelector(`[data-soul-value="${i}"]`).value}); this.afterEquipmentChange();}
+  updateEquipmentEffects(){const id=this.$("equipmentCharacterSelect").value; this.equipmentManager.setCustomEffects(id,{damageCap:Number(this.$("equipmentDamageCap").value)||0,physicalDamage:Number(this.$("equipmentPhysicalDamage").value)||0,elementalDamage:Number(this.$("equipmentElementalDamage").value)||0,critical:Number(this.$("equipmentCritical").value)||0}); this.afterEquipmentChange();}
+  afterEquipmentChange(){this.refreshEquipmentSlots();this.renderCharacterSelector();this.calculateManualDamage();this.scheduleAutoSave();}
+  clearEquipment(){const id=this.$("equipmentCharacterSelect").value; for(const slot of ["weapon","head","body","arm","accessory1","accessory2"])this.equipmentManager.equip(id,slot,""); for(let i=0;i<5;i++)this.equipmentManager.setSoul(id,i,{stat:"",value:0}); this.equipmentManager.setCustomEffects(id,{damageCap:0,physicalDamage:0,elementalDamage:0,critical:0});this.afterEquipmentChange();}
+  saveEquipmentTemplate(){try{this.equipmentManager.saveTemplate(this.$("equipmentTemplateName").value,this.$("equipmentCharacterSelect").value);this.refreshEquipmentTemplates();this.$("equipmentTemplateSelect").value=this.$("equipmentTemplateName").value.trim();this.setPresetStatus("装備テンプレートを保存しました。","success");}catch(e){this.setPresetStatus(e.message,"error");}}
+  applyEquipmentTemplate(){try{this.equipmentManager.applyTemplate(this.$("equipmentTemplateSelect").value,this.$("equipmentCharacterSelect").value);this.afterEquipmentChange();this.setPresetStatus("装備テンプレートを適用しました。","success");}catch(e){this.setPresetStatus(e.message,"error");}}
+  deleteEquipmentTemplate(){const name=this.$("equipmentTemplateSelect").value;if(!name)return;this.equipmentManager.deleteTemplate(name);this.refreshEquipmentTemplates();this.setPresetStatus("装備テンプレートを削除しました。","success");}
+  exportEquipment(){const blob=new Blob([JSON.stringify(this.equipmentManager.exportData(),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="octopath-equipment-v2.1.json";a.click();URL.revokeObjectURL(a.href);}
+  async importEquipment(event){const file=event.target.files[0];if(!file)return;try{this.equipmentManager.importData(JSON.parse(await file.text()));this.refreshEquipmentUi();this.renderCharacterSelector();this.setPresetStatus("装備データを読み込みました。","success");}catch(e){this.setPresetStatus(e.message,"error");}finally{event.target.value="";}}
 
   async importCharacterCsv(event) {
     const file = event.target.files[0];

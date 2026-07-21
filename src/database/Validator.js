@@ -193,7 +193,7 @@ export class DatabaseValidator {
 
   validateEquipment() {
     const equipment = this.db.equipment ?? [];
-    const allowedSlots = new Set(["weapon", "armor", "accessory"]);
+    const allowedSlots = new Set(["weapon", "armor", "head", "body", "arm", "accessory"]);
     const allowedWeapons = new Set(["sword", "spear", "dagger", "axe", "bow", "staff", "tome", "fan"]);
     this.validateUniqueIds(equipment, "equipment");
 
