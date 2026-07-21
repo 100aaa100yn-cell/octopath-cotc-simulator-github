@@ -22,7 +22,7 @@ import { MinimumTurnEstimator } from "./engine/MinimumTurnEstimator.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "3.2.0";
+  document.documentElement.dataset.appVersion = "3.2.1";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();

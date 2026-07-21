@@ -2861,7 +2861,18 @@
     "edef": 0,
     "speed": 0,
     "supportIds": [],
-    "battleIds": [],
+    "battleIds": [
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_nirenzan",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_kabau",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_odosu",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_guard-break",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_full-break",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_garyu",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_ryusei",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_seibatsu",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_jinpu",
+      "game8_traveler-30a2-30fc-30ed-30f3_battle_teppeki"
+    ],
     "ultimateId": null,
     "exId": null,
     "tags": [
@@ -2870,8 +2881,10 @@
       "★5",
       "FF10"
     ],
-    "dataStatus": "incomplete",
-    "dataNote": "名前・ジョブ・ベースランクのみ登録済み。能力値・属性・アビリティは未検証です。"
+    "dataStatus": "provisional",
+    "dataNote": "Game8でバトルアビリティ10件を確認済み。能力値・必殺技・EXは未登録のためキャラクター全体は暫定。",
+    "sourceUrl": "https://game8.jp/octopathtraveler-sp/793075",
+    "sourceCheckedAt": "2026-07-22"
   },
   {
     "id": "traveler-30e6-30a6-30ca",
@@ -3016,7 +3029,18 @@
     "edef": 0,
     "speed": 0,
     "supportIds": [],
-    "battleIds": [],
+    "battleIds": [
+      "game8_ex2_battle_mijin-giri",
+      "game8_ex2_battle_retsuka",
+      "game8_ex2_battle_shin-ichimonji",
+      "game8_ex2_battle_kenkon-itteki",
+      "game8_ex2_battle_daisen-ten",
+      "game8_ex2_battle_kachou-no-mai",
+      "game8_ex2_battle_dairou-gari",
+      "game8_ex2_battle_murashigure",
+      "game8_ex2_battle_yomi-watashi",
+      "game8_ex2_battle_jousai-nuki"
+    ],
     "ultimateId": null,
     "exId": null,
     "tags": [
@@ -3025,8 +3049,10 @@
       "★5",
       "O追憶"
     ],
-    "dataStatus": "incomplete",
-    "dataNote": "名前・ジョブ・ベースランクのみ登録済み。能力値・属性・アビリティは未検証です。"
+    "dataStatus": "provisional",
+    "dataNote": "Game8でバトルアビリティ10件を確認済み。能力値・必殺技・EXは未登録のためキャラクター全体は暫定。",
+    "sourceUrl": "https://game8.jp/octopathtraveler-sp/784968",
+    "sourceCheckedAt": "2026-07-22"
   },
   {
     "id": "traveler-30b7-30a2-30fc-30b7-30e3",
@@ -3171,7 +3197,18 @@
     "edef": 0,
     "speed": 0,
     "supportIds": [],
-    "battleIds": [],
+    "battleIds": [
+      "game8_black-eclipse-swordsman_battle_kuro-nami",
+      "game8_black-eclipse-swordsman_battle_kuro-ren",
+      "game8_black-eclipse-swordsman_battle_kuro-megumi",
+      "game8_black-eclipse-swordsman_battle_kuro-shou",
+      "game8_black-eclipse-swordsman_battle_kuro-arashi",
+      "game8_black-eclipse-swordsman_battle_kuro-atsu",
+      "game8_black-eclipse-swordsman_battle_kuro-aku",
+      "game8_black-eclipse-swordsman_battle_kuro-koku",
+      "game8_black-eclipse-swordsman_battle_kuro-metsu",
+      "game8_black-eclipse-swordsman_battle_kuro-geki"
+    ],
     "ultimateId": null,
     "exId": null,
     "tags": [
@@ -3180,8 +3217,10 @@
       "★5",
       "覇者"
     ],
-    "dataStatus": "incomplete",
-    "dataNote": "名前・ジョブ・ベースランクのみ登録済み。能力値・属性・アビリティは未検証です。"
+    "dataStatus": "provisional",
+    "dataNote": "Game8でバトルアビリティ10件を確認済み。能力値・必殺技・EXは未登録のためキャラクター全体は暫定。",
+    "sourceUrl": "https://game8.jp/octopathtraveler-sp/771643",
+    "sourceCheckedAt": "2026-07-22"
   },
   {
     "id": "seven-hero",
@@ -3264,7 +3303,18 @@
     "edef": 0,
     "speed": 0,
     "supportIds": [],
-    "battleIds": [],
+    "battleIds": [
+      "game8_last-emperor_battle_kiri-otoshi",
+      "game8_last-emperor_battle_parry",
+      "game8_last-emperor_battle_dancing-sword",
+      "game8_last-emperor_battle_earth-heal",
+      "game8_last-emperor_battle_nagashi-giri",
+      "game8_last-emperor_battle_kongouriki",
+      "game8_last-emperor_battle_chiretsu-geki",
+      "game8_last-emperor_battle_hone-kudaki",
+      "game8_last-emperor_battle_taima-shinken",
+      "game8_last-emperor_battle_hitori-jikansa"
+    ],
     "ultimateId": null,
     "exId": null,
     "tags": [
@@ -3273,8 +3323,10 @@
       "★5",
       "ロマサガ2"
     ],
-    "dataStatus": "incomplete",
-    "dataNote": "名前・ジョブ・ベースランクのみ登録済み。能力値・属性・アビリティは未検証です。"
+    "dataStatus": "provisional",
+    "dataNote": "Game8でバトルアビリティ10件を確認済み。能力値・必殺技・EXは未登録のためキャラクター全体は暫定。",
+    "sourceUrl": "https://game8.jp/octopathtraveler-sp/760001",
+    "sourceCheckedAt": "2026-07-22"
   },
   {
     "id": "last-emperor-2",
@@ -3419,7 +3471,18 @@
     "edef": 0,
     "speed": 0,
     "supportIds": [],
-    "battleIds": [],
+    "battleIds": [
+      "game8_traveler-30ec-30a4-30e1_battle_nirenzan",
+      "game8_traveler-30ec-30a4-30e1_battle_tsuka-ate",
+      "game8_traveler-30ec-30a4-30e1_battle_yuhi-kage",
+      "game8_traveler-30ec-30a4-30e1_battle_yami-jakuka",
+      "game8_traveler-30ec-30a4-30e1_battle_rangetsu-go",
+      "game8_traveler-30ec-30a4-30e1_battle_rangetsu-anei",
+      "game8_traveler-30ec-30a4-30e1_battle_hoshokusha",
+      "game8_traveler-30ec-30a4-30e1_battle_muei",
+      "game8_traveler-30ec-30a4-30e1_battle_rangetsu-kiwami",
+      "game8_traveler-30ec-30a4-30e1_battle_yomiji-no-tachi"
+    ],
     "ultimateId": null,
     "exId": null,
     "tags": [
@@ -3428,8 +3491,10 @@
       "★5",
       "闘技大会"
     ],
-    "dataStatus": "incomplete",
-    "dataNote": "名前・ジョブ・ベースランクのみ登録済み。能力値・属性・アビリティは未検証です。"
+    "dataStatus": "provisional",
+    "dataNote": "Game8でバトルアビリティ10件を確認済み。能力値・必殺技・EXは未登録のためキャラクター全体は暫定。",
+    "sourceUrl": "https://game8.jp/octopathtraveler-sp/750518",
+    "sourceCheckedAt": "2026-07-22"
   },
   {
     "id": "traveler-30ca-30fc-30c0",
