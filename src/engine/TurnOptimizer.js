@@ -34,8 +34,8 @@ export class TurnOptimizer{
     return score;
   }
 
-  createPlan(partyResult,{enemyId,maxTurns=5,priority="balanced"}={}){
-    const enemy=this.repo.getEnemy(enemyId);
+  createPlan(partyResult,{enemyId,maxTurns=5,priority="balanced",enemyOverride=null}={}){
+    const enemy=enemyOverride??this.repo.getEnemy(enemyId);
     const attacker=partyResult.attacker;
     const members=[attacker,...partyResult.selected.map(x=>x.candidate)];
     const states=Object.fromEntries(members.map(c=>[c.id,{sp:c.maxSp,bp:0,gauge:0,exUses:1}]));

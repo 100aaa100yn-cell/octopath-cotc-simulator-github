@@ -40,6 +40,96 @@
         "priority": 2,
         "useEvery": 3
       }
+    ],
+    "phases": [
+      {
+        "id": "training_phase_1",
+        "name": "第1フェーズ",
+        "hpThreshold": 100,
+        "shield": 18,
+        "shieldRecovery": 18,
+        "weakWeapons": [
+          "sword",
+          "dagger"
+        ],
+        "weakElements": [
+          "fire",
+          "wind"
+        ]
+      },
+      {
+        "id": "training_phase_2",
+        "name": "第2フェーズ",
+        "hpThreshold": 60,
+        "shield": 24,
+        "shieldRecovery": 24,
+        "weakWeapons": [
+          "spear",
+          "bow"
+        ],
+        "weakElements": [
+          "ice",
+          "lightning"
+        ],
+        "actions": [
+          {
+            "id": "phase2_attack",
+            "name": "連続攻撃",
+            "type": "damage",
+            "power": 140,
+            "priority": 2
+          },
+          {
+            "id": "phase2_pressure",
+            "name": "強い威圧",
+            "type": "debuff",
+            "effect": {
+              "type": "physical_attack_down",
+              "value": 15,
+              "duration": 2
+            },
+            "priority": 3,
+            "useEvery": 3
+          }
+        ]
+      },
+      {
+        "id": "training_phase_3",
+        "name": "最終フェーズ",
+        "hpThreshold": 25,
+        "shield": 30,
+        "shieldRecovery": 30,
+        "weakWeapons": [
+          "axe",
+          "staff"
+        ],
+        "weakElements": [
+          "dark",
+          "light"
+        ],
+        "breakMultiplier": 2.2,
+        "actions": [
+          {
+            "id": "phase3_attack",
+            "name": "終焉の一撃",
+            "type": "damage",
+            "power": 200,
+            "priority": 2
+          },
+          {
+            "id": "phase3_pressure",
+            "name": "極大威圧",
+            "type": "debuff",
+            "effect": {
+              "type": "physical_attack_down",
+              "value": 20,
+              "duration": 3
+            },
+            "priority": 4,
+            "useEvery": 2
+          }
+        ]
+      }
     ]
   },
   {

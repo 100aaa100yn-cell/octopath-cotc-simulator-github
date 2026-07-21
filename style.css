@@ -232,3 +232,11 @@ footer{text-align:center;padding:20px;color:var(--muted)}
   background: rgba(127,127,127,.12);
   pointer-events: none;
 }
+
+
+/* v1.8 battle phase simulation */
+.phase-badge{display:inline-flex;align-items:center;margin-left:.5rem;padding:.12rem .48rem;border-radius:999px;font-size:.72rem;font-weight:800;background:rgba(255,170,40,.18);border:1px solid rgba(255,170,40,.35)}
+.phase-transition{margin:.55rem 0;padding:.65rem .8rem;border-left:4px solid #e58b18;border-radius:8px;background:rgba(229,139,24,.12);font-weight:800}
+.phase-weakness{margin:.35rem 0 .55rem;font-size:.82rem;opacity:.82}
+.check-label{display:flex!important;flex-direction:row!important;align-items:center;gap:.45rem;min-height:42px}
+.check-label input{width:auto}

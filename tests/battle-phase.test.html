@@ -1,0 +1,8 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Battle Phase Test</title><pre id="out"></pre><script type="module">
+import { BattleEngine } from "../src/engine/BattleEngine.js";
+const enemy={id:"e",name:"E",maxHp:1000,shield:10,weakWeapons:["sword"],weakElements:[],actions:[],phases:[{id:"p1",name:"P1",hpThreshold:100,shield:10,weakWeapons:["sword"]},{id:"p2",name:"P2",hpThreshold:50,shield:20,weakWeapons:["axe"]}]};
+const engine=new BattleEngine({getEnemy:()=>enemy},null,null,null);
+const state={turn:1,phaseEnabled:true,enemy:{...structuredClone(enemy),hp:400,baseShield:10,baseShieldRecovery:10,baseWeakWeapons:["sword"],baseWeakElements:[],baseActions:[],baseBreakMultiplier:2,baseWeaknessMultiplier:1.5,phaseDefinitions:engine.normalizedPhases(enemy),phaseIndex:0,currentPhase:{name:"P1"},brokenTurns:0,shieldCurrent:5},phaseTransitions:[]};
+const event=engine.updateEnemyPhase(state);
+document.getElementById("out").textContent=event?.to==="P2"&&state.enemy.shieldCurrent===20&&state.enemy.weakWeapons[0]==="axe"?"PASS":"FAIL";
+</script>

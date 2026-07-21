@@ -173,6 +173,8 @@
         <option value="break">ブレイク優先</option>
       </select></label>
       <label>最大戦闘ターン<input id="battleMaxTurns" type="number" value="20" min="1" max="99"></label>
+      <label>開始フェーズ<select id="battleInitialPhase"></select></label>
+      <label class="check-label"><input id="battleEnablePhases" type="checkbox" checked> HPに応じてフェーズ自動切替</label>
       <label>計画周期<select id="battlePlanHorizon">
         <option value="3">3ターン</option>
         <option value="4">4ターン</option>
@@ -360,6 +362,6 @@
 </main>
 
 <footer>Version 1.7.0｜キャラクター・技・装備・敵データを段階的に整備できます。</footer>
-<script type="module" src="src/main.js?v=1.7.0"></script>
+<script type="module" src="src/main.js?v=1.8.0"></script>
 </body>
 </html>

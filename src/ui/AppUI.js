@@ -51,6 +51,7 @@ export class AppUI {
     this.$("addEnemyBtn").onclick = () => this.addEnemy();
     this.$("calculateDamageBtn").onclick = () => this.calculateManualDamage();
     this.$("runBattleBtn").onclick = () => this.runBattleSimulation();
+    this.$("battleEnemySelect").onchange = () => this.refreshBattlePhaseOptions();
     this.$("exportBattleLogBtn").onclick = () => this.exportBattleLog();
     this.$("savePresetBtn").onclick = () => this.savePreset();
     this.$("loadPresetBtn").onclick = () => this.loadPreset();
@@ -359,6 +360,8 @@ export class AppUI {
       priority: this.$("battlePrioritySelect").value,
       maxBattleTurns: Number(this.$("battleMaxTurns").value || 20),
       planHorizon: Number(this.$("battlePlanHorizon").value || 5),
+      enablePhases: this.$("battleEnablePhases").checked,
+      initialPhaseIndex: Number(this.$("battleInitialPhase").value || 0),
       lockedIds: this.getLockedPartyIds(this.$("battleAttackerSelect").value)
     });
 
@@ -376,9 +379,23 @@ export class AppUI {
       .map(x => `<option value="${x.id}">${x.name}</option>`)
       .join("");
 
+    const previousEnemy = enemySelect.value;
     enemySelect.innerHTML = this.repo.getEnemies()
       .map(x => `<option value="${x.id}">${x.name}｜HP ${x.maxHp?.toLocaleString() ?? "-"}</option>`)
       .join("");
+    if (this.repo.getEnemy(previousEnemy)) enemySelect.value = previousEnemy;
+    this.refreshBattlePhaseOptions();
+  }
+
+  refreshBattlePhaseOptions() {
+    const select = this.$("battleInitialPhase");
+    const enemy = this.repo.getEnemy(this.$("battleEnemySelect").value);
+    if (!select || !enemy) return;
+    const phases = this.battleEngine.normalizedPhases(enemy);
+    select.innerHTML = phases.map((phase, index) =>
+      `<option value="${index}">${phase.name}｜HP ${phase.hpThreshold}%以下｜盾 ${phase.shield ?? enemy.shield}</option>`
+    ).join("");
+    select.disabled = phases.length <= 1;
   }
 
   renderBattleResult(result) {
@@ -393,12 +410,13 @@ export class AppUI {
       <div class="battle-metric"><span>DPT</span><strong>${summary.dpt.toLocaleString()}</strong></div>
       <div class="battle-metric"><span>ブレイク回数</span><strong>${summary.breakCount}</strong></div>
       <div class="battle-metric"><span>残りHP</span><strong>${summary.remainingHp.toLocaleString()}</strong></div>
+      <div class="battle-metric"><span>到達フェーズ</span><strong>${summary.phasesReached} / ${summary.phaseCount}</strong></div>
     `;
 
     const maxHp = result.enemy.maxHp;
     const remainingPercent = Math.max(0, summary.remainingHp / maxHp * 100);
     this.$("battleHpBar").innerHTML = `
-      <div class="boss-name">${result.enemy.name}</div>
+      <div class="boss-name">${result.enemy.name}<span class="phase-badge">${result.enemy.currentPhase?.name ?? "第1フェーズ"}</span></div>
       <div class="hp-track"><span style="width:${remainingPercent}%"></span></div>
       <div class="hp-value">${summary.remainingHp.toLocaleString()} / ${maxHp.toLocaleString()}</div>
     `;
@@ -408,9 +426,11 @@ export class AppUI {
     this.$("battleLog").innerHTML = result.log.map(turn => `
       <article class="battle-turn ${turn.broken ? "is-broken" : ""}">
         <div class="battle-turn-head">
-          <strong>TURN ${turn.turn}</strong>
+          <strong>TURN ${turn.turn}<span class="phase-badge">${turn.phase?.name ?? "第1フェーズ"}</span></strong>
           <span>ダメージ ${turn.turnDamage.toLocaleString()}｜HP ${turn.enemyHp.toLocaleString()}｜盾 ${turn.enemyShield}</span>
         </div>
+        <div class="phase-weakness">弱点：${[...(turn.weakWeapons ?? []), ...(turn.weakElements ?? [])].join("・") || "なし"}</div>
+        ${(turn.phaseEvents ?? []).map(event => `<div class="phase-transition">⚠ ${event.to}へ移行｜盾 ${event.shield}｜弱点 ${[...event.weakWeapons, ...event.weakElements].join("・") || "なし"}</div>`).join("")}
         <div class="battle-actions">
           ${turn.partyActions.map(action => `
             <div class="battle-action">
@@ -463,7 +483,7 @@ export class AppUI {
     const ids = [
       "attackerSelect", "enemySelect", "prioritySelect", "turnSelect",
       "battleAttackerSelect", "battleEnemySelect", "battlePrioritySelect",
-      "battleMaxTurns", "battlePlanHorizon",
+      "battleMaxTurns", "battlePlanHorizon", "battleInitialPhase",
       "damageAttackerSelect", "damageAbilitySelect", "damageEnemySelect",
       "damageBoost", "damagePatkBuff", "damageEatkBuff", "damageWeaponBuff",
       "damageGeneralBuff", "damageWeaponResDown", "damageElementResDown",

@@ -175,3 +175,8 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v1.7 敵データベース
 
 敵CSV雛形から、HP・シールド・防御・弱点・複数フェーズ・行動JSON・出典を登録できます。空欄は既存値を保持します。
+
+
+## v1.8 戦闘フェーズ
+
+敵の `phases` は `hpThreshold` を境界として自動切替されます。各フェーズでは `weakWeapons`、`weakElements`、`shield`、`shieldRecovery`、`pdef`、`edef`、`actions`、各種倍率を上書きできます。
