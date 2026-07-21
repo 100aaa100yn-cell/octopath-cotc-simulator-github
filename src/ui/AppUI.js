@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -18,6 +18,7 @@ export class AppUI {
     this.turnBattleManager = turnBattleManager;
     this.battlePlanManager = battlePlanManager;
     this.battleResultManager = battleResultManager;
+    this.strategyAdvisor = strategyAdvisor;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -139,6 +140,8 @@ export class AppUI {
     this.$("battlePlanImportInput").onchange = event => this.importBattlePlans(event);
     this.$("battleResultExportJsonBtn").onclick = () => this.exportTurnBattleResultJson();
     this.$("battleResultExportCsvBtn").onclick = () => this.exportTurnBattleResultCsv();
+    this.$("strategyAdviceRefreshBtn").onclick = () => this.renderStrategyAdvice();
+    this.$("strategyAdviceExportBtn").onclick = () => this.exportStrategyAdvice();
 
 
     document.querySelectorAll("select, input").forEach(element => {
@@ -1637,7 +1640,7 @@ export class AppUI {
     this.$("battleResultExportCsvBtn").disabled=disabled;
     if(!report||!report.turns){
       this.$("battleResultSummary").innerHTML='<p class="empty">ターン戦闘を実行すると結果が集計されます。</p>';
-      this.$("battleResultHpChart").innerHTML='';this.$("battleResultDamageChart").innerHTML='';this.$("battleResultRanking").innerHTML='';return;
+      this.$("battleResultHpChart").innerHTML='';this.$("battleResultDamageChart").innerHTML='';this.$("battleResultRanking").innerHTML='';this.renderStrategyAdvice();return;
     }
     this.$("battleResultSummary").innerHTML=`
       <span><b>${report.victory?report.turns+'T 撃破':report.turns+'T 経過'}</b><small>戦闘結果</small></span>
@@ -1650,7 +1653,29 @@ export class AppUI {
       <span><b>${report.spRemainingPercent.toFixed(1)}%</b><small>SP残量率</small></span>`;
     this.$("battleResultHpChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.hpPercent,break:t.broken})),{label:'敵HP割合の推移'});
     this.$("battleResultDamageChart").innerHTML=this.resultSvg(report.timeline.map(t=>({label:`T${t.turn}`,value:t.damage,break:t.broken})),{label:'ターンダメージの推移'});
+    this.renderStrategyAdvice();
     this.$("battleResultRanking").innerHTML=report.ranking.map((r,index)=>`<div class="result-rank-row"><b>${index+1}. ${r.name}</b><span>${r.damage.toLocaleString()} damage</span><div><i style="width:${Math.max(2,r.share*100)}%"></i></div><small>${(r.share*100).toFixed(1)}%｜${r.actions}行動</small></div>`).join('')||'<p class="empty">ダメージ記録はありません。</p>';
+  }
+
+  renderStrategyAdvice() {
+    const advice=this.strategyAdvisor?.analyze();
+    const summary=this.$("strategyAdviceSummary");
+    const list=this.$("strategyAdviceList");
+    this.$("strategyAdviceExportBtn").disabled=!advice;
+    if(!advice){
+      summary.innerHTML='<p class="empty">戦闘を実行すると改善案を自動生成します。</p>';
+      list.innerHTML=''; return;
+    }
+    summary.innerHTML=`<div class="strategy-score"><strong>${advice.grade}</strong><span>${advice.score}<small>/100</small></span></div><div><b>${advice.headline}</b><p>${advice.recommendationCount}件の改善候補を検出しました。</p></div>`;
+    list.innerHTML=advice.recommendations.map((item,index)=>`<article class="strategy-advice-card impact-${item.impact}">
+      <div class="strategy-advice-head"><span class="strategy-priority">${index+1}</span><b>${item.title}</b><small>${item.category}${item.turn?`｜T${item.turn}`:''}</small></div>
+      <p>${item.detail}</p>
+    </article>`).join('');
+  }
+
+  exportStrategyAdvice() {
+    try{this.downloadTextFile(JSON.stringify(this.strategyAdvisor.exportData(),null,2),'octopath-strategy-advice-v2.7.json','application/json');}
+    catch(error){this.setPresetStatus(error.message,'error');}
   }
 
   downloadTextFile(text, filename, type) {
@@ -1658,12 +1683,12 @@ export class AppUI {
   }
 
   exportTurnBattleResultJson() {
-    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.6.json','application/json');}
+    try{this.downloadTextFile(JSON.stringify(this.battleResultManager.exportData(),null,2),'octopath-battle-result-v2.7.json','application/json');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 
   exportTurnBattleResultCsv() {
-    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.6.csv','text/csv;charset=utf-8');}
+    try{this.downloadTextFile(this.battleResultManager.toCsv(),'octopath-battle-result-v2.7.csv','text/csv;charset=utf-8');}
     catch(error){this.setPresetStatus(error.message,'error');}
   }
 

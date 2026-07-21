@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import { StrategyAdvisor } from "../src/engine/StrategyAdvisor.js";
+const report={turns:3,victory:false,averageDamage:100,peakTurn:1,initialShield:10,totalShieldDamage:2,finalBpTotal:12,spRemainingPercent:15,phaseChanges:0,enemy:{remainingHp:500},ranking:[{name:"A",share:.8},{name:"B",share:.2}],timeline:[{turn:1,damage:300,broken:false},{turn:2,damage:0,broken:false},{turn:3,damage:0,broken:false}]};
+const state={log:[{turn:1,entries:[{actor:"A",action:"攻撃"}]},{turn:2,entries:[{actor:"B",action:"大技（SP不足）"}]},{turn:3,entries:[{actor:"B",action:"待機"}]}]};
+const advisor=new StrategyAdvisor({analyze:()=>report},{state});
+const result=advisor.analyze();
+assert.equal(result.grade,"D");
+assert.ok(result.recommendations.some(x=>x.category==="SP"));
+assert.ok(result.recommendations.some(x=>x.category==="ブレイク"));
+assert.ok(result.recommendations.some(x=>x.category==="BP"));
+assert.deepEqual(result.diagnostics.noDamageTurns,[2,3]);
+console.log("StrategyAdvisor tests passed.");
