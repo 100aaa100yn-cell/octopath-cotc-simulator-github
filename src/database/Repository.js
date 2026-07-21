@@ -19,6 +19,7 @@ export class Repository {
   getCharacters() { return this.db.characters; }
   getCharacter(id) { return this.characterById[id]; }
   getAbilities(ownerId) { return this.abilitiesByOwner[ownerId] ?? []; }
+  getAllAbilities() { return this.db.abilities; }
   getAbility(id) { return this.abilityById[id]; }
   getEffectRule(type) { return this.db.effectRules[type]; }
   getEnemies() { return this.db.enemies; }

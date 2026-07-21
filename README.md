@@ -142,3 +142,13 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v1.3 装備システム
 
 キャラクターごとに武器、防具、アクセサリー2枠を設定できます。装備データは `data/equipment/equipment.json` で管理し、補正値はダメージ計算へ反映されます。初期装備の数値は検証用の暫定値です。
+
+## v1.4 データカタログ
+
+- キャラクターとアビリティの登録状況を画面上で集計
+- 名前、ID、タグ、技名を横断検索
+- 技分類と技登録有無で絞り込み
+- キャラクターCSVとアビリティCSVを個別に一括取込
+- `verified` / `provisional` / `simulator` / `incomplete` で品質管理
+
+実ゲームデータは、出典と確認日を記録しながら段階的に `verified` へ移行します。

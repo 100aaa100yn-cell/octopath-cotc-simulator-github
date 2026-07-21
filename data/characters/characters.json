@@ -25,7 +25,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "attacker",
+      "sword",
+      "fire"
+    ]
   },
   {
     "id": "signa",
@@ -53,7 +58,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "support",
+      "fan",
+      "light"
+    ]
   },
   {
     "id": "odio",
@@ -81,7 +91,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "debuffer",
+      "sword",
+      "dark"
+    ]
   },
   {
     "id": "richard",
@@ -109,7 +124,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "support",
+      "sword",
+      "lightning"
+    ]
   },
   {
     "id": "titi",
@@ -137,7 +157,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "support",
+      "fan",
+      "lightning"
+    ]
   },
   {
     "id": "sonia",
@@ -165,7 +190,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "wind"
+    ]
   },
   {
     "id": "primrose",
@@ -192,7 +222,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "support",
+      "axe",
+      "lightning"
+    ]
   },
   {
     "id": "bargello",
@@ -220,7 +255,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "simulator",
-    "dataNote": "シミュレーター検証用データです。"
+    "dataNote": "シミュレーター検証用データです。",
+    "tags": [
+      "support",
+      "dagger",
+      "wind"
+    ]
   },
   {
     "id": "olberic",
@@ -245,7 +285,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "cyrus",
@@ -270,7 +315,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "fire"
+    ]
   },
   {
     "id": "tressa",
@@ -295,7 +345,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "spear",
+      "wind"
+    ]
   },
   {
     "id": "ophilia",
@@ -320,7 +375,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "light"
+    ]
   },
   {
     "id": "primrose_ot1",
@@ -345,7 +405,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "dark"
+    ]
   },
   {
     "id": "alfyn",
@@ -370,7 +435,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "axe",
+      "ice"
+    ]
   },
   {
     "id": "therion",
@@ -395,7 +465,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "fire"
+    ]
   },
   {
     "id": "haanit",
@@ -420,7 +495,12 @@
     "series": "OCTOPATH TRAVELER",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "bow",
+      "lightning"
+    ]
   },
   {
     "id": "hikari",
@@ -445,7 +525,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "agnea",
@@ -470,7 +555,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "wind"
+    ]
   },
   {
     "id": "partitio",
@@ -495,7 +585,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "spear",
+      "fire"
+    ]
   },
   {
     "id": "osvald",
@@ -520,7 +615,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "ice"
+    ]
   },
   {
     "id": "throne",
@@ -545,7 +645,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "dark"
+    ]
   },
   {
     "id": "temenos",
@@ -570,7 +675,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "light"
+    ]
   },
   {
     "id": "ochette",
@@ -595,7 +705,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "bow",
+      "lightning"
+    ]
   },
   {
     "id": "castti",
@@ -620,7 +735,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "axe",
+      "ice"
+    ]
   },
   {
     "id": "fiore",
@@ -645,7 +765,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "dark"
+    ]
   },
   {
     "id": "gilderoy",
@@ -670,7 +795,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "tank",
+      "spear",
+      "lightning"
+    ]
   },
   {
     "id": "viola",
@@ -695,7 +825,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "debuffer",
+      "dagger",
+      "fire"
+    ]
   },
   {
     "id": "theo",
@@ -720,7 +855,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "axe",
+      "lightning"
+    ]
   },
   {
     "id": "scarecrow",
@@ -745,7 +885,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "bow",
+      "wind"
+    ]
   },
   {
     "id": "millard",
@@ -770,7 +915,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "light"
+    ]
   },
   {
     "id": "sofia",
@@ -795,7 +945,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "ice"
+    ]
   },
   {
     "id": "lynette",
@@ -820,7 +975,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "fire"
+    ]
   },
   {
     "id": "char_2798105956",
@@ -845,7 +1005,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "char_3809914563",
@@ -870,7 +1035,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "char_3906954238",
@@ -895,7 +1065,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "wind"
+    ]
   },
   {
     "id": "char_3624764159",
@@ -920,7 +1095,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "ice"
+    ]
   },
   {
     "id": "char_7513094246",
@@ -945,7 +1125,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "tank",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "char_6606581124",
@@ -970,7 +1155,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "spear",
+      "light"
+    ]
   },
   {
     "id": "char_1310639283",
@@ -995,7 +1185,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "spear",
+      "ice"
+    ]
   },
   {
     "id": "char_1159710351",
@@ -1020,7 +1215,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "spear",
+      "fire"
+    ]
   },
   {
     "id": "char_5707536452",
@@ -1045,7 +1245,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "dagger",
+      "light"
+    ]
   },
   {
     "id": "char_4395743472",
@@ -1070,7 +1275,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "dagger",
+      "dark"
+    ]
   },
   {
     "id": "char_4798055393",
@@ -1095,7 +1305,12 @@
     "series": "ブレイブリーデフォルト",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "dagger",
+      "dark"
+    ]
   },
   {
     "id": "char_2610065674",
@@ -1120,7 +1335,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "wind"
+    ]
   },
   {
     "id": "char_1086065562",
@@ -1145,7 +1365,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "bow",
+      "light"
+    ]
   },
   {
     "id": "char_2354402618",
@@ -1170,7 +1395,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "bow",
+      "ice"
+    ]
   },
   {
     "id": "char_2024444572",
@@ -1195,7 +1425,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "bow",
+      "wind"
+    ]
   },
   {
     "id": "char_6501545902",
@@ -1220,7 +1455,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "bow",
+      "dark"
+    ]
   },
   {
     "id": "char_4902763792",
@@ -1245,7 +1485,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "axe",
+      "wind"
+    ]
   },
   {
     "id": "char_2713734250",
@@ -1270,7 +1515,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "debuffer",
+      "axe",
+      "fire"
+    ]
   },
   {
     "id": "char_4759240188",
@@ -1295,7 +1545,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "axe",
+      "dark"
+    ]
   },
   {
     "id": "char_9498682621",
@@ -1320,7 +1575,12 @@
     "series": "聖炎の導き",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "wind"
+    ]
   },
   {
     "id": "char_2468644315",
@@ -1345,7 +1605,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "fire"
+    ]
   },
   {
     "id": "char_5932639529",
@@ -1370,7 +1635,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "lightning"
+    ]
   },
   {
     "id": "char_9029281788",
@@ -1395,7 +1665,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "light"
+    ]
   },
   {
     "id": "char_5668752246",
@@ -1420,7 +1695,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "wind"
+    ]
   },
   {
     "id": "char_8478153957",
@@ -1445,7 +1725,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "fire"
+    ]
   },
   {
     "id": "char_7311468979",
@@ -1470,7 +1755,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "staff",
+      "ice"
+    ]
   },
   {
     "id": "char_4480480095",
@@ -1495,7 +1785,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "dark"
+    ]
   },
   {
     "id": "char_7367803577",
@@ -1520,7 +1815,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "wind"
+    ]
   },
   {
     "id": "char_2803045379",
@@ -1545,7 +1845,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "fan",
+      "wind"
+    ]
   },
   {
     "id": "char_3187970726",
@@ -1570,7 +1875,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "dark"
+    ]
   },
   {
     "id": "char_5398930818",
@@ -1595,7 +1905,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "light"
+    ]
   },
   {
     "id": "char_5041519365",
@@ -1620,7 +1935,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "dagger",
+      "lightning"
+    ]
   },
   {
     "id": "char_2694347692",
@@ -1645,7 +1965,12 @@
     "series": "闘技大会",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "tank",
+      "spear",
+      "ice"
+    ]
   },
   {
     "id": "char_7190828287",
@@ -1670,7 +1995,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "tome",
+      "light"
+    ]
   },
   {
     "id": "char_6779177413",
@@ -1695,7 +2025,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "fan",
+      "ice"
+    ]
   },
   {
     "id": "char_5761972899",
@@ -1720,7 +2055,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "spear",
+      "lightning"
+    ]
   },
   {
     "id": "erica",
@@ -1745,7 +2085,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "dark"
+    ]
   },
   {
     "id": "char_6973887795",
@@ -1770,7 +2115,12 @@
     "series": "聖炎の導き",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "spear",
+      "lightning"
+    ]
   },
   {
     "id": "char_7270229893",
@@ -1795,7 +2145,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "char_3324192766",
@@ -1820,7 +2175,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "spear",
+      "wind"
+    ]
   },
   {
     "id": "char_2576003660",
@@ -1845,7 +2205,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "tome",
+      "fire"
+    ]
   },
   {
     "id": "char_6106197511",
@@ -1870,7 +2235,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "axe",
+      "lightning"
+    ]
   },
   {
     "id": "char_2848764513",
@@ -1895,7 +2265,12 @@
     "series": "追憶の旅人",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "wind"
+    ]
   },
   {
     "id": "char_4065289273",
@@ -1920,7 +2295,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "axe",
+      "ice"
+    ]
   },
   {
     "id": "char_2994279348",
@@ -1945,7 +2325,12 @@
     "series": "聖炎の導き",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "dark"
+    ]
   },
   {
     "id": "char_7172000709",
@@ -1970,7 +2355,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "sword",
+      "light"
+    ]
   },
   {
     "id": "char_6181368790",
@@ -1995,7 +2385,12 @@
     "series": "大陸の覇者",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "debuffer",
+      "fan",
+      "fire"
+    ]
   },
   {
     "id": "char_1225121270",
@@ -2020,7 +2415,12 @@
     "series": "OCTOPATH TRAVELER II",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "axe",
+      "lightning"
+    ]
   },
   {
     "id": "terra",
@@ -2045,7 +2445,12 @@
     "series": "FINAL FANTASY VI",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "tome",
+      "fire"
+    ]
   },
   {
     "id": "locke",
@@ -2070,7 +2475,12 @@
     "series": "FINAL FANTASY VI",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "breaker",
+      "dagger",
+      "fire"
+    ]
   },
   {
     "id": "edgar",
@@ -2095,7 +2505,12 @@
     "series": "FINAL FANTASY VI",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "spear",
+      "lightning"
+    ]
   },
   {
     "id": "2b",
@@ -2120,7 +2535,12 @@
     "series": "NieR:Automata",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "sword",
+      "dark"
+    ]
   },
   {
     "id": "a2",
@@ -2145,7 +2565,12 @@
     "series": "NieR:Automata",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "attacker",
+      "axe",
+      "fire"
+    ]
   },
   {
     "id": "9s",
@@ -2170,7 +2595,12 @@
     "series": "NieR:Automata",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "support",
+      "tome",
+      "lightning"
+    ]
   },
   {
     "id": "char_1236116177",
@@ -2195,7 +2625,12 @@
     "series": "ブレイブリーデフォルト",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "healer",
+      "staff",
+      "light"
+    ]
   },
   {
     "id": "char_2756506449",
@@ -2220,6 +2655,11 @@
     "series": "ブレイブリーデフォルト",
     "rarity": 5,
     "dataStatus": "provisional",
-    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。"
+    "dataNote": "武器・属性・能力値・技はシミュレーター用の暫定値です。",
+    "tags": [
+      "tank",
+      "sword",
+      "fire"
+    ]
   }
 ]

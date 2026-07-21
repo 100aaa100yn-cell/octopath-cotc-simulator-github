@@ -16,7 +16,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_sazantos_buff",
@@ -35,7 +37,9 @@
     "sp": 32,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_sazantos_attack",
@@ -57,7 +61,9 @@
     "sp": 42,
     "shield": 3,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ult_sazantos",
@@ -79,7 +85,9 @@
     "shield": 1,
     "gaugeCost": 100,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ex_sazantos",
@@ -101,7 +109,9 @@
     "shield": 1,
     "exUses": 1,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_signa",
@@ -120,7 +130,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_signa_patk",
@@ -139,7 +151,9 @@
     "sp": 28,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_signa_damage",
@@ -158,7 +172,9 @@
     "sp": 34,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ult_signa",
@@ -178,7 +194,9 @@
     "shield": 0,
     "gaugeCost": 100,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ex_signa",
@@ -198,7 +216,9 @@
     "shield": 0,
     "exUses": 1,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_odio",
@@ -218,7 +238,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_odio_resdown",
@@ -239,7 +261,9 @@
     "sp": 30,
     "shield": 1,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_odio_patk",
@@ -258,7 +282,9 @@
     "sp": 24,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ult_odio",
@@ -279,7 +305,9 @@
     "shield": 1,
     "gaugeCost": 100,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_richard",
@@ -299,7 +327,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_richard_weapon",
@@ -319,7 +349,9 @@
     "sp": 25,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_richard_patk",
@@ -338,7 +370,9 @@
     "sp": 28,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ult_richard",
@@ -358,7 +392,9 @@
     "shield": 0,
     "gaugeCost": 100,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_titi",
@@ -378,7 +414,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_titi_element",
@@ -398,7 +436,9 @@
     "sp": 27,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_titi_damage",
@@ -417,7 +457,9 @@
     "sp": 31,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_sonia",
@@ -436,7 +478,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_sonia_resdown",
@@ -458,7 +502,9 @@
     "sp": 26,
     "shield": 4,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_sonia_break",
@@ -479,7 +525,9 @@
     "sp": 35,
     "shield": 6,
     "bpPowerStep": 0.25,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_primrose",
@@ -498,7 +546,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_primrose_patk",
@@ -517,7 +567,9 @@
     "sp": 30,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ult_primrose",
@@ -537,7 +589,9 @@
     "shield": 0,
     "gaugeCost": 100,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "ex_primrose",
@@ -557,7 +611,9 @@
     "shield": 0,
     "exUses": 1,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "sup_bargello",
@@ -576,7 +632,9 @@
     "sp": 0,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_bargello_cap",
@@ -595,7 +653,9 @@
     "sp": 38,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "bat_bargello_damage",
@@ -614,7 +674,9 @@
     "sp": 30,
     "shield": 0,
     "bpPowerStep": 0,
-    "maxBoost": 3
+    "maxBoost": 3,
+    "dataStatus": "simulator",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_olberic",
@@ -630,7 +692,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_cyrus",
@@ -646,7 +709,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_tressa",
@@ -662,7 +726,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_ophilia",
@@ -678,7 +743,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_primrose_ot1",
@@ -694,7 +760,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_alfyn",
@@ -710,7 +777,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_therion",
@@ -726,7 +794,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_haanit",
@@ -742,7 +811,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_hikari",
@@ -758,7 +828,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_agnea",
@@ -774,7 +845,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_partitio",
@@ -790,7 +862,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_osvald",
@@ -806,7 +879,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_throne",
@@ -822,7 +896,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_temenos",
@@ -838,7 +913,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_ochette",
@@ -854,7 +930,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_castti",
@@ -870,7 +947,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_fiore",
@@ -886,7 +964,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_gilderoy",
@@ -902,7 +981,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_viola",
@@ -918,7 +998,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_theo",
@@ -934,7 +1015,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_scarecrow",
@@ -950,7 +1032,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_millard",
@@ -966,7 +1049,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_sofia",
@@ -982,7 +1066,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_lynette",
@@ -998,7 +1083,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2798105956",
@@ -1014,7 +1100,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_3809914563",
@@ -1030,7 +1117,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_3906954238",
@@ -1046,7 +1134,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_3624764159",
@@ -1062,7 +1151,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7513094246",
@@ -1078,7 +1168,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6606581124",
@@ -1094,7 +1185,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_1310639283",
@@ -1110,7 +1202,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_1159710351",
@@ -1126,7 +1219,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5707536452",
@@ -1142,7 +1236,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4395743472",
@@ -1158,7 +1253,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4798055393",
@@ -1174,7 +1270,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2610065674",
@@ -1190,7 +1287,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_1086065562",
@@ -1206,7 +1304,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2354402618",
@@ -1222,7 +1321,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2024444572",
@@ -1238,7 +1338,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6501545902",
@@ -1254,7 +1355,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4902763792",
@@ -1270,7 +1372,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2713734250",
@@ -1286,7 +1389,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4759240188",
@@ -1302,7 +1406,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_9498682621",
@@ -1318,7 +1423,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2468644315",
@@ -1334,7 +1440,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5932639529",
@@ -1350,7 +1457,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_9029281788",
@@ -1366,7 +1474,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5668752246",
@@ -1382,7 +1491,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_8478153957",
@@ -1398,7 +1508,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7311468979",
@@ -1414,7 +1525,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4480480095",
@@ -1430,7 +1542,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7367803577",
@@ -1446,7 +1559,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2803045379",
@@ -1462,7 +1576,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_3187970726",
@@ -1478,7 +1593,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5398930818",
@@ -1494,7 +1610,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5041519365",
@@ -1510,7 +1627,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2694347692",
@@ -1526,7 +1644,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7190828287",
@@ -1542,7 +1661,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6779177413",
@@ -1558,7 +1678,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_5761972899",
@@ -1574,7 +1695,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_erica",
@@ -1590,7 +1712,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6973887795",
@@ -1606,7 +1729,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7270229893",
@@ -1622,7 +1746,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_3324192766",
@@ -1638,7 +1763,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2576003660",
@@ -1654,7 +1780,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6106197511",
@@ -1670,7 +1797,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2848764513",
@@ -1686,7 +1814,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_4065289273",
@@ -1702,7 +1831,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2994279348",
@@ -1718,7 +1848,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_7172000709",
@@ -1734,7 +1865,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_6181368790",
@@ -1750,7 +1882,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_1225121270",
@@ -1766,7 +1899,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_terra",
@@ -1782,7 +1916,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_locke",
@@ -1798,7 +1933,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_edgar",
@@ -1814,7 +1950,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_2b",
@@ -1830,7 +1967,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_a2",
@@ -1846,7 +1984,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_9s",
@@ -1862,7 +2001,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_1236116177",
@@ -1878,7 +2018,8 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   },
   {
     "id": "basic_char_2756506449",
@@ -1894,6 +2035,7 @@
     "shield": 2,
     "bpPowerStep": 0.25,
     "maxBoost": 3,
-    "dataStatus": "provisional"
+    "dataStatus": "provisional",
+    "dataNote": "シミュレーター用または暫定データです。"
   }
 ]

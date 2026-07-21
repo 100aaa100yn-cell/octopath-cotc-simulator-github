@@ -44,6 +44,7 @@ export class DatabaseValidator {
     const allowedRoles = new Set(["attacker", "support", "debuffer", "breaker", "healer", "tank"]);
     const allowedWeapons = new Set(["sword", "spear", "dagger", "axe", "bow", "staff", "tome", "fan"]);
     const allowedElements = new Set(["fire", "ice", "lightning", "wind", "light", "dark", "none"]);
+    const allowedStatuses = new Set(["verified", "provisional", "simulator", "incomplete"]);
 
     this.validateUniqueIds(this.db.characters, "characters");
 
@@ -59,6 +60,16 @@ export class DatabaseValidator {
       }
       if (!allowedElements.has(character.element)) {
         this.add("error", "UNKNOWN_ELEMENT", `未登録の属性「${character.element}」です。`, `${path}.element`);
+      }
+      const status = character.dataStatus ?? "incomplete";
+      if (!allowedStatuses.has(status)) {
+        this.add("warning", "UNKNOWN_DATA_STATUS", `未登録のデータ品質「${status}」です。`, `${path}.dataStatus`);
+      }
+      if (!character.series) {
+        this.add("warning", "MISSING_SERIES", "シリーズが未設定です。", `${path}.series`);
+      }
+      if (!Array.isArray(character.tags ?? [])) {
+        this.add("error", "INVALID_TAGS", "tagsは配列である必要があります。", `${path}.tags`);
       }
 
       if (character.maxSp !== undefined) {
@@ -91,6 +102,7 @@ export class DatabaseValidator {
   validateAbilities() {
     const categories = new Set(["support", "battle", "ultimate", "ex"]);
     const timings = new Set(["passive", "setup", "debuff", "break", "attack", "finisher"]);
+    const allowedStatuses = new Set(["verified", "provisional", "simulator", "incomplete"]);
 
     this.validateUniqueIds(this.db.abilities, "abilities");
 
@@ -111,6 +123,10 @@ export class DatabaseValidator {
       }
       if (ability.timing && !timings.has(ability.timing)) {
         this.add("warning", "UNKNOWN_TIMING", `未登録のタイミング「${ability.timing}」です。`, `${path}.timing`);
+      }
+      const status = ability.dataStatus ?? "incomplete";
+      if (!allowedStatuses.has(status)) {
+        this.add("warning", "UNKNOWN_DATA_STATUS", `未登録のデータ品質「${status}」です。`, `${path}.dataStatus`);
       }
 
       if (!Array.isArray(ability.effects)) {

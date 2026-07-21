@@ -15,6 +15,10 @@ export class DataManager {
     return this.validate();
   }
 
+  replace(nextDb) {
+    return this.replaceDatabase(nextDb);
+  }
+
   reset() {
     this.db = structuredClone(this.original);
     return this.validate();

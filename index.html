@@ -51,6 +51,8 @@
       <label>役割<select id="characterRoleFilter"></select></label>
       <label>シリーズ<select id="seriesFilter"></select></label>
       <label>データ品質<select id="dataStatusFilter"></select></label>
+      <label>技分類<select id="abilityCategoryFilter"></select></label>
+      <label class="check-filter"><input id="hasAbilitiesFilter" type="checkbox"> 技登録済みのみ</label>
       <button id="selectAllVisibleBtn" type="button">表示中を選択</button>
       <button id="clearPartySelectionBtn" type="button" class="secondary">選択解除</button>
       <button id="downloadCharacterTemplateBtn" type="button">CSV雛形</button>
@@ -58,7 +60,18 @@
     </div>
 
     <div id="selectedPartyStrip" class="selected-party-strip"></div>
-    <div id="characterSelectorGrid" class="character-selector-grid"></div>
+    <div class="catalog-dashboard">
+  <div class="catalog-head">
+    <div>
+      <span class="eyebrow">DATA CATALOG</span>
+      <h3>データ登録状況</h3>
+    </div>
+    <button id="refreshCatalogBtn" type="button">集計を更新</button>
+  </div>
+  <div id="catalogSummary" class="catalog-summary"></div>
+  <div id="catalogBreakdown" class="catalog-breakdown"></div>
+</div>
+<div id="characterSelectorGrid" class="character-selector-grid"></div>
   </section>
 
 

@@ -1,0 +1,2 @@
+﻿"id","ownerId","category","name","timing","sp","power","hits","shield","duration","maxBoost","effectType","effectValue","effectsJson","dataStatus","dataNote"
+"sample_traveler_battle_01","sample_traveler","battle","サンプル斬撃","attack","25","180","2","2","0","3","","","[{""type"":""physicalDamageUp"",""value"":15}]","provisional","入力例"

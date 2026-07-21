@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>DataCatalog test</title>
+<pre id="result"></pre>
+<script type="module">
+import { Repository } from "../src/database/Repository.js";
+import { DataCatalog } from "../src/database/DataCatalog.js";
+
+const db = {
+  characters: [
+    { id:"a", name:"Alpha", weapon:"sword", element:"fire", role:"attacker", series:"Test", dataStatus:"verified", tags:["burst"], battleIds:["a1"] },
+    { id:"b", name:"Beta", weapon:"staff", element:"light", role:"healer", series:"Test", dataStatus:"provisional" }
+  ],
+  abilities: [
+    { id:"a1", ownerId:"a", category:"battle", name:"Flame Slash", effects:[] }
+  ],
+  enemies: [], equipment: [], effectRules: {}, damageRules: {}
+};
+
+const catalog = new DataCatalog(new Repository(db));
+const summary = catalog.summarize();
+const found = catalog.search("Flame");
+
+const ok = summary.characters === 2 &&
+  summary.abilities === 1 &&
+  summary.verifiedCharacters === 1 &&
+  summary.charactersWithoutAbilities === 1 &&
+  found.length === 1 &&
+  found[0].id === "a";
+
+document.getElementById("result").textContent = ok ? "PASS" : JSON.stringify({summary, found}, null, 2);
+if (!ok) throw new Error("DataCatalog test failed");
+</script>

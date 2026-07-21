@@ -1,3 +1,4 @@
+import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
   constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager) {
     this.repo = repo;
@@ -9,6 +10,7 @@ export class AppUI {
     this.stateManager = stateManager;
     this.analytics = analytics;
     this.equipmentManager = equipmentManager;
+    this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
     this.activeCollection = "characters";
     this.selectedPartyIds = [];
@@ -30,6 +32,7 @@ export class AppUI {
     this.refreshCharacterFilters();
     this.renderCharacterSelector();
     this.refreshEquipmentUi();
+    this.renderCatalogSummary();
     this.restoreInitialState();
   }
 
@@ -61,8 +64,13 @@ export class AppUI {
     this.$("characterCsvInput").onchange = event => this.importCharacterCsv(event);
     this.$("downloadCharacterTemplateBtn").onclick = () => this.downloadCharacterTemplate();
     this.$("dataStatusFilter").onchange = () => this.renderCharacterSelector();
+    this.$("abilityCategoryFilter").onchange = () => this.renderCharacterSelector();
+    this.$("hasAbilitiesFilter").onchange = () => this.renderCharacterSelector();
     this.$("seriesFilter").onchange = () => this.renderCharacterSelector();
     this.$("selectAllVisibleBtn").onclick = () => this.selectAllVisibleCharacters();
+    this.$("abilityCsvInput").onchange = event => this.importAbilityCsv(event);
+    this.$("downloadAbilityTemplateBtn").onclick = () => this.downloadAbilityTemplate();
+    this.$("refreshCatalogBtn").onclick = () => this.renderCatalogSummary();
     this.$("equipmentCharacterSelect").onchange = () => this.refreshEquipmentSlots();
     for (const id of ["equipmentWeaponSelect", "equipmentArmorSelect", "equipmentAccessory1Select", "equipmentAccessory2Select"]) {
       this.$(id).onchange = () => this.updateEquipment();
@@ -93,6 +101,7 @@ export class AppUI {
       .slice(0, 8);
     this.refreshCharacterFilters();
     this.renderCharacterSelector();
+    this.renderCatalogSummary();
   }
 
   refreshSelectors() {
@@ -674,6 +683,9 @@ export class AppUI {
     fill("characterElementFilter", characters.map(x => x.element));
     fill("characterRoleFilter", characters.map(x => x.role));
     fill("seriesFilter", characters.map(x => x.series));
+    fill("abilityCategoryFilter", this.repo.getAllAbilities().map(x => x.category), {
+      support: "サポート", battle: "バトル", ultimate: "必殺技", ex: "EX"
+    });
     fill("dataStatusFilter", characters.map(x => x.dataStatus), {
       verified: "検証済み",
       provisional: "暫定",
@@ -689,8 +701,10 @@ export class AppUI {
     const role = this.$("characterRoleFilter")?.value ?? "";
     const series = this.$("seriesFilter")?.value ?? "";
     const dataStatus = this.$("dataStatusFilter")?.value ?? "";
+    const abilityCategory = this.$("abilityCategoryFilter")?.value ?? "";
+    const hasAbilities = this.$("hasAbilitiesFilter")?.checked ?? false;
 
-    return this.repo.getCharacters().filter(character => {
+    return this.dataCatalog.search(query, { weapon, element, role, series, dataStatus, abilityCategory, hasAbilities }).filter(character => {
       const searchable = [
         character.name,
         character.id,
@@ -699,12 +713,7 @@ export class AppUI {
         character.role
       ].join(" ").toLowerCase();
 
-      return (!query || searchable.includes(query)) &&
-        (!weapon || character.weapon === weapon) &&
-        (!element || character.element === element) &&
-        (!role || character.role === role) &&
-        (!series || character.series === series) &&
-        (!dataStatus || character.dataStatus === dataStatus);
+      return true;
     });
   }
 
@@ -735,6 +744,7 @@ export class AppUI {
             character.dataStatus === "simulator" ? "検証用" : "未入力"
           }</span>
           <span class="character-stats">物攻 ${this.equipmentManager.applyToCharacter(character).patk ?? "-"} / 属攻 ${this.equipmentManager.applyToCharacter(character).eatk ?? "-"} / 速 ${this.equipmentManager.applyToCharacter(character).speed ?? "-"}</span>
+          <span class="character-ability-count">技 ${this.repo.getAbilities(character.id).length}件${(character.tags ?? []).length ? ` / ${(character.tags ?? []).slice(0, 3).join("・")}` : ""}</span>
         </button>
       `;
     }).join("") || '<p class="empty">条件に一致するキャラクターがいません。</p>';
@@ -928,6 +938,93 @@ export class AppUI {
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(blob);
     anchor.download = "characters-import-template.csv";
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+  }
+
+
+  renderCatalogSummary() {
+    const summary = this.dataCatalog.summarize();
+    const container = this.$("catalogSummary");
+    const breakdown = this.$("catalogBreakdown");
+    if (!container || !breakdown) return;
+
+    container.innerHTML = `
+      <div><span>キャラクター</span><strong>${summary.characters}</strong></div>
+      <div><span>アビリティ</span><strong>${summary.abilities}</strong></div>
+      <div><span>検証済み</span><strong>${summary.verifiedCharacters}</strong></div>
+      <div><span>暫定</span><strong>${summary.provisionalCharacters}</strong></div>
+      <div><span>技なし</span><strong>${summary.charactersWithoutAbilities}</strong></div>
+      <div><span>未参照技</span><strong>${summary.unreferencedAbilities}</strong></div>
+    `;
+
+    const formatGroup = (title, values) => `
+      <section>
+        <b>${title}</b>
+        ${Object.entries(values)
+          .sort((a, b) => b[1] - a[1])
+          .map(([key, value]) => `<span>${key}<strong>${value}</strong></span>`)
+          .join("") || "<small>データなし</small>"}
+      </section>
+    `;
+
+    breakdown.innerHTML = [
+      formatGroup("シリーズ", summary.bySeries),
+      formatGroup("武器", summary.byWeapon),
+      formatGroup("役割", summary.byRole),
+      formatGroup("技分類", summary.byCategory)
+    ].join("");
+  }
+
+  async importAbilityCsv(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const { AbilityImporter } = await import("../database/AbilityImporter.js");
+      const incoming = AbilityImporter.parseCsv(await file.text());
+      const currentDb = this.dataManager.getDatabase();
+      const merged = AbilityImporter.merge(currentDb.abilities, incoming);
+
+      const result = this.dataManager.replaceDatabase({
+        ...currentDb,
+        abilities: merged.abilities
+      });
+
+      this.refreshRepository();
+      this.renderDatabaseEditor();
+      this.renderValidation(result);
+      this.renderCatalogSummary();
+      this.setPresetStatus(
+        `技CSV取込完了：追加 ${merged.report.added} / 更新 ${merged.report.updated}`,
+        result.valid ? "success" : "warning"
+      );
+    } catch (error) {
+      this.setPresetStatus(`技CSV取込エラー：${error.message}`, "error");
+    } finally {
+      event.target.value = "";
+    }
+  }
+
+  downloadAbilityTemplate() {
+    const headers = [
+      "id","ownerId","category","name","timing","sp","power","hits","shield",
+      "duration","maxBoost","effectType","effectValue","effectsJson","dataStatus","dataNote"
+    ];
+    const sample = [
+      "sample_traveler_battle_01","sample_traveler","battle","サンプル斬撃",
+      "attack","25","180","2","2","0","3","","",
+      '[{"type":"physicalDamageUp","value":15}]',"provisional","入力例"
+    ];
+    const escape = value => `"${String(value).replaceAll('"', '""')}"`;
+    const csv = "\uFEFF" + [headers, sample]
+      .map(row => row.map(escape).join(","))
+      .join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(blob);
+    anchor.download = "abilities-import-template.csv";
     anchor.click();
     URL.revokeObjectURL(anchor.href);
   }

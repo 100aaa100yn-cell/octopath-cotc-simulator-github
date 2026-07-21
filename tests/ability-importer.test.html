@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AbilityImporter test</title>
+<pre id="result"></pre>
+<script type="module">
+import { AbilityImporter } from "../src/database/AbilityImporter.js";
+
+const csv = `"id","ownerId","category","name","effectType","effectValue"
+"a1","a","battle","Slash","physicalDamageUp","15"`;
+const items = AbilityImporter.parseCsv(csv);
+const merged = AbilityImporter.merge([], items);
+
+const ok = items.length === 1 &&
+  items[0].effects[0].value === 15 &&
+  merged.report.added === 1;
+
+document.getElementById("result").textContent = ok ? "PASS" : JSON.stringify({items, merged}, null, 2);
+if (!ok) throw new Error("AbilityImporter test failed");
+</script>
