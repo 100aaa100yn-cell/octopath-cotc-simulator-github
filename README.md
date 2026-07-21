@@ -180,3 +180,7 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 ## v1.8 戦闘フェーズ
 
 敵の `phases` は `hpThreshold` を境界として自動切替されます。各フェーズでは `weakWeapons`、`weakElements`、`shield`、`shieldRecovery`、`pdef`、`edef`、`actions`、各種倍率を上書きできます。
+
+## v1.9.0: 敵別自動編成
+
+敵の武器・属性弱点、連撃数、攻撃性能、速度、支援効果を評価し、弱点カバーの偏りを抑えた8人編成を生成します。候補ランキングには評価内訳が表示されます。

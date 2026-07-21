@@ -140,6 +140,7 @@ export class AppUI {
     const party = this.partyOptimizer.optimize(attackerId, {
       weapon: enemy.weakWeapons[0] ?? "",
       element: enemy.weakElements[0] ?? "",
+      enemyId: enemy.id,
       priority,
       lockedIds: this.getLockedPartyIds(attackerId)
     });
@@ -233,6 +234,11 @@ export class AppUI {
       <div class="reason">ブレイク予定：${breakTurn ? `${breakTurn}ターン目` : "未達"}</div>
       <div class="reason">フィニッシュ予定：${plan.attackTurn}ターン目</div>
       <div class="reason">推定ダメージ：${plan.estimatedDamage.toLocaleString()}</div>
+      <div class="reason">弱点カバー：${party.coverage?.covered ?? 0} / ${party.coverage?.total ?? 0}（${party.coverage?.ratio ?? 0}%）</div>
+      <div class="coverage-list">
+        ${Object.entries(party.coverage?.weapon ?? {}).map(([type, names]) => `<span class="coverage-chip ${names.length ? "covered" : "missing"}">${type}：${names.length ? names.join("・") : "未対応"}</span>`).join("")}
+        ${Object.entries(party.coverage?.element ?? {}).map(([type, names]) => `<span class="coverage-chip ${names.length ? "covered" : "missing"}">${type}：${names.length ? names.join("・") : "未対応"}</span>`).join("")}
+      </div>
     `;
 
     this.$("rankingBody").innerHTML = party.candidates.map((candidate, index) => `

@@ -1,0 +1,6 @@
+<!DOCTYPE html><meta charset="UTF-8"><title>Enemy Party Optimizer Tests</title><pre id="out"></pre><script type="module">
+import{Repository}from"../src/database/Repository.js";import{PartyOptimizer}from"../src/engine/PartyOptimizer.js";
+const db={characters:[{id:"a",name:"A",weapon:"sword",element:"fire",role:"attacker",baseScore:90,patk:500,speed:300},{id:"b",name:"B",weapon:"dagger",element:"ice",role:"attacker",baseScore:50,patk:400,speed:250},{id:"c",name:"C",weapon:"staff",element:"light",role:"support",baseScore:80,speed:200}],abilities:[{id:"b1",ownerId:"b",category:"battle",name:"4連撃",power:100,hits:4,shield:4,effects:[]}],enemies:[{id:"e",name:"E",weakWeapons:["dagger"],weakElements:["ice"]}],effectRules:{}};
+const result=new PartyOptimizer(new Repository(db)).optimize("a",{enemyId:"e",priority:"break"});
+const ok=result.selected[0].candidate.id==="b"&&result.coverage.ratio===100;document.getElementById("out").textContent=ok?"PASS":"FAIL";
+</script>

@@ -240,3 +240,10 @@ footer{text-align:center;padding:20px;color:var(--muted)}
 .phase-weakness{margin:.35rem 0 .55rem;font-size:.82rem;opacity:.82}
 .check-label{display:flex!important;flex-direction:row!important;align-items:center;gap:.45rem;min-height:42px}
 .check-label input{width:auto}
+
+/* v1.9 enemy-aware party optimization */
+.coverage-list { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.7rem; }
+.coverage-chip { padding:.35rem .55rem; border-radius:999px; font-size:.78rem; border:1px solid var(--border, #bbb); }
+.coverage-chip.covered { background:color-mix(in srgb, #42b883 18%, transparent); }
+.coverage-chip.missing { background:color-mix(in srgb, #e76f51 14%, transparent); opacity:.8; }
+.score-breakdown { display:block; margin-top:.3rem; opacity:.72; font-size:.72rem; }
