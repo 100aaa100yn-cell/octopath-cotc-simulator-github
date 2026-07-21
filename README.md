@@ -152,3 +152,10 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 - `verified` / `provisional` / `simulator` / `incomplete` で品質管理
 
 実ゲームデータは、出典と確認日を記録しながら段階的に `verified` へ移行します。
+
+## v1.5 全旅人カタログとベースランク
+
+- 登録キャラクター数: **273**
+- キャラクターカードにベースランクを表示
+- ★5・★4・★3で絞り込み可能
+- 新規登録分は名前・ジョブ・ランクを優先し、未確認の数値や技は `incomplete` としています。

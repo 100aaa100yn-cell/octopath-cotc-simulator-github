@@ -63,6 +63,7 @@ export class AppUI {
     this.$("clearPartySelectionBtn").onclick = () => this.clearPartySelection();
     this.$("characterCsvInput").onchange = event => this.importCharacterCsv(event);
     this.$("downloadCharacterTemplateBtn").onclick = () => this.downloadCharacterTemplate();
+    this.$("baseRankFilter").onchange = () => this.renderCharacterSelector();
     this.$("dataStatusFilter").onchange = () => this.renderCharacterSelector();
     this.$("abilityCategoryFilter").onchange = () => this.renderCharacterSelector();
     this.$("hasAbilitiesFilter").onchange = () => this.renderCharacterSelector();
@@ -683,6 +684,7 @@ export class AppUI {
     fill("characterElementFilter", characters.map(x => x.element));
     fill("characterRoleFilter", characters.map(x => x.role));
     fill("seriesFilter", characters.map(x => x.series));
+    fill("baseRankFilter", characters.map(x => x.baseRank ?? x.rarity), { 5: "★5", 4: "★4", 3: "★3" });
     fill("abilityCategoryFilter", this.repo.getAllAbilities().map(x => x.category), {
       support: "サポート", battle: "バトル", ultimate: "必殺技", ex: "EX"
     });
@@ -700,11 +702,12 @@ export class AppUI {
     const element = this.$("characterElementFilter")?.value ?? "";
     const role = this.$("characterRoleFilter")?.value ?? "";
     const series = this.$("seriesFilter")?.value ?? "";
+    const baseRank = this.$("baseRankFilter")?.value ?? "";
     const dataStatus = this.$("dataStatusFilter")?.value ?? "";
     const abilityCategory = this.$("abilityCategoryFilter")?.value ?? "";
     const hasAbilities = this.$("hasAbilitiesFilter")?.checked ?? false;
 
-    return this.dataCatalog.search(query, { weapon, element, role, series, dataStatus, abilityCategory, hasAbilities }).filter(character => {
+    return this.dataCatalog.search(query, { baseRank, weapon, element, role, series, dataStatus, abilityCategory, hasAbilities }).filter(character => {
       const searchable = [
         character.name,
         character.id,
@@ -735,7 +738,7 @@ export class AppUI {
         >
           <span class="character-check">${selected ? "✓" : "+"}</span>
           <span class="character-select-icon">${character.icon ?? "◈"}</span>
-          <strong>${character.name}</strong>
+          <strong>${character.name}</strong><span class="rank-badge rank-${character.baseRank ?? character.rarity ?? 0}">★${character.baseRank ?? character.rarity ?? "?"}</span>
           <small>${character.weapon}・${character.element}・${character.role}</small>
           <span class="character-series">${character.series ?? "未分類"}</span>
           <span class="data-status status-${character.dataStatus ?? "incomplete"}">${
@@ -855,7 +858,7 @@ export class AppUI {
     this.$("equipmentAccessory2Select").innerHTML = this.equipmentOptions("accessory", character, loadout.accessory2);
     const equipped = this.equipmentManager.applyToCharacter(character);
     this.$("equipmentStatSummary").innerHTML = `
-      <strong>${character.icon ?? "◈"} ${character.name}</strong>
+      <strong>${character.icon ?? "◈"} ${character.name}</strong><span class="rank-badge rank-${character.baseRank ?? character.rarity ?? 0}">★${character.baseRank ?? character.rarity ?? "?"}</span>
       <span>物攻 ${character.patk ?? 0} → <b>${equipped.patk}</b></span>
       <span>属攻 ${character.eatk ?? 0} → <b>${equipped.eatk}</b></span>
       <span>速度 ${character.speed ?? 0} → <b>${equipped.speed}</b></span>
@@ -969,6 +972,7 @@ export class AppUI {
     `;
 
     breakdown.innerHTML = [
+      formatGroup("ベースランク", summary.byBaseRank),
       formatGroup("シリーズ", summary.bySeries),
       formatGroup("武器", summary.byWeapon),
       formatGroup("役割", summary.byRole),

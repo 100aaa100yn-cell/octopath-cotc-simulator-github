@@ -61,6 +61,10 @@ export class DatabaseValidator {
       if (!allowedElements.has(character.element)) {
         this.add("error", "UNKNOWN_ELEMENT", `未登録の属性「${character.element}」です。`, `${path}.element`);
       }
+      const baseRank = Number(character.baseRank ?? character.rarity);
+      if (![3, 4, 5].includes(baseRank)) {
+        this.add("warning", "INVALID_BASE_RANK", "baseRankは3・4・5のいずれかです。", `${path}.baseRank`);
+      }
       const status = character.dataStatus ?? "incomplete";
       if (!allowedStatuses.has(status)) {
         this.add("warning", "UNKNOWN_DATA_STATUS", `未登録のデータ品質「${status}」です。`, `${path}.dataStatus`);

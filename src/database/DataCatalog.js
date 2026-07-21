@@ -7,6 +7,7 @@ export class DataCatalog {
     const characters = this.repo.getCharacters();
     const abilities = this.repo.getAllAbilities();
     const byStatus = this.countBy(characters, item => item.dataStatus ?? "incomplete");
+    const byBaseRank = this.countBy(characters, item => `★${item.baseRank ?? item.rarity ?? "?"}`);
     const bySeries = this.countBy(characters, item => item.series ?? "未分類");
     const byWeapon = this.countBy(characters, item => item.weapon ?? "unknown");
     const byRole = this.countBy(characters, item => item.role ?? "unknown");
@@ -34,6 +35,7 @@ export class DataCatalog {
       unreferencedAbilities: abilities.filter(ability => !referencedAbilityIds.has(ability.id)).length,
       charactersWithoutAbilities: characters.filter(character => this.repo.getAbilities(character.id).length === 0).length,
       byStatus,
+      byBaseRank,
       bySeries,
       byWeapon,
       byRole,
@@ -67,6 +69,7 @@ export class DataCatalog {
       ].filter(Boolean).join(" ").toLowerCase();
 
       return (!normalized || searchable.includes(normalized)) &&
+        (!filters.baseRank || String(character.baseRank ?? character.rarity) === String(filters.baseRank)) &&
         (!filters.weapon || character.weapon === filters.weapon) &&
         (!filters.element || character.element === filters.element) &&
         (!filters.role || character.role === filters.role) &&

@@ -1,2 +1,2 @@
-﻿id,name,weapon,element,role,series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
-sample_traveler,サンプル旅人,sword,fire,attacker,大陸の覇者,5,100,450,400,300,400,80,⚔️,provisional,入力例
+﻿id,name,series,acquisition,job,baseRank,rarity,weapon,element,role,hp,sp,patk,eatk,pdef,edef,speed,dataStatus,dataNote,tags
+sample_traveler,サンプル旅人,OCTOPATH TRAVELER 大陸の覇者,恒常,剣士,5,5,sword,fire,attacker,0,0,0,0,0,0,0,incomplete,能力値と技は未入力,"剣士;★5"
