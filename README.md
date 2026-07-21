@@ -237,3 +237,7 @@ series,rarity,level,patk,eatk,speed,maxSp,baseScore,icon,dataStatus,dataNote
 
 ## v3.0 データ品質
 全キャラクターでバトルアビリティ、必殺技、EXアビリティを選択できます。未登録データは未登録仮枠として表示され、計算上は威力0です。
+
+
+## v3.1 ロードアウト連動
+マイ旅団で技と装備を登録し、ターン戦闘と推定最短撃破ターン探索へ反映できます。

@@ -14,6 +14,7 @@ export class RosterManager {
       awakening: 0,
       ultimateLevel: 1,
       exUnlocked: false,
+      abilityIds: [],
       note: ""
     };
   }
@@ -27,6 +28,7 @@ export class RosterManager {
       awakening: Math.max(0, Math.min(4, Number(value.awakening ?? 0) || 0)),
       ultimateLevel: Math.max(1, Math.min(10, Number(value.ultimateLevel ?? 1) || 1)),
       exUnlocked: Boolean(value.exUnlocked),
+      abilityIds: Array.isArray(value.abilityIds) ? [...new Set(value.abilityIds.map(String))].slice(0, 6) : [],
       note: String(value.note ?? "")
     };
   }
@@ -73,7 +75,7 @@ export class RosterManager {
   }
 
   exportData() {
-    return { version: 2, exportedAt: new Date().toISOString(), roster: this.entries };
+    return { version: 3.1, exportedAt: new Date().toISOString(), roster: this.entries };
   }
 
   importData(payload) {

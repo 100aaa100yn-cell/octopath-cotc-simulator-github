@@ -18,10 +18,11 @@ import { StrategyAdvisor } from "./engine/StrategyAdvisor.js";
 import { BattleComparisonManager } from "./engine/BattleComparisonManager.js";
 import { StrategyOptimizer } from "./engine/StrategyOptimizer.js";
 import { DataQualityManager } from "./engine/DataQualityManager.js";
+import { MinimumTurnEstimator } from "./engine/MinimumTurnEstimator.js";
 import { AppUI } from "./ui/AppUI.js";
 
 async function main() {
-  document.documentElement.dataset.appVersion = "3.0.0";
+  document.documentElement.dataset.appVersion = "3.1.0";
   const db = await loadDatabase();
   const dataManager = new DataManager(db);
   const stateManager = new StateManager();
@@ -31,15 +32,16 @@ async function main() {
   const formationManager = new FormationManager(repo, rosterManager);
   const partyOptimizer = new PartyOptimizer(repo, rosterManager);
   const damageEngine = new DamageEngine(repo);
-  const turnBattleManager = new TurnBattleManager(repo, damageEngine, formationManager, effectManager);
+  const equipmentManager = new EquipmentManager(repo);
+  const turnBattleManager = new TurnBattleManager(repo, damageEngine, formationManager, effectManager, equipmentManager, rosterManager);
   const battlePlanManager = new BattlePlanManager(repo, turnBattleManager, formationManager);
   const battleResultManager = new BattleResultManager(turnBattleManager, formationManager, repo);
   const strategyAdvisor = new StrategyAdvisor(battleResultManager, turnBattleManager);
   const battleComparisonManager = new BattleComparisonManager(battleResultManager, strategyAdvisor, battlePlanManager);
   const strategyOptimizer = new StrategyOptimizer(repo, battlePlanManager, battleResultManager, strategyAdvisor);
   const dataQualityManager = new DataQualityManager(repo);
+  const minimumTurnEstimator = new MinimumTurnEstimator(repo, damageEngine, formationManager, rosterManager, equipmentManager);
   const turnOptimizer = new TurnOptimizer(repo, damageEngine);
-  const equipmentManager = new EquipmentManager(repo);
   const battleEngine = new BattleEngine(
     repo,
     partyOptimizer,
@@ -66,7 +68,8 @@ async function main() {
     strategyAdvisor,
     battleComparisonManager,
     strategyOptimizer,
-    dataQualityManager
+    dataQualityManager,
+    minimumTurnEstimator
   ).init();
 }
 

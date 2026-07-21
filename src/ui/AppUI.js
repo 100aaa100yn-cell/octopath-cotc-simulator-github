@@ -2,7 +2,7 @@ import { CharacterImporter } from "../database/CharacterImporter.js";
 import { EnemyImporter } from "../database/EnemyImporter.js";
 import { DataCatalog } from "../database/DataCatalog.js";
 export class AppUI {
-  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer, dataQualityManager) {
+  constructor(repo, partyOptimizer, turnOptimizer, dataManager, damageEngine, battleEngine, stateManager, analytics, equipmentManager, rosterManager, effectManager, formationManager, turnBattleManager, battlePlanManager, battleResultManager, strategyAdvisor, battleComparisonManager, strategyOptimizer, dataQualityManager, minimumTurnEstimator) {
     this.repo = repo;
     this.partyOptimizer = partyOptimizer;
     this.turnOptimizer = turnOptimizer;
@@ -22,6 +22,7 @@ export class AppUI {
     this.battleComparisonManager = battleComparisonManager;
     this.strategyOptimizer = strategyOptimizer;
     this.dataQualityManager = dataQualityManager;
+    this.minimumTurnEstimator = minimumTurnEstimator;
     this.rosterFilter = "all";
     this.dataCatalog = new DataCatalog(repo);
     this.autoSaveTimer = null;
@@ -56,6 +57,7 @@ export class AppUI {
     this.renderBattleComparison();
     this.renderStrategyOptimizer();
     this.renderDataQuality();
+    this.refreshMinimumTurnEnemy();
     this.restoreInitialState();
   }
 
@@ -119,6 +121,7 @@ export class AppUI {
     this.$("rosterUnownedAllBtn").onclick = () => { this.rosterManager.setAll({ owned: false }); this.renderRoster(); this.refreshSelectors(); };
     this.$("exportRosterBtn").onclick = () => this.exportRoster();
     this.$("importRosterInput").onchange = event => this.importRoster(event);
+    this.$("minimumTurnRunBtn").onclick = () => this.runMinimumTurnEstimate();
     this.$("addEffectBtn").onclick = () => this.addManagedEffect();
     this.$("advanceEffectTurnBtn").onclick = () => { this.effectManager.tick(); this.renderEffectManager(); this.calculateManualDamage(); };
     this.$("clearEffectsBtn").onclick = () => { this.effectManager.clear(); this.renderEffectManager(); this.calculateManualDamage(); };
@@ -1464,6 +1467,7 @@ export class AppUI {
           <label>覚醒<select data-roster-field="awakening" ${entry.owned ? "" : "disabled"}>${[0,1,2,3,4].map(v => `<option value="${v}" ${entry.awakening===v?'selected':''}>${v}</option>`).join('')}</select></label>
           <label>必殺<select data-roster-field="ultimateLevel" ${entry.owned ? "" : "disabled"}>${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}" ${entry.ultimateLevel===v?'selected':''}>Lv${v}</option>`).join('')}</select></label>
         </div>
+        <details class="roster-loadout" ${entry.owned ? "" : "hidden"}><summary>アビリティ・武器・防具をセット</summary>${this.rosterLoadoutEditor(character, entry)}</details>
       </article>`;
     }).join("");
     this.$("rosterGrid").querySelectorAll("[data-roster-id]").forEach(card => {
@@ -1477,7 +1481,30 @@ export class AppUI {
         this.selectedPartyIds = this.selectedPartyIds.filter(id => this.rosterManager.isAvailable(id));
         this.renderRoster(); this.refreshSelectors(); this.renderCharacterSelector(); this.renderFormation(); this.scheduleAutoSave();
       });
+      card.querySelectorAll("[data-roster-ability-index]").forEach(select => select.onchange=()=>{
+        const id=card.dataset.rosterId, entry=this.rosterManager.get(id), ids=[...(entry.abilityIds??[])];
+        ids[Number(select.dataset.rosterAbilityIndex)]=select.value;
+        this.rosterManager.set(id,{abilityIds:ids.filter(Boolean)}); this.renderTurnBattle(); this.scheduleAutoSave();
+      });
+      card.querySelectorAll("[data-roster-equipment]").forEach(select => select.onchange=()=>{
+        try{this.equipmentManager.equip(card.dataset.rosterId,select.dataset.rosterEquipment,select.value);this.renderTurnBattle();this.scheduleAutoSave();}
+        catch(error){this.setPresetStatus(error.message,"error");}
+      });
     });
+  }
+
+  rosterLoadoutEditor(character, entry) {
+    const abilityOptions=(selected="")=>`<option value="">未設定</option>`+this.repo.getAbilities(character.id).filter(a=>a.category!=="support").map(a=>`<option value="${a.id}" ${selected===a.id?"selected":""}>${a.name}｜${a.category}｜${a.isPlaceholder?"未登録":"登録済"}</option>`).join("");
+    const selected=[...(entry.abilityIds??[])]; while(selected.length<5)selected.push("");
+    const loadout=this.equipmentManager.getLoadout(character.id);
+    const equipOptions=(slot,current)=>`<option value="">なし</option>`+this.repo.getEquipmentList().filter(x=>x.slot===slot && (slot!=="weapon" || !x.weapon || x.weapon===character.weapon)).map(x=>`<option value="${x.id}" ${current===x.id?"selected":""}>${x.name}</option>`).join("");
+    return `<div class="roster-loadout-grid">
+      ${selected.map((id,i)=>`<label>技${i+1}<select data-roster-ability-index="${i}">${abilityOptions(id)}</select></label>`).join("")}
+      <label>武器<select data-roster-equipment="weapon">${equipOptions("weapon",loadout.weapon)}</select></label>
+      <label>頭防具<select data-roster-equipment="head">${equipOptions("head",loadout.head)}</select></label>
+      <label>体防具<select data-roster-equipment="body">${equipOptions("body",loadout.body)}</select></label>
+      <label>腕防具<select data-roster-equipment="arm">${equipOptions("arm",loadout.arm)}</select></label>
+    </div>`;
   }
 
   exportRoster() {
@@ -1652,12 +1679,25 @@ export class AppUI {
   renderTurnBattle() {
     const manager=this.turnBattleManager, state=manager.state, summary=manager.summary();
     const frontIds=this.formationManager.getFrontIds();
-    this.$("turnBattleActions").innerHTML=frontIds.length?frontIds.map(id=>{const c=this.repo.getCharacter(id);const bp=state?.bp?.[id]??0;const sp=this.formationManager.sp[id]??c.maxSp??0;return `<article class="turn-command" data-turn-character="${id}"><div><b>${c.name}</b><small>SP ${sp}/${c.maxSp??0}｜BP ${bp}</small></div><select data-turn-ability>${this.turnBattleAbilityOptions(id)}</select><label>Boost<select data-turn-boost>${[0,1,2,3].map(n=>`<option value="${n}" ${n>bp?"disabled":""}>${n}</option>`).join("")}</select></label></article>`;}).join(""):'<p class="empty">隊列に前衛を設定してください。</p>';
+    this.$("turnBattleActions").innerHTML=frontIds.length?frontIds.map(id=>{const base=this.repo.getCharacter(id);const c=this.equipmentManager.applyToCharacter(base);const bp=state?.bp?.[id]??0;const sp=this.formationManager.sp[id]??c.maxSp??0;return `<article class="turn-command" data-turn-character="${id}"><div><b>${c.name}</b><small>SP ${sp}/${c.maxSp??0}｜BP ${bp}</small></div><select data-turn-ability>${this.turnBattleAbilityOptions(id)}</select><label>Boost<select data-turn-boost>${[0,1,2,3].map(n=>`<option value="${n}" ${n>bp?"disabled":""}>${n}</option>`).join("")}</select></label></article>`;}).join(""):'<p class="empty">隊列に前衛を設定してください。</p>';
     this.$("turnBattleExecuteBtn").disabled=!state||state.finished||!frontIds.length;
     this.$("turnBattleStatus").innerHTML=summary?`<span><b>${summary.victory?"VICTORY":summary.turn+"T"}</b><small>進行状態</small></span><span><b>${Number(summary.enemyHp).toLocaleString()} / ${Number(summary.maxHp).toLocaleString()}</b><small>敵HP</small></span><span><b>${summary.shield}</b><small>シールド</small></span><span><b>${summary.phase}</b><small>フェーズ</small></span>`:'<span><b>未開始</b><small>「戦闘開始」を押してください</small></span>';
     this.$("turnBattleLog").innerHTML=state?.log?.slice().reverse().map(turn=>`<article class="turn-result"><header><b>TURN ${turn.turn}</b><span>${turn.turnDamage.toLocaleString()} damage｜HP ${turn.enemyHp.toLocaleString()}｜盾 ${turn.enemyShield}</span></header>${turn.phaseEvents.map(e=>`<div class="phase-transition">${e.to}へ移行</div>`).join("")}<div>${turn.entries.map(e=>`<p><b>${e.actor}</b>：${e.action}${e.boost?` BP${e.boost}`:""} <small>${e.damage?`${e.damage.toLocaleString()} damage`:""}${e.shieldDamage?` / shield -${e.shieldDamage}`:""}${e.spCost?` / SP -${e.spCost}`:""}</small></p>`).join("")}<p class="enemy-command"><b>敵</b>：${turn.enemyAction.action}</p></div></article>`).join("")||'<p class="empty">戦闘ログはまだありません。</p>';
   }
 
+
+  refreshMinimumTurnEnemy(){
+    const select=this.$("minimumTurnEnemySelect"); if(!select)return;
+    const old=select.value; select.innerHTML=this.repo.getEnemies().map(e=>`<option value="${e.id}">${e.name}｜HP ${Number(e.maxHp||0).toLocaleString()}</option>`).join("");
+    if(this.repo.getEnemy(old))select.value=old;
+  }
+  runMinimumTurnEstimate(){
+    try{
+      const result=this.minimumTurnEstimator.estimate(this.$("minimumTurnEnemySelect").value,{maxTurns:Number(this.$("minimumTurnMaxTurns").value)||30});
+      const headline=result.turns?`推定最短 ${result.turns}ターン`:`${this.$("minimumTurnMaxTurns").value}ターン以内に撃破できません`;
+      this.$("minimumTurnResult").innerHTML=`<div class="minimum-turn-head"><strong>${headline}</strong><span>データ信頼度 ${result.confidence}%</span></div><p>総ダメージ ${Number(result.totalDamage).toLocaleString()}${result.remainingHp?`｜残りHP ${Number(result.remainingHp).toLocaleString()}`:""}</p><div class="minimum-turn-timeline">${result.timeline.map(t=>`<article><b>T${t.turn}</b><span>${t.damage.toLocaleString()} damage｜盾 -${t.shieldDamage}｜残HP ${t.hp.toLocaleString()}</span><small>${t.actions.join(" / ")}</small></article>`).join("")}</div><p class="data-note">現在セット中のアビリティ・装備による探索結果です。未登録技は計算対象外で、数学的な最適性を保証するものではありません。</p>`;
+    }catch(error){this.$("minimumTurnResult").innerHTML=`<p class="empty">${error.message}</p>`;}
+  }
 
   resultSvg(values, options={}) {
     const width=720,height=190,pad=28;

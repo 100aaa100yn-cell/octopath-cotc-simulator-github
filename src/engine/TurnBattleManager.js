@@ -1,9 +1,11 @@
 export class TurnBattleManager {
-  constructor(repo, damageEngine, formationManager, effectManager) {
+  constructor(repo, damageEngine, formationManager, effectManager, equipmentManager = null, rosterManager = null) {
     this.repo = repo;
     this.damageEngine = damageEngine;
     this.formationManager = formationManager;
     this.effectManager = effectManager;
+    this.equipmentManager = equipmentManager;
+    this.rosterManager = rosterManager;
     this.state = null;
   }
 
@@ -19,13 +21,23 @@ export class TurnBattleManager {
     const members = this.formationManager.getMemberIds();
     if (!members.length) throw new Error("先に8人隊列を編成してください。");
     this.formationManager.resetBattle();
+    for (const id of members) {
+      const equipped = this.equipmentManager?.applyToCharacter(this.repo.getCharacter(id)) ?? this.repo.getCharacter(id);
+      this.formationManager.sp[id] = Number(equipped?.maxSp ?? equipped?.sp ?? this.formationManager.sp[id] ?? 0);
+    }
     const phases=this.normalizedPhases(enemy);
     this.state={turn:1, enemy:{...enemy,hp:Number(enemy.maxHp||1),shieldCurrent:Number(enemy.shield||0),brokenTurns:0,phaseIndex:0,currentPhase:phases[0],phases}, bp:Object.fromEntries(members.map(id=>[id,0])), log:[], finished:false,victory:false,totalDamage:0,breakCount:0};
     return this.state;
   }
 
   ability(characterId, abilityId) { return this.repo.getAbilities(characterId).find(a=>a.id===abilityId); }
-  availableAbilities(characterId) { return this.repo.getAbilities(characterId).filter(a=>a.category!=="support"); }
+  availableAbilities(characterId) {
+    const all = this.repo.getAbilities(characterId).filter(a=>a.category!=="support");
+    const selected = this.rosterManager?.get(characterId)?.abilityIds ?? [];
+    if (!selected.length) return all;
+    const filtered = all.filter(a => selected.includes(a.id));
+    return filtered.length ? filtered : all;
+  }
   effectsFor(characterId) {
     const managed=(this.effectManager?.getActiveEffects?.() ?? this.effectManager?.effects ?? []).map(e=>({type:e.type,value:Number(e.value||0)}));
     const supports=this.repo.getAbilities(characterId).filter(a=>a.category==="support").flatMap(a=>a.effects??[]).map(e=>({type:e.type,value:Number(e.value||0)}));
@@ -45,7 +57,7 @@ export class TurnBattleManager {
     const s=this.state;
     if(!s || s.finished) throw new Error("戦闘を開始してください。");
     const frontIds=this.formationManager.getFrontIds();
-    const ordered=frontIds.map(id=>({id,character:this.repo.getCharacter(id),choice:actions[id]??{}})).filter(x=>x.character).sort((a,b)=>Number(b.character.speed||0)-Number(a.character.speed||0));
+    const ordered=frontIds.map(id=>({id,character:this.equipmentManager?.applyToCharacter(this.repo.getCharacter(id)) ?? this.repo.getCharacter(id),choice:actions[id]??{}})).filter(x=>x.character).sort((a,b)=>Number(b.character.speed||0)-Number(a.character.speed||0));
     const entries=[]; let turnDamage=0; const phaseEvents=[];
     for(const item of ordered){
       if(s.enemy.hp<=0)break;

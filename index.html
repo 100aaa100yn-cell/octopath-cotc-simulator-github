@@ -39,7 +39,7 @@
 
 
   <section class="panel roster-panel">
-    <div class="section-title-row"><div><h2>マイ旅団</h2><p>所持状況と育成状態を登録します。自動編成は「所持＋編成対象」のキャラクターだけを使用します。</p></div></div>
+    <div class="section-title-row"><div><h2>マイ旅団</h2><p>所持状況・育成状態・使用アビリティ・武器・防具を登録します。自動編成は「所持＋編成対象」のキャラクターだけを使用します。</p></div></div>
     <div class="roster-toolbar">
       <label class="search-field">検索<input id="rosterSearch" type="search" placeholder="名前・武器・属性"></label>
       <label>表示<select id="rosterFilter"><option value="all">全員</option><option value="owned">所持のみ</option><option value="unowned">未所持のみ</option><option value="enabled">編成対象のみ</option></select></label>
@@ -50,6 +50,13 @@
     </div>
     <div id="rosterSummary" class="roster-summary"></div>
     <div id="rosterGrid" class="roster-grid"></div>
+  </section>
+
+
+  <section class="panel minimum-turn-panel">
+    <div class="section-title-row"><div><h2>推定最短撃破ターン探索</h2><p>マイ旅団でセットしたアビリティと装備を使い、現在の前衛4人で撃破手順を探索します。</p></div></div>
+    <div class="minimum-turn-toolbar"><label>敵<select id="minimumTurnEnemySelect"></select></label><label>探索上限<input id="minimumTurnMaxTurns" type="number" min="1" max="99" value="30">ターン</label><button id="minimumTurnRunBtn" type="button">最短ターンを探索</button></div>
+    <div id="minimumTurnResult"><p class="empty">隊列とロードアウトを設定して探索してください。</p></div>
   </section>
 
   <section class="panel formation-panel">
@@ -522,7 +529,7 @@
   </section>
 </main>
 
-<footer>Version 3.0.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
+<footer>Version 3.1.0｜複数の攻略結果を保存し、ターン・火力・資源効率を比較します。</footer>
 <script type="module" src="src/main.js?v=2.5.0"></script>
 </body>
 </html>

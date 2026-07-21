@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { MinimumTurnEstimator } from '../src/engine/MinimumTurnEstimator.js';
+const chars={a:{id:'a',name:'A',patk:100,eatk:10,maxSp:100,weapon:'剣',element:'火'}};
+const abilities={a:[{id:'hit',ownerId:'a',name:'強打',category:'battle',power:100,hits:1,shield:1,sp:10,maxBoost:3,dataStatus:'complete'}]};
+const enemy={id:'e',name:'E',maxHp:10,shield:0,pdef:1,edef:1,weakWeapons:['剣'],weakElements:[]};
+const repo={getCharacter:id=>chars[id],getAbilities:id=>abilities[id]??[],getAbility:id=>abilities.a.find(a=>a.id===id),getEnemy:id=>id==='e'?enemy:null};
+const damageEngine={calculate:()=>({totalDamage:10})};
+const formation={getFrontIds:()=>['a']};
+const roster={get:()=>({abilityIds:['hit']})};
+const equipment={applyToCharacter:c=>({...c,patk:150})};
+const result=new MinimumTurnEstimator(repo,damageEngine,formation,roster,equipment).estimate('e');
+assert.equal(result.turns,1);
+assert.equal(result.confidence,100);
+console.log('MinimumTurnEstimator tests passed');
